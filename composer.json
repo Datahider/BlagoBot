@@ -1,0 +1,22 @@
+{
+    "name": "losthost/blago-bot",
+    "description": "A bot for MinBlago",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "drweb",
+            "email": "pio@pio.su"
+        }
+    ],
+    "require": {
+        "losthost/db": "^3",
+        "losthost/telle": "^4",
+        "losthost/passg": "v1.1.0",
+        "losthost/bot-view": "v2.2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "losthost\\BlagoBot\\": "src/"
+        }
+    }
+}
