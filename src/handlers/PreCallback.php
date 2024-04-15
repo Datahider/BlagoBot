@@ -10,6 +10,8 @@ class PreCallback extends AbstractHandlerCallback {
     
     protected function check(\TelegramBot\Api\Types\CallbackQuery &$callback_query): bool {
         global $b_user;
+        
+        error_log("Got callback data: ". $callback_query->getData());
         initBUser();
         return !$b_user->is_authorized;
     }

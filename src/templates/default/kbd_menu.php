@@ -2,6 +2,8 @@
 
 use losthost\telle\Bot;
 use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
+use losthost\BlagoBot\view\InlineButton;
+use losthost\BlagoBot\data\report;
 
 $topmenu_id = Bot::param('topmenu_id', null);
 
@@ -13,8 +15,18 @@ if ( $topmenu_id == $menu->id) {
     ];
 }
 
-foreach ($menu->getChildren() as $sub_menu) {
-    $keyboard[] = [['text' => $sub_menu->button_text, 'callback_data' => 'submenu_'. $sub_menu->id]];
+foreach ($submenu as $sub_menu) {
+    switch ($sub_menu->type) {
+        case 'submenu':
+            $button = new InlineButton($sub_menu);
+            break;
+        case 'report':
+            $button = new InlineButton(new report(['id' => $sub_menu->subtype_id]));
+            break;
+        default:
+            throw new Exception('Unknown menu type.');
+    }
+    $keyboard[] = [$button->buttonData()];
 }
 
 echo serialize(new InlineKeyboardMarkup($keyboard));

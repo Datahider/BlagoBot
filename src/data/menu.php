@@ -12,9 +12,12 @@ class menu extends DBObject {
         'parent' => 'BIGINT',
         'sort' => 'BIGINT NOT NULL DEFAULT 0',
         'is_active' => 'TINYINT(1) NOT NULL DEFAULT 1',
-        'button_text' => 'VARCHAR(64)',
+        'title' => 'VARCHAR(64)',
         'description' => 'VARCHAR(1024)',
+        'type' => 'ENUM("submenu", "report") NOT NULL DEFAULT "submenu"',
+        'subtype_id' => 'BIGINT',
         'handler_class' => 'VARCHAR(256)',
+        'handler_param' => 'VARCHAR(256)',
         'PRIMARY KEY' => 'id'
     ];
     
