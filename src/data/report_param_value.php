@@ -13,6 +13,7 @@ class report_param_value extends DBObject {
         'is_active' => 'TINYINT(1) NOT NULL DEFAULT 1',
         'title' => 'VARCHAR(64)',
         'value' => 'VARCHAR(256)',
+        'is_default' => 'TINYINT(1) NOT NULL DEFAULT 0',
         'PRIMARY KEY' => 'id',
         'UNIQUE INDEX TITLE_SET' => ['value_set', 'title']
     ];

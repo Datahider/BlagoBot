@@ -19,12 +19,6 @@ class ReportSetupView {
     
     public function show(int $message_id) {
         
-        $last_report = Bot::$session->get('command');
-        if ($this->report->id <> $last_report) {
-            Bot::$session->set('data', []);
-            Bot::$session->set('command', $this->report->id);
-        }
-
         $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
         $view->show('tpl_report_setup', 'kbd_report_setup', $this->viewData(), $message_id);
     }

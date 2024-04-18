@@ -11,6 +11,8 @@ use losthost\BlagoBot\view\ReportSetupView;
 use losthost\BlagoBot\view\ReportParamView;
 use losthost\BlagoBot\view\ReportResultView;
 use losthost\BlagoBot\data\report;
+use losthost\BlagoBot\data\report_param_value;
+use losthost\DB\DBList;
 use Exception;
 
 class CallbackInlineButton extends AbstractHandlerCallback {
@@ -34,8 +36,16 @@ class CallbackInlineButton extends AbstractHandlerCallback {
                 $view->show($callback_query->getMessage()->getMessageId());
                 break;
             case InlineButton::MB_REPORT:
-                //Bot::$session->set('data', []); // сброс установленных параметров отчета
-                $view = new ReportSetupView($this->button->getObject());
+                $report = $this->button->getObject();
+
+                $last_report = Bot::$session->get('command');
+                if ($report->id <> $last_report) {
+                    Bot::$session->set('data', []);
+                    Bot::$session->set('command', $report->id);
+                }
+
+                $this->setDefaultValues($report);
+                $view = new ReportSetupView($report);
                 $view->show($callback_query->getMessage()->getMessageId());
                 break;
             case InlineButton::MB_PARAM:
@@ -68,6 +78,32 @@ class CallbackInlineButton extends AbstractHandlerCallback {
         
         try { Bot::$api->answerCallbackQuery($callback_query->getId()); } catch (\Exception $e) {}
         return true;
+    }
+    
+    protected function setDefaultValues(report $report) {
+        
+        $param_values = Bot::$session->get('data');
+        
+        $params = $report->paramsArray();
+        
+        foreach ($params as $param) {
+            if (isset($param_values[$param->name])) {
+                continue;
+            }
+            
+            $values = new DBList(report_param_value::class, "value_set = ? AND is_active = 1 AND is_default = 1 ORDER BY sort, title", $param->value_set);
+            $values_array = $values->asArray();
+            
+            if (count($values_array) == 0) {
+                continue;
+            }
+            
+            foreach ($values_array as $value) {
+                $param_values[$param->name][] = $value->id;
+            }
+            Bot::$session->set('data', $param_values);
+        }
+        
     }
     
     protected function updateParamStoredData() {
