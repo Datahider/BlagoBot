@@ -5,6 +5,7 @@ namespace losthost\BlagoBot;
 use losthost\BlagoBot\data\user;
 use losthost\telle\Bot;
 use losthost\passg\Pass;
+use losthost\templateHelper\Template;
 
 function initBUser() {
     global $b_user;
@@ -40,4 +41,8 @@ function addBUser($tg_id, $access_level) {
     if ($user->isModified()) {
         $user->write();
     }
+}
+
+function __(string $string) : string {
+    return $string;
 }
