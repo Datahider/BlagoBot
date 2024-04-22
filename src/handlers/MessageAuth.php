@@ -5,6 +5,7 @@ namespace losthost\BlagoBot\handlers;
 use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
+use losthost\BlagoBot\data\user;
 
 class MessageAuth extends AbstractHandlerMessage {
     
@@ -19,7 +20,7 @@ class MessageAuth extends AbstractHandlerMessage {
         global $b_user;
         $view = new BotView(Bot::$api, Bot::$user->id, Bot::$language_code);
         
-        if (!$b_user->is_admin) {
+        if ($b_user->access_level != user::AL_ADMIN) {
             $view->show('tpl_admins_only');
             return true;
         }

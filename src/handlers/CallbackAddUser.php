@@ -26,13 +26,16 @@ class CallbackAddUser extends AbstractHandlerCallback {
         
         switch ($m[1]) {
             case 'admin': 
-                addBUser($m[2], true);
+                addBUser($m[2], user::AL_ADMIN);
                 $view->show('tpl_added_admin', null, [], $callback_query->getMessage()->getMessageId());
                 break;
             case 'user':
-                addBUser($m[2], false);
+                addBUser($m[2], user::AL_USER);
                 $view->show('tpl_added_user', null, [], $callback_query->getMessage()->getMessageId());
                 break;
+            case 'restricted':
+                addBUser($m[2], user::AL_RESTRICTED);
+                $view->show('tpl_added_restricted', null, [], $callback_query->getMessage()->getMessageId());
             case 'none':
                 $user = new user(['tg_user' => $m[2]], true);
                 if (!$user->isNew()) {

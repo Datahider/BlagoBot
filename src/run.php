@@ -18,6 +18,10 @@ use losthost\BlagoBot\data\report;
 use losthost\BlagoBot\data\report_param;
 use losthost\BlagoBot\data\report_param_value;
 
+use losthost\BlagoBot\data\x_object;
+use losthost\BlagoBot\data\x_omsu;
+use losthost\BlagoBot\data\x_year_data;
+
 require 'vendor/autoload.php';
 require 'src/functions.php';
 
@@ -27,6 +31,10 @@ Bot::setup();
 
 menu::initDataStructure();
 user::initDataStructure();
+x_omsu::initDataStructure();
+x_object::initDataStructure();
+x_year_data::initDataStructure();
+
 report::initDataStructure();
 report_param::initDataStructure();
 report_param_value::initDataStructure();

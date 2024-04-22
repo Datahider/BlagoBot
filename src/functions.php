@@ -11,17 +11,32 @@ function initBUser() {
     $b_user = new user(['tg_user' => Bot::$user->id], true);
     
     if ($b_user->isNew()) {
-        $b_user->is_admin = $b_user->tg_user == Bot::param('superadmin', null) ? true : false;
-        $b_user->is_authorized = $b_user->is_admin ? true : false;
-        $b_user->auth_code = Pass::generate(5, Pass::CLEAN_DIGITS);
+        if ($b_user->tg_user == Bot::param('superadmin', null)) {
+            $b_user->access_level = 'admin';
+        } else {
+            $b_user->access_level = 'unknown';
+        }
         $b_user->write();
     }
 }
 
-function addBUser($tg_id, $as_admin = false) {
+function addBUser($tg_id, $access_level) {
     $user = new user(['tg_user' => $tg_id], true);
-    $user->is_admin = $as_admin;
-    $user->is_authorized = true;
+    
+    switch ($access_level) {
+        case user::AL_ADMIN:
+            $user->access_level = user::AL_ADMIN;
+            break;
+        case user::AL_USER:
+            $user->access_level = user::AL_USER;
+            break;
+        case user::AL_RESTRICTED:
+            $user->access_level = user::AL_RESTRICTED;
+            break;
+        default:
+            throw new \Exception("Unknown access level $access_level");
+    }
+
     if ($user->isModified()) {
         $user->write();
     }

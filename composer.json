@@ -12,11 +12,15 @@
         "losthost/db": "^3",
         "losthost/telle": "^4",
         "losthost/passg": "v1.1.0",
-        "losthost/bot-view": "v2.2.3"
+        "losthost/bot-view": "v2.2.3",
+        "phpoffice/phpspreadsheet": "^2"
     },
     "autoload": {
         "psr-4": {
             "losthost\\BlagoBot\\": "src/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10"
     }
 }
