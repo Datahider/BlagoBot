@@ -5,6 +5,7 @@ namespace losthost\BlagoBot\reports;
 use losthost\BlagoBot\data\report;
 use losthost\BlagoBot\data\report_param_value;
 use losthost\telle\Bot;
+use losthost\BlagoBot\data\x_omsu;
 use Exception;
 
 class ReportParams {
@@ -30,12 +31,21 @@ class ReportParams {
             }
             
             foreach ($session_params[$param->name] as $value_id) {
-                $value = new report_param_value(['id' => $value_id]);
-                $this->params[$param->name]['values'][] = [
-                    'id' => $value->id, 
-                    'title' => $value->title, 
-                    'value' => $value->value
-                ];
+                if ($param->value_set == 'omsu') {
+                    $value = new x_omsu(['id' => $value_id]);
+                    $this->params[$param->name]['values'][] = [
+                        'id' => $value->id, 
+                        'title' => $value->name, 
+                        'value' => $value->name
+                    ];
+                } else {
+                    $value = new report_param_value(['id' => $value_id]);
+                    $this->params[$param->name]['values'][] = [
+                        'id' => $value->id, 
+                        'title' => $value->title, 
+                        'value' => $value->value
+                    ];
+                }
             }
         }
     }

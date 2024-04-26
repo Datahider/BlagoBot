@@ -26,7 +26,14 @@ class report_param extends DBObject {
     ];
     
     public function valuesArray() {
-        $values = new DBList(report_param_value::class, "value_set = ? AND is_active = 1 ORDER BY sort, title", $this->value_set);
+        $value_set = $this->value_set;
+        switch ($value_set) {
+            case 'omsu': 
+                $values = new DBList(x_omsu::class, '1 ORDER BY name', []);
+                break;
+            default:
+                $values = new DBList(report_param_value::class, "value_set = ? AND is_active = 1 ORDER BY sort, title", $this->value_set);
+        }
         return $values->asArray();
     }
 }

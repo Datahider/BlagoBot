@@ -5,6 +5,9 @@ namespace losthost\BlagoBot\view;
 use losthost\BlagoBot\reports\AbstractReport;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
+use losthost\BlagoBot\service\Exporter;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use CURLFile;
 use stdClass;
 
 class ReportResultView {
@@ -24,6 +27,22 @@ class ReportResultView {
             $view->show('tpl_report_view', null, ['result' => $this->result], $message_id);
         } else {
             $view->show('tpl_report_view', null, ['result' => $this->result], $message_id);
+        }
+        
+        if ($this->result->result_type == AbstractReport::RESULT_TYPE_XLSX) {
+            $exporter = new Exporter();
+            $spreadsheet = $exporter->export($this->result);
+            $writer = IOFactory::createWriter($spreadsheet, IOFactory::WRITER_XLSX);
+            $tmp_dir = tempnam('/tmp', 'Rpt');
+            unlink($tmp_dir);
+            mkdir($tmp_dir);
+            $report_file = "$tmp_dir/report.xlsx";
+            $writer->save($report_file);
+            
+            $file_to_send = new \CURLFile($report_file);
+            Bot::$api->sendDocument(Bot::$chat->id, $file_to_send, 'Результат отчета');
+            $file_to_send = null;
+            unlink($report_file);
         }
         
         Bot::$session->set('command', null);

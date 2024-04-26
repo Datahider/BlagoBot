@@ -13,7 +13,7 @@ class CallbackAddUser extends AbstractHandlerCallback {
     
     protected function check(\TelegramBot\Api\Types\CallbackQuery &$callback_query): bool {
         global $b_user;
-        if ($b_user->is_admin && preg_match("/^add_as_/", $callback_query->getData())) {
+        if ($b_user->access_level == user::AL_ADMIN && preg_match("/^add_as_/", $callback_query->getData())) {
             return true;
         }
         return false;
@@ -36,6 +36,7 @@ class CallbackAddUser extends AbstractHandlerCallback {
             case 'restricted':
                 addBUser($m[2], user::AL_RESTRICTED);
                 $view->show('tpl_added_restricted', null, [], $callback_query->getMessage()->getMessageId());
+                break;
             case 'none':
                 $user = new user(['tg_user' => $m[2]], true);
                 if (!$user->isNew()) {

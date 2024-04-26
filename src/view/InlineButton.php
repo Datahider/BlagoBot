@@ -7,6 +7,7 @@ use losthost\BlagoBot\data\report;
 use losthost\BlagoBot\data\report_param;
 use losthost\BlagoBot\data\report_param_value;
 use losthost\telle\Bot;
+use losthost\BlagoBot\data\x_omsu;
 use Exception;
 
 class InlineButton {
@@ -27,7 +28,7 @@ class InlineButton {
 
 
     // Interface
-    public function __construct(menu|report|report_param|report_param_value|string $object, ?report_param $param=null) {
+public function __construct(menu|report|report_param|report_param_value|x_omsu|string $object, ?report_param $param=null) {
         if (is_a($object, menu::class)) {
             $this->type = self::MB_SUBMENU;
         } elseif (is_a($object, report::class)) {
@@ -35,6 +36,8 @@ class InlineButton {
         } elseif (is_a($object, report_param::class)) {
             $this->type = self::MB_PARAM;
         } elseif (is_a($object, report_param_value::class)) {
+            $this->type = self::MB_VALUE;
+        } elseif (is_a($object, x_omsu::class)) {
             $this->type = self::MB_VALUE;
         } elseif (is_string($object)) {
             $this->setupByString($object);
@@ -122,7 +125,7 @@ class InlineButton {
         
         switch ($this->type) {
             case self::MB_VALUE:
-                return $this->getValueIcon(). $this->icon_delimiter. $this->object->title;
+                return $this->getValueIcon(). $this->icon_delimiter. $this->getObjectTitle();
             case self::MB_PARAM:
                 $text = $this->getParamIcon();
                 return $text ? $text. $this->icon_delimiter. $this->object->title : $this->object->title;
@@ -150,6 +153,13 @@ class InlineButton {
         }
         
         return '';
+    }
+    
+    protected function getObjectTitle() {
+        if (is_a($this->object, x_omsu::class)) {
+            return $this->object->name;
+        } 
+        return $this->object->title;
     }
     
 }

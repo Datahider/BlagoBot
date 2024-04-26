@@ -42,4 +42,8 @@ class DummyReport extends AbstractReport {
     protected function newLine($count, $param_name, $param_value) {
         return [$count, $param_name, $param_value];
     }
+
+    protected function resultType(): int {
+        return static::RESULT_TYPE_SHOW;
+    }
 }

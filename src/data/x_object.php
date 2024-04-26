@@ -26,6 +26,7 @@ class x_object extends DBObject {
         'type' => 'VARCHAR(64)',
         'period' => 'VARCHAR(64)',
         'open_date_planned' => 'DATETIME',
+        'open_date_fact' => 'DATETIME',
 //        'object_count' => 'INT(11)',
 //        'rg_date' => 'DATETIME',
 //        'nmck_date' => 'DATETIME',
@@ -37,6 +38,17 @@ class x_object extends DBObject {
 //        'contract_number' => 'VARCHAR(32)',
 //        'contract_date' => 'DATETIME',
 //        'href' => 'VARCHAR(512)',
+        'purchase_level' => 'ENUM("1","2")',
+        'moge_in_plan' => 'DATETIME',
+        'moge_out_plan' => 'DATETIME',
+        'moge_in_fact' => 'DATETIME',
+        'moge_out_fact' => 'DATETIME',
+        'rgmin_in_plan' => 'DATETIME',
+        'rgmin_in_fact' => 'DATETIME',
+        'psmr_plan' => 'DATETIME',
+        'psmr_fact' => 'DATETIME',
+        'ksmr_plan' => 'DATETIME',
+        'ksmr_fact' => 'DATETIME',
         'PRIMARY KEY' => 'id'
     ];
 }
