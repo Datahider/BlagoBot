@@ -13,7 +13,8 @@
         "losthost/telle": "^4",
         "losthost/passg": "v1.1.0",
         "losthost/bot-view": "v2.2.3",
-        "phpoffice/phpspreadsheet": "^2"
+        "phpoffice/phpspreadsheet": "^2",
+        "mpdf/mpdf": "v8.2.3"
     },
     "autoload": {
         "psr-4": {

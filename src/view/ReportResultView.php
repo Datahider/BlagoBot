@@ -7,6 +7,8 @@ use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\BlagoBot\service\Exporter;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use CURLFile;
 use stdClass;
 
@@ -33,10 +35,15 @@ class ReportResultView {
             $exporter = new Exporter();
             $spreadsheet = $exporter->export($this->result);
             $writer = IOFactory::createWriter($spreadsheet, IOFactory::WRITER_XLSX);
+            $writer = new Mpdf($spreadsheet);
+            
+            $writer->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
+            
             $tmp_dir = tempnam('/tmp', 'Rpt');
             unlink($tmp_dir);
             mkdir($tmp_dir);
             $report_file = "$tmp_dir/report.xlsx";
+            $report_file = "$tmp_dir/report.pdf";
             $writer->save($report_file);
             
             $file_to_send = new \CURLFile($report_file);

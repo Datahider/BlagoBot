@@ -3,6 +3,7 @@
 namespace losthost\BlagoBot\reports;
 
 use losthost\telle\Bot;
+use losthost\BlagoBot\service\ReportSummary;
 use Exception;
 use stdClass;
 
@@ -14,6 +15,8 @@ abstract class AbstractReport {
     
     abstract protected function reportColumns() : array;
     abstract protected function reportData($params) : array;
+    abstract protected function reportSummary($params) : ReportSummary;
+
     abstract protected function resultType() : int;
 
     abstract protected function checkParamErrors($params) : false|array;
@@ -36,6 +39,7 @@ abstract class AbstractReport {
                 'columns' => $this->reportColumns(),
                 'data' => $this->reportData($report_params),
                 'result_type' => $this->resultType(),
+                'summary' => $this->reportSummary($report_params)
                     
             ];
         } catch (Exception $ex) {

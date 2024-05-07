@@ -18,6 +18,7 @@ use losthost\BlagoBot\data\x_contract_data;
 use losthost\BlagoBot\data\x_contragent;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use losthost\DB\DB;
+use losthost\telle\model\DBBotParam;
 use Exception;
 
 use function \losthost\BlagoBot\__;
@@ -25,6 +26,7 @@ use function \losthost\BlagoBot\__;
 class DBUpdater {
 
     const WORKSHEET_NAME = 'База текущая';
+    const GPSHEET_NAME = 'Госпрограмма';
     
     private $year_cells = [
         27 => ['year' => 0, 'type' => x_year_data::TYPE_LIMIT_FB],
@@ -125,11 +127,41 @@ class DBUpdater {
         $spreadsheet = IOFactory::load($file_path, IReader::READ_DATA_ONLY, [IOFactory::READER_XLS, IOFactory::READER_XLSX]);
         $sheet = $spreadsheet->getSheetByName(static::WORKSHEET_NAME);
         $this->updateDB($sheet);
-
-}
-    
-    protected function updateDB($sheet) {
         
+        $sheet_gp = $spreadsheet->getSheetByName(static::GPSHEET_NAME);
+        $this->updateGP($sheet_gp);
+    }
+    
+    protected function updateGP(?Worksheet $sheet) {
+        
+        $column = 1;
+        $row = 6;
+        $gp_date = new DBBotParam('gp_date');
+        
+        if (!$sheet) {
+            return;
+        }
+        
+        while (true) {
+            $cell = $sheet->getCell([$column, $row]);
+            
+            $next_value = $cell->getValue();
+            
+            if (!$next_value) {
+                $gp_date->value = $value;
+                return;
+            }
+            
+            $value = $next_value;
+            $row++;
+        }
+    }
+    
+    protected function updateDB(?Worksheet $sheet) {
+        
+        if (!$sheet) {
+            throw new \Exception('Не найден лист '. self::WORKSHEET_NAME);
+        }
         $this->truncateDB();
         $this->loadDB($sheet);
         
@@ -137,7 +169,7 @@ class DBUpdater {
     
     protected function truncateDB() {
         
-        $sql = 'TRUNCATE TABLE [x_object]; TRUNCATE TABLE [x_year_data]; TRUNCATE TABLE [x_contract];';
+        $sql = 'TRUNCATE TABLE [x_object]; TRUNCATE TABLE [x_year_data]; TRUNCATE TABLE [x_contract]; TRUNCATE TABLE [x_contract_data];';
         DB::exec($sql);
         
     }

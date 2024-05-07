@@ -6,6 +6,7 @@ use losthost\DB\DBView;
 use losthost\DB\DB;
 use losthost\telle\Bot;
 use losthost\templateHelper\Template;
+use losthost\BlagoBot\service\ReportSummary;
 
 use function losthost\BlagoBot\__;
 
@@ -35,6 +36,10 @@ class ReportStatusSender extends AbstractReport {
 
     protected function resultType(): int {
         return static::RESULT_TYPE_SHOW;
+    }
+    
+    protected function reportSummary($params): ReportSummary {
+        return new ReportSummary('Отправка СМС о статусе', date_create_immutable(), $params);
     }
     
     protected function prepareAndSendMessages($params) : array {

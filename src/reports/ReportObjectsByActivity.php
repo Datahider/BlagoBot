@@ -7,12 +7,12 @@ use losthost\DB\DB;
 use losthost\BlagoBot\service\xls\Column;
 use losthost\BlagoBot\service\xls\CellFormat;
 use losthost\BlagoBot\service\ReportSummary;
-use losthost\BlagoBot\data\x_omsu;
+use losthost\BlagoBot\data\x_category;
 use losthost\DB\DBList;
 use losthost\BlagoBot\service\TotalPercentage;
 use losthost\BlagoBot\service\TotalTrickyPercentage;
 
-class ReportObjectsByOmsu extends AbstractReport {
+class ReportObjectsByActivity extends AbstractReport {
     
     const ID_LIMIT_DETAILS = 15;
     const ID_NMCK = 16;
@@ -73,9 +73,9 @@ class ReportObjectsByOmsu extends AbstractReport {
         $totals_format = [CellFormat::GeneralTotal, CellFormat::GeneralSubtotal];
         $columns = [
             new Column('№ пп', 0, CellFormat::GeneralTH, CellFormat::NumberingTD, $totals_format),
-            new Column('ОМСУ', 15, CellFormat::GeneralTH, $ftd, $totals_format, false, null, 1),
+            new Column('Категория', 20, CellFormat::GeneralTH, $ftd, $totals_format, false, null, 1),
+            new Column('ОМСУ', 15, CellFormat::GeneralTH, $ftd, $totals_format),
             new Column('Наименование объекта', 50, CellFormat::GeneralTH, $ftd, $totals_format),
-            new Column('Категория', 20, CellFormat::GeneralTH, $ftd, $totals_format),
         ];
         
         $column_total_limit = new Column('Лимит Всего', $num_width, CellFormat::GeneralTH, $fsd, $totals_format, true);
@@ -196,7 +196,7 @@ class ReportObjectsByOmsu extends AbstractReport {
         
         $sql = $this->getSqlQuery();
         $sql = str_replace('{:current_year}', date('Y'), $sql);
-        $sql = str_replace('{:omsu_ids}', implode(',', $params['omsu']), $sql);
+        $sql = str_replace('{:category_ids}', implode(',', $params['activity']), $sql);
         
         if (!$this->limit_details) {
             $sql = preg_replace("/\/\*\* limit details \>\> \*\*\/.*?\/\*\* \<\< limit details \*\*\//s", '', $sql);
@@ -402,9 +402,9 @@ class ReportObjectsByOmsu extends AbstractReport {
                     object_id;	
 
             CREATE TEMPORARY TABLE vt_result SELECT 
+                    category.name AS category,
                     omsu.name AS omsu,
                     object.name AS name,
-                    category.name AS category,
                     CASE
                             WHEN IFNULL(limits.fb_limit, 0) + IFNULL(limits.bm_limit, 0) + IFNULL(limits.bmo_limit, 0) + IFNULL(limits.omsu_limit, 0) = 0 THEN NULL
                             ELSE (IFNULL(limits.fb_limit, 0) + IFNULL(limits.bm_limit, 0) + IFNULL(limits.bmo_limit, 0) + IFNULL(limits.omsu_limit, 0)) / 1000
@@ -516,11 +516,11 @@ class ReportObjectsByOmsu extends AbstractReport {
                     LEFT JOIN vt_contract_agregates AS contract ON contract.object_id = object.id
             WHERE
                     IFNULL(limits.fb_limit, 0) + IFNULL(limits.bm_limit, 0) + IFNULL(limits.bmo_limit, 0) + IFNULL(limits.omsu_limit, 0) > 0
-                    AND omsu.id IN ({:omsu_ids})
+                    AND category.id IN ({:category_ids})
             GROUP BY 
-                    omsu.name, object.name, category.name
+                    category.name, omsu.name, object.name 
             ORDER BY 
-                    omsu.name, total_limit DESC, object.name;
+                    category.name, total_limit DESC, object.name;
         
             SET @row_number = 0;
         
@@ -534,15 +534,15 @@ class ReportObjectsByOmsu extends AbstractReport {
 
     protected function reportSummary($params): ReportSummary {
         $omsus = [];
-        foreach ($params['omsu'] as $id) {
-            $omsu = new x_omsu(['id' => $id]);
+        foreach ($params['activity'] as $id) {
+            $omsu = new x_category(['id' => $id]);
             $omsus[] = $omsu->name;
         }
         return new ReportSummary(
                 'Статус реализации мероприятий по ГП "Формирование современной комфортной городской среды" в 2024 году', 
                 date_create_immutable(), 
                 [
-                    ['title' => 'ОМСУ', 'value' => implode(', ', $omsus)]
+                    ['title' => 'Мероприятия', 'value' => implode(', ', $omsus)]
                 ]
                 );
                 

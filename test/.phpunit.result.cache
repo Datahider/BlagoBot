@@ -1,1 +1,1 @@
-{"version":1,"defects":{"losthost\\BlagoBot\\service\\DBUpdaterTest::testLoadDB":5,"losthost\\BlagoBot\\service\\DBUpdater2Test::testLoadDB":5},"times":{"losthost\\BlagoBot\\service\\DBUpdaterTest::testLoadDB":144.456,"losthost\\BlagoBot\\service\\DBUpdater2Test::testLoadDB":1.928}}
+{"version":1,"defects":{"losthost\\BlagoBot\\service\\DBUpdaterTest::testLoadDB":5,"losthost\\BlagoBot\\service\\DBUpdater2Test::testLoadDB":5},"times":{"losthost\\BlagoBot\\service\\DBUpdaterTest::testLoadDB":174.204,"losthost\\BlagoBot\\service\\DBUpdater2Test::testLoadDB":3.155}}

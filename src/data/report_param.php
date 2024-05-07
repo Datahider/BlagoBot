@@ -31,6 +31,19 @@ class report_param extends DBObject {
             case 'omsu': 
                 $values = new DBList(x_omsu::class, '1 ORDER BY name', []);
                 break;
+            case 'activity':
+                $values = new DBList(x_category::class, <<<FIN
+                        id IN (
+                            SELECT DISTINCT
+                                    category.id
+                            FROM 
+                                    [x_category] AS category
+                                    LEFT JOIN [x_object] AS object ON object.x_category_id = category.id
+                                    LEFT JOIN [x_year_data] AS year_data ON year_data.x_object_id = object.id AND year_data.year = ?
+                            WHERE year_data.id IS NOT NULL
+                        ) ORDER BY name
+                        FIN, [2024]); // TODO - Заменить год на текущий
+                break;
             default:
                 $values = new DBList(report_param_value::class, "value_set = ? AND is_active = 1 ORDER BY sort, title", $this->value_set);
         }

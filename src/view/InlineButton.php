@@ -8,6 +8,7 @@ use losthost\BlagoBot\data\report_param;
 use losthost\BlagoBot\data\report_param_value;
 use losthost\telle\Bot;
 use losthost\BlagoBot\data\x_omsu;
+use losthost\BlagoBot\data\x_category;
 use Exception;
 
 class InlineButton {
@@ -28,7 +29,7 @@ class InlineButton {
 
 
     // Interface
-public function __construct(menu|report|report_param|report_param_value|x_omsu|string $object, ?report_param $param=null) {
+public function __construct(menu|report|report_param|report_param_value|x_omsu|x_category|string $object, ?report_param $param=null) {
         if (is_a($object, menu::class)) {
             $this->type = self::MB_SUBMENU;
         } elseif (is_a($object, report::class)) {
@@ -38,6 +39,8 @@ public function __construct(menu|report|report_param|report_param_value|x_omsu|s
         } elseif (is_a($object, report_param_value::class)) {
             $this->type = self::MB_VALUE;
         } elseif (is_a($object, x_omsu::class)) {
+            $this->type = self::MB_VALUE;
+        } elseif (is_a($object, x_category::class)) {
             $this->type = self::MB_VALUE;
         } elseif (is_string($object)) {
             $this->setupByString($object);
@@ -157,6 +160,8 @@ public function __construct(menu|report|report_param|report_param_value|x_omsu|s
     
     protected function getObjectTitle() {
         if (is_a($this->object, x_omsu::class)) {
+            return $this->object->name;
+        } elseif (is_a($this->object, x_category::class)) {
             return $this->object->name;
         } 
         return $this->object->title;

@@ -14,8 +14,12 @@ class DBUpdater2 extends DBUpdater {
         $this->loadDB($sheet);
     }
     
-    protected function loadDB(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet) {
+    protected function loadDB(?\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet) {
 
+        if (!$sheet) {
+            throw new \Exception('Не найден лист '. self::WORKSHEET_NAME);
+        }
+        
         $row_iterator = $sheet->getRowIterator(4);
         
         foreach ($row_iterator as $row) {

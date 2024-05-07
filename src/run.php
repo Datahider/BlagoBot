@@ -6,7 +6,8 @@ use losthost\BotView\BotView;
 use losthost\BlagoBot\handlers\PreMessage;
 use losthost\BlagoBot\handlers\MessageAuth;
 use losthost\BlagoBot\handlers\CommandStart;
-use losthost\BlagoBot\handlers\MessageFile;
+use losthost\BlagoBot\handlers\MessageFile2;
+use losthost\BlagoBot\handlers\CommandUpdate;
 
 use losthost\BlagoBot\handlers\PreCallback;
 use losthost\BlagoBot\handlers\CallbackAddUser;
@@ -46,7 +47,8 @@ Bot::param('topmenu_id', 1);
 Bot::addHandler(PreMessage::class);
 Bot::addHandler(MessageAuth::class);
 Bot::addHandler(CommandStart::class);
-Bot::addHandler(MessageFile::class);
+Bot::addHandler(MessageFile2::class);
+Bot::addHandler(CommandUpdate::class);
 
 
 Bot::addHandler(PreCallback::class);

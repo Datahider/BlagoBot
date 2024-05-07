@@ -8,6 +8,7 @@ use losthost\BlagoBot\data\x_category;
 
 require '../vendor/autoload.php';
 require '../etc/bot_config.php';
+require '../src/functions.php';
 
 DB::connect($db_host, $db_user, $db_pass, $db_name, $db_prefix);
 
