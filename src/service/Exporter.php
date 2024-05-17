@@ -116,7 +116,7 @@ class Exporter {
             if ($this->last_data_group_value == self::SECRET) {
                 $this->last_data_group_value = $row_data[$this->data_group_column_index];
             }
-            $subtotals = $subtotals || $this->printTotals($row_data);
+            $subtotals = $this->printTotals($row_data) || $subtotals;
             $this->current_row++;
             foreach ($row_data as $cc => $value) {
                 $cell = $this->sheet->getCell([$cc+1, $this->current_row]);

@@ -1,6 +1,21 @@
-<b>Уважаемый <?=$data['user_name'];?> <?=$data['user_fathers_name'];?>!</b>
+<?php
+    $last_digit = substr($data['total_objects'], -1);
+    switch ($last_digit) {
+    case '1':
+        $objects_end = '';
+        break;
+    case '2':
+    case '3':
+    case '4':
+        $objects_end = 'а';
+        break;
+    default:
+        $objects_end = 'ов';
+    }
 
-На городской округ <?=$data['omsu_name'];?> в <?=$data['current_year'];?> году в рамках госпрограммы «Формирование современной комфортной городской среды» предусмотрено финансирование в размере <b><?= number_format($data['total_limit'], 0, '', ' ');?> тыс. руб.</b> на <?=$data['total_objects'];?> объектов.
+?><b>Уважаемый <?=$data['user_name'];?> <?=$data['user_fathers_name'];?>!</b>
+
+На городской округ <?=$data['omsu_name'];?> в <?=$data['current_year'];?> году в рамках госпрограммы «Формирование современной комфортной городской среды» предусмотрено финансирование в размере <b><?= number_format($data['total_limit'], 0, '', ' ');?> тыс. руб.</b> на <?=$data['total_objects'];?> объект<?=$objects_end;?>.
 
 На <b><?=date_create($data['current_date'])->format('d.m.Y');?></b> городской округ <?=$data['omsu_name'];?> находится в красной зоне по просрочке плановых сроков по:
 <?php

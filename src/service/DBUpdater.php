@@ -251,8 +251,11 @@ class DBUpdater {
             }
             
             // Contract
-            $contragent = new x_contragent(['inn' => $cells[94], 'name' => $cells[93]], true);
+            $contragent = new x_contragent(['inn' => $cells[94]], true);
+            $contragent->name = $cells[93];
             if ($contragent->isNew() && 'x' != $contragent->inn && '' != $contragent->inn) {
+                $contragent->write();
+            } elseif ($contragent->isModified()) {
                 $contragent->write();
             }
             

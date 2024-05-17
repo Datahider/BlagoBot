@@ -2,10 +2,15 @@
 
 $headers = [
     'info' => 'ℹ️ <b>Информационное сообщение</b>',
-    'error' => '🛑 <b>Ошибка</b>'
+    'error' => '🛑 <b>Ошибка</b>',
+    'custom' => ''
 ];
 
 $header = isset($headers[$type]) ? $headers[$type] : headers['error'];
 
-echo "$header\n\n$text";
+if ($type == 'custom') {
+    echo $text;
+} else {
+    echo "$header\n\n$text";
+}
 

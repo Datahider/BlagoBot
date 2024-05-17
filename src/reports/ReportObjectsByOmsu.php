@@ -281,6 +281,7 @@ class ReportObjectsByOmsu extends AbstractReport {
             /* CALCULATE USED BY CONTRACTS */   
             CREATE TEMPORARY TABLE vt_contract_data SELECT
                     contract.id AS contract_id,
+                    contract.status AS contract_status,
                     contract.x_object_id AS object_id,
                     SUM(nmck_fb.value) AS fb_nmck,
                     SUM(nmck_bm.value) AS bm_nmck,
@@ -324,12 +325,16 @@ class ReportObjectsByOmsu extends AbstractReport {
                     LEFT JOIN [x_contract_data] AS payment_bmo ON contract.id = payment_bmo.x_contract_id AND payment_bmo.type = "Оплата БМО" AND payment_bmo.year = {:current_year}
                     LEFT JOIN [x_contract_data] AS payment_omsu ON contract.id = payment_omsu.x_contract_id AND payment_omsu.type = "Оплата ОМСУ" AND payment_omsu.year = {:current_year}
                     LEFT JOIN [x_contract_data] AS payment_omsu2 ON contract.id = payment_omsu2.x_contract_id AND payment_omsu2.type = "Оплата ОМСУ2" AND payment_omsu2.year = {:current_year}
+            WHERE
+                    contract.status <> "Прочее"
             GROUP BY 
                     contract.id
             HAVING 
                     NOT (
                             fb_nmck IS NULL AND bm_nmck IS NULL AND bmo_nmck IS NULL AND omsu_nmck IS NULL AND omsu2_nmck IS NULL
                             AND fb_contract IS NULL AND bm_contract IS NULL AND bmo_contract IS NULL AND omsu_contract IS NULL AND omsu2_contract IS NULL
+                            AND fb_order IS NULL AND bm_order IS NULL AND bmo_order IS NULL AND omsu_order IS NULL AND omsu2_order IS NULL
+                            AND fb_payment IS NULL AND bm_payment IS NULL AND bmo_payment IS NULL AND omsu_payment IS NULL AND omsu2_payment IS NULL
                     );
 
             /* CALCULATE USED BY CONTRACT SUMS */
@@ -337,30 +342,45 @@ class ReportObjectsByOmsu extends AbstractReport {
                     contract_id,
                     object_id,
                     CASE 
-                            WHEN fb_contract IS NULL THEN fb_nmck
+                            WHEN contract_status = "Закупки" THEN fb_nmck
                             ELSE NULL
                     END AS fb_nmck,
                     CASE 
-                            WHEN bm_contract IS NULL THEN bm_nmck
+                            WHEN contract_status = "Закупки" THEN bm_nmck
                             ELSE NULL
                     END AS bm_nmck,
                     CASE 
-                            WHEN bmo_contract IS NULL THEN bmo_nmck
+                            WHEN contract_status = "Закупки" THEN bmo_nmck
                             ELSE NULL
                     END AS bmo_nmck,
                     CASE 
-                            WHEN omsu_contract IS NULL THEN omsu_nmck
+                            WHEN contract_status = "Закупки" THEN omsu_nmck
                             ELSE NULL
                     END AS omsu_nmck,
                     CASE 
-                           WHEN omsu2_contract IS NULL THEN omsu2_nmck
-                           ELSE NULL
+                            WHEN contract_status = "Закупки" THEN omsu2_nmck
+                            ELSE NULL
                     END AS omsu2_nmck,
-                    fb_contract,
-                    bm_contract,
-                    bmo_contract,
-                    omsu_contract,	
-                    omsu2_contract,	
+                    CASE 
+                            WHEN contract_status = "Контракт" THEN fb_contract
+                            ELSE NULL
+                    END AS fb_contract,
+                    CASE 
+                            WHEN contract_status = "Контракт" THEN bm_contract
+                            ELSE NULL
+                    END AS bm_contract,
+                    CASE 
+                            WHEN contract_status = "Контракт" THEN bmo_contract
+                            ELSE NULL
+                    END AS bmo_contract,
+                    CASE 
+                            WHEN contract_status = "Контракт" THEN omsu_contract
+                            ELSE NULL
+                    END AS omsu_contract,
+                    CASE 
+                            WHEN contract_status = "Контракт" THEN omsu2_contract
+                            ELSE NULL
+                    END AS omsu2_contract,
                     fb_order,
                     bm_order,
                     bmo_order,

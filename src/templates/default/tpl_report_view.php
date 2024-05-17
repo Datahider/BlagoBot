@@ -7,7 +7,7 @@ if ($result->ok) {
             echo "Обработка завершена. Результаты обработки:\n\n";
             foreach ($result->data as $line) {
                 foreach ($result->columns as $key => $column) {
-                    echo "$column: <b>$line[$key]</b>\n";
+                    echo "$column: $line[$key]\n";
                 }
                 echo "\n";
             }

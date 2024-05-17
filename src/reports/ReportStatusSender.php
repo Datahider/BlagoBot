@@ -27,7 +27,7 @@ class ReportStatusSender extends AbstractReport {
     }
 
     protected function reportColumns(): array {
-        return [__('ОМСУ'), __('Адресат'), __('Статус отправки')];
+        return [__('ОМСУ'), __('Адресат'), __('Статус')];
     }
 
     protected function reportData($params): array {
@@ -59,13 +59,13 @@ class ReportStatusSender extends AbstractReport {
         foreach ($omsu_data as $data) {
             
             if ($data['total_delays'] == 0) {
-                if (isset($params['omsu'])) {
+//                if (isset($params['omsu'])) {
                     $result[] = [
                         $data['omsu_name'],
                         'Не отправлялось',
                         '🟢 Риски отстутсвуют'
                     ];
-                }
+//                }
                 continue;
             }
             
@@ -145,7 +145,8 @@ class ReportStatusSender extends AbstractReport {
                         $omsu_where
                         AND object.moge_in_plan IS NOT NULL 
                         AND object.moge_in_plan < :current_date
-
+                        AND object.moge_in_fact IS NULL
+                    
                     UNION ALL
 
                     SELECT 
@@ -160,6 +161,7 @@ class ReportStatusSender extends AbstractReport {
                         $omsu_where
                         AND object.moge_out_plan IS NOT NULL 
                         AND object.moge_out_plan < :current_date
+                        AND object.moge_out_fact IS NULL
 
                     UNION ALL
 
@@ -176,6 +178,7 @@ class ReportStatusSender extends AbstractReport {
                         AND object.rgmin_in_plan IS NOT NULL 
                         AND object.rgmin_in_plan < :current_date
                         AND object.purchase_level = 2
+                        AND object.rgmin_in_fact IS NULL
 
                     UNION ALL
 
@@ -192,6 +195,7 @@ class ReportStatusSender extends AbstractReport {
                         AND object.rgmin_in_plan IS NOT NULL 
                         AND object.rgmin_in_plan < :current_date
                         AND object.purchase_level = 1
+                        AND object.rgmin_in_fact IS NULL
 
                     UNION ALL
 
@@ -207,6 +211,7 @@ class ReportStatusSender extends AbstractReport {
                         $omsu_where
                         AND object.psmr_plan IS NOT NULL 
                         AND object.psmr_plan < :current_date
+                        AND object.psmr_fact IS NULL
 
                     UNION ALL
 
@@ -222,6 +227,7 @@ class ReportStatusSender extends AbstractReport {
                         $omsu_where
                         AND object.ksmr_plan IS NOT NULL 
                         AND object.ksmr_plan < :current_date
+                        AND object.ksmr_fact IS NULL
 
                     UNION ALL
 
@@ -237,6 +243,7 @@ class ReportStatusSender extends AbstractReport {
                         $omsu_where
                         AND object.open_date_planned IS NOT NULL 
                         AND object.open_date_planned < :current_date
+                        AND object.open_date_fact IS NULL
 
                     END;
         } while (false); // set $sql_omsu and $sql_objects

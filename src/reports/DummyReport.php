@@ -5,6 +5,7 @@ namespace losthost\BlagoBot\reports;
 use losthost\telle\Bot;
 use losthost\BlagoBot\reports\AbstractReport;
 use losthost\BlagoBot\reports\ReportParams;
+use losthost\BlagoBot\service\ReportSummary;
 
 class DummyReport extends AbstractReport {
     
@@ -45,5 +46,13 @@ class DummyReport extends AbstractReport {
 
     protected function resultType(): int {
         return static::RESULT_TYPE_SHOW;
+    }
+
+    protected function reportSummary($params): ReportSummary {
+    
+        return new ReportSummary(
+                'Отчет-пустышка', 
+                date_create_immutable(), 
+                []);
     }
 }

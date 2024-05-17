@@ -4,6 +4,8 @@ namespace losthost\BlagoBot\handlers;
 
 use losthost\telle\abst\AbstractHandlerCallback;
 use losthost\BlagoBot\data\user;
+use losthost\BotView\BotView;
+use losthost\telle\Bot;
 
 use function \losthost\BlagoBot\initBUser;
 
