@@ -7,6 +7,8 @@ use losthost\BlagoBot\view\MenuView;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\BlagoBot\data\menu;
+use losthost\BlagoBot\service\AccessChecker;
+use losthost\BlagoBot\data\user;
 
 class CommandStart extends AbstractHandlerMessage {
     
@@ -18,23 +20,20 @@ class CommandStart extends AbstractHandlerMessage {
     }
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
-        
-        global $b_user;
-        
-        switch ($b_user->access_level) {
-            case 'admin':
-            case 'user':
-                $menu = new menu(['id' => Bot::param('topmenu_id', null)]);
-                $view = new MenuView($menu);
-                $view->show(0);
 
-                Bot::$session->set('data', []);
-                break;
-            case 'restricted': 
-                $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
-                $view->show('tpl_receive_only');
+        $menu_access = new AccessChecker([user::AL_ADMIN, user::AL_USER]);
+        $receive_only = new AccessChecker(user::AL_RESTRICTED);
+        
+        if ($menu_access->isAllowed()) {
+            $menu = new menu(['id' => Bot::param('topmenu_id', null)]);
+            $view = new MenuView($menu);
+            $view->show(0);
+
+            Bot::$session->set('data', []);
+        } elseif ($receive_only->isAllowed()) {
+            $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
+            $view->show('tpl_receive_only');
         }
-
         return true;
     }
 }

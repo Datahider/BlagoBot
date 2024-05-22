@@ -6,6 +6,10 @@ use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\BotView\BotView;
 use losthost\telle\Bot;
 use losthost\BlagoBot\handlers\MessageFile;
+use losthost\BlagoBot\service\AccessChecker;
+use losthost\BlagoBot\data\user;
+
+use function \losthost\BlagoBot\showAdminsOnly;
 
 class CommandUpdate extends AbstractHandlerMessage {
     //put your code here
@@ -17,6 +21,13 @@ class CommandUpdate extends AbstractHandlerMessage {
     }
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
+        
+        $access = new AccessChecker(user::AL_ADMIN);
+        if ($access->isDenied()) {
+            showAdminsOnly();
+            return true;
+        }
+        
         $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
         
         MessageFile::setPriority([]);

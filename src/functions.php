@@ -46,3 +46,14 @@ function addBUser($tg_id, $access_level) {
 function __(string $string) : string {
     return $string;
 }
+
+function checkAdmin(?int $message_id=null) {
+    global $b_user;
+    
+    if ($b_user->access_level === user::AL_ADMIN) {
+        return true;
+    } else {
+        showAdminsOnly($message_id);
+        return false;
+    }
+}

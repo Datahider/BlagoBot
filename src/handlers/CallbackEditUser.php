@@ -2,17 +2,19 @@
 
 namespace losthost\BlagoBot\handlers;
 
-use losthost\telle\abst\AbstractHandlerCallback;
+use losthost\BlagoBot\handlers\_Callback;
 use losthost\BlagoBot\data\user;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\BlagoBot\data\x_omsu;
 use losthost\DB\DBList;
+use losthost\BlagoBot\service\AccessChecker;
 
 use function \losthost\BlagoBot\showNoUser;
 use function \losthost\BlagoBot\showUser;
+use function \losthost\BlagoBot\showAdminsOnly;
 
-class CallbackEditUser extends AbstractHandlerCallback {
+class CallbackEditUser extends _Callback {
     
     protected string $command;
     protected user $user;
@@ -29,14 +31,15 @@ class CallbackEditUser extends AbstractHandlerCallback {
 
     protected function handle(\TelegramBot\Api\Types\CallbackQuery &$callback_query): bool {
 
-        global $b_user;
+        $access = new AccessChecker(user::AL_ADMIN);
+        if ($access->isDenied()) {
+            showAdminsOnly($callback_query->getMessage()->getMessageId());
+            return parent::handle($callback_query);
+        }
         
         $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
-            
-        if ($b_user->access_level != 'admin') {
-            $view->show('tpl_info', ['type' => 'error'])
-        } elseif ($this->user->isNew()) {
-            showNoUser($user);
+        if ($this->user->isNew()) {
+            showNoUser($this->user);
         } else {
             switch ($this->command) {
                 case 'role':
@@ -53,14 +56,23 @@ class CallbackEditUser extends AbstractHandlerCallback {
                     showUser($this->user, $callback_query->getMessage()->getMessageId());
                     break;
                 case 'admin':
-                    $this->user->access_level = 'admin';
+                    $this->user->access_level = user::AL_ADMIN;
+                    showUser($this->user, $callback_query->getMessage()->getMessageId());
+                    break;
+                case 'user':
+                    $this->user->access_level = user::AL_USER;
+                    showUser($this->user, $callback_query->getMessage()->getMessageId());
+                    break;
+                case 'restricted': 
+                    $this->user->access_level = user::AL_RESTRICTED;
                     showUser($this->user, $callback_query->getMessage()->getMessageId());
                     break;
             }
+            
+            $this->user->isModified() && $this->user->write();
         }
-        
-        try { Bot::$api->answerCallbackQuery($callback_query->getId()); } catch (\Exception $e) {}
-        return true;
+
+        return parent::handle($callback_query);
         
     }
 }

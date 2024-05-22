@@ -7,12 +7,22 @@ use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\BlagoBot\reports\ReportUsers;
 use losthost\BlagoBot\view\ReportAdminView;
+use losthost\BlagoBot\service\AccessChecker;
+use losthost\BlagoBot\data\user;
+
+use function \losthost\BlagoBot\showAdminsOnly;
 
 class CommandXUsers extends AbstractHandlerCommand {
 
     const COMMAND = 'xusers';
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
+        
+        $access = new AccessChecker(user::AL_ADMIN);
+        if ($access->isDenied()) {
+            showAdminsOnly();
+            return true;
+        }
         
         $builder = new ReportUsers();
 
