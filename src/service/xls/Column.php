@@ -69,11 +69,14 @@ class Column {
             foreach (array_keys($this->totals) as $key) {
                 $this->totals[$key] = $this->collect_totals->calculate($key, $value);
             }
+            return true;
         } elseif ($this->collect_totals) {
             foreach (array_keys($this->totals) as $key) {
                 $this->totals[$key] += $value;
             }
+            return true;
         }
+        return false;
     }
     
     public function getTotals($index, $with_reset = false) {

@@ -32,26 +32,38 @@ class ReportResultView {
         }
         
         if ($this->result->result_type == AbstractReport::RESULT_TYPE_XLSX) {
-            $exporter = new Exporter();
+            $exporter = $this->getExporter();
             $spreadsheet = $exporter->export($this->result);
-            $writer = IOFactory::createWriter($spreadsheet, IOFactory::WRITER_XLSX);
-            $writer = new Mpdf($spreadsheet);
             
-            $writer->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
+            $writer = $this->getWriter($spreadsheet);
             
-            $tmp_dir = tempnam('/tmp', 'Rpt');
-            unlink($tmp_dir);
-            mkdir($tmp_dir);
-            $report_file = "$tmp_dir/report.xlsx";
-            $report_file = "$tmp_dir/report.pdf";
-            $writer->save($report_file);
+            $tmp_file = tempnam('/tmp', 'Rpt');
+            $writer->save($tmp_file);
             
-            $file_to_send = new \CURLFile($report_file);
+            $file_to_send = new \CURLFile($tmp_file, $this->getReportMimeType(), $this->getReportFileName());
             Bot::$api->sendDocument(Bot::$chat->id, $file_to_send, 'Результат отчета');
             $file_to_send = null;
-            unlink($report_file);
+            unlink($tmp_file);
         }
         
         Bot::$session->set('command', null);
+    }
+    
+    protected function getExporter() {
+        return new Exporter();
+    }
+    
+    protected function getWriter($spreadsheet) {
+        $writer = new Mpdf($spreadsheet);
+        $writer->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
+        return $writer;
+    }
+    
+    protected function getReportMimeType() {
+        return 'application/pdf';
+    }
+    
+    protected function getReportFileName() {
+        return 'report.pdf';
     }
 }

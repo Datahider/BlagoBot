@@ -8,7 +8,8 @@ use losthost\BlagoBot\handlers\MessageAuth;
 use losthost\BlagoBot\handlers\CommandStart;
 use losthost\BlagoBot\handlers\MessageFile2;
 use losthost\BlagoBot\handlers\CommandUpdate;
-use losthost\BlagoBot\handlers\CommandList;
+use losthost\BlagoBot\handlers\CommandUsers;
+use losthost\BlagoBot\handlers\CommandXUsers;
 
 use losthost\BlagoBot\handlers\PreCallback;
 use losthost\BlagoBot\handlers\CallbackAddUser;
@@ -50,7 +51,8 @@ Bot::addHandler(MessageAuth::class);
 Bot::addHandler(CommandStart::class);
 Bot::addHandler(MessageFile2::class);
 Bot::addHandler(CommandUpdate::class);
-Bot::addHandler(CommandList::class);
+Bot::addHandler(CommandUsers::class);
+Bot::addHandler(CommandXUsers::class);
 
 
 Bot::addHandler(PreCallback::class);

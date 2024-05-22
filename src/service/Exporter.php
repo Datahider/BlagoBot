@@ -33,12 +33,20 @@ class Exporter {
         $this->sheet = $spreadsheet->getActiveSheet();
         $this->result = $result;
         
-        $last_column = count($result->columns);
+        $this->exportHeader();
+        $this->exportTable();
+
+        return $spreadsheet;
+    }
+
+    protected function exportHeader() {
+        
+        $last_column = count($this->result->columns);
         
         $this->current_row = 1;
         $this->sheet->mergeCells([1, $this->current_row, $last_column, $this->current_row]);
         $cell = $this->sheet->getCell([1,$this->current_row]);
-        $cell->setValue('Дата и время выгрузки '. $result->summary->getDateGenerated()->format('d.m.Y H:i'));
+        $cell->setValue('Дата и время выгрузки '. $this->result->summary->getDateGenerated()->format('d.m.Y H:i'));
         $cell->getStyle()->applyFromArray(CellFormat::ReportDate);
         
         $this->current_row++;
@@ -70,7 +78,7 @@ class Exporter {
         $cell->getStyle()->applyFromArray(CellFormat::ReportDBInfo);
 
         $this->current_row++;
-        foreach ($result->summary->getParams() as $param) {
+        foreach ($this->result->summary->getParams() as $param) {
             $this->current_row++;
             $this->sheet->mergeCells([1, $this->current_row, $last_column, $this->current_row]);
             $cell = $this->sheet->getCell([1,$this->current_row]);
@@ -78,7 +86,7 @@ class Exporter {
             $cell->getStyle()->applyFromArray(CellFormat::ReportParams);
         }
 
-        $note = $result->summary->getNote();
+        $note = $this->result->summary->getNote();
         if ($note) {
             $this->current_row += 2;
             $this->sheet->mergeCells([1, $this->current_row, $last_column, $this->current_row]);
@@ -90,11 +98,14 @@ class Exporter {
         $this->current_row +=2;
         $this->sheet->mergeCells([1, $this->current_row, $last_column, $this->current_row]);
         $cell = $this->sheet->getCell([1,$this->current_row]);
-        $cell->setValue($result->summary->getTitle());
+        $cell->setValue($this->result->summary->getTitle());
         $cell->getStyle()->applyFromArray(CellFormat::ReportHeader);
+    }
+    
+    protected function exportTable() {
 
         $this->current_row += 2; // пропускаем строку перед таблицей
-        foreach ($result->columns as $cc => $column) {
+        foreach ($this->result->columns as $cc => $column) {
             $cell = $this->sheet->getCell([$cc+1, $this->current_row]);
             $cell->setValue($column->getTitle());
             $cell->getStyle()->applyFromArray($column->getHeaderFormat());
@@ -111,8 +122,9 @@ class Exporter {
 
         $dark = false;
         $subtotals = false;
+        $totals = false;
         
-        foreach ($result->data as $index => $row_data) {
+        foreach ($this->result->data as $index => $row_data) {
             if ($this->last_data_group_value == self::SECRET) {
                 $this->last_data_group_value = $row_data[$this->data_group_column_index];
             }
@@ -123,8 +135,8 @@ class Exporter {
                 if ($value != 0) {
                     $cell->setValue($value);
                 }
-                $column = $result->columns[$cc];
-                $column->add2Totals($value);
+                $column = $this->result->columns[$cc];
+                $totals = $column->add2Totals($value) || $totals;
                 $format = $dark ? $this->makeDarker($column->getDataFormat()) : $column->getDataFormat();
                 $cell->getStyle()->applyFromArray($this->nfTrick($format, $value));
             }
@@ -136,8 +148,9 @@ class Exporter {
             $this->printTotals($fake_row);
         }
         
-        $this->printTotals();
-        return $spreadsheet;
+        if ($totals) {
+            $this->printTotals();
+        }
     }
     
     protected function nfTrick(array $format, mixed $sum) {
@@ -154,7 +167,7 @@ class Exporter {
         }
         return $format;
     }
-    
+
     protected function printTotals(?array $row_data=null) {
         
         if (is_null($row_data)) {

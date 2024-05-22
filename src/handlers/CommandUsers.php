@@ -5,21 +5,20 @@ namespace losthost\BlagoBot\handlers;
 use losthost\telle\abst\AbstractHandlerCommand;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
+use losthost\BlagoBot\reports\ReportUsers;
+use losthost\BlagoBot\view\ReportAdminPdf;
 
-class CommandList extends AbstractHandlerCommand {
+class CommandUsers extends AbstractHandlerCommand {
 
-    const COMMAND = 'list';
+    const COMMAND = 'users';
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
-        $data = $this->prepareData();
-        $messages = $this->prepareMessages($data);
-        
-        $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
-        foreach ($messages as $text) {
-            $view->show('tpl_info', null, ['type' => 'custom', 'text' => $text]);
-        }
-        
+        $builder = new ReportUsers();
+
+        $view = new ReportAdminPdf($builder);
+        $view->show();
+
         return true;
     }
     
