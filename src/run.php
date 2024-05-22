@@ -10,11 +10,13 @@ use losthost\BlagoBot\handlers\MessageFile2;
 use losthost\BlagoBot\handlers\CommandUpdate;
 use losthost\BlagoBot\handlers\CommandUsers;
 use losthost\BlagoBot\handlers\CommandXUsers;
+use losthost\BlagoBot\handlers\CommandDigits;
 
 use losthost\BlagoBot\handlers\PreCallback;
 use losthost\BlagoBot\handlers\CallbackAddUser;
 use losthost\BlagoBot\handlers\CallbackInlineButton;
 use losthost\BlagoBot\handlers\CallbackMakeReport;
+use losthost\BlagoBot\handlers\CallbackEditUser;
 
 use losthost\BlagoBot\data\user;
 use losthost\BlagoBot\data\menu;
@@ -28,6 +30,7 @@ use losthost\BlagoBot\data\x_year_data;
 
 require 'vendor/autoload.php';
 require 'src/functions.php';
+require 'src/show.php';
 
 BotView::setTemplateDir(__DIR__. '/templates');
 
@@ -53,12 +56,14 @@ Bot::addHandler(MessageFile2::class);
 Bot::addHandler(CommandUpdate::class);
 Bot::addHandler(CommandUsers::class);
 Bot::addHandler(CommandXUsers::class);
+Bot::addHandler(CommandDigits::class);
 
 
 Bot::addHandler(PreCallback::class);
 Bot::addHandler(CallbackAddUser::class);
 Bot::addHandler(CallbackInlineButton::class);
 Bot::addHandler(CallbackMakeReport::class);
+Bot::addHandler(CallbackEditUser::class);
 
 Bot::run();
 

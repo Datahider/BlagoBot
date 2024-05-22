@@ -3,6 +3,7 @@
 namespace losthost\BlagoBot\data;
 
 use losthost\DB\DBObject;
+use losthost\DB\DB;
 
 class user extends DBObject {
     
@@ -25,4 +26,39 @@ class user extends DBObject {
         'PRIMARY KEY' => 'id', 
         'UNIQUE INDEX TG_USER' => 'tg_user', 
     ];
+    
+    public function getBindings() : array {
+        $sth = DB::prepare(<<<FIN
+            SELECT
+                    omsu.id AS id,
+                    omsu.name AS omsu_name,
+                    'head' AS role 
+            FROM 
+                    [x_omsu] AS omsu
+            WHERE
+                    omsu.head_id = ?
+
+            UNION ALL
+
+            SELECT
+                    omsu.id,
+                    omsu.name,
+                    'vicehead' 
+            FROM 
+                    [x_omsu] AS omsu
+            WHERE
+                    omsu.vicehead_id = ?
+
+            FIN);
+
+        $sth->execute([$this->id, $this->id]);
+
+        $result = [];
+        while ($row = $sth->fetch(\PDO::FETCH_NUM)) {
+            $result[] = $row;
+        }
+
+        return $result;
+    }
+    
 }
