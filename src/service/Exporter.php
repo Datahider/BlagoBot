@@ -131,14 +131,16 @@ class Exporter {
             $subtotals = $this->printTotals($row_data) || $subtotals;
             $this->current_row++;
             foreach ($row_data as $cc => $value) {
-                $cell = $this->sheet->getCell([$cc+1, $this->current_row]);
-                if ($value != 0) {
-                    $cell->setValue($value);
+                if (isset($this->result->columns[$cc])) {
+                    $column = $this->result->columns[$cc];
+                    $cell = $this->sheet->getCell([$cc+1, $this->current_row]);
+                    if ($value != 0) {
+                        $cell->setValue($value);
+                    }
+                    $totals = $column->add2Totals($value) || $totals;
+                    $format = $dark ? $this->makeDarker($column->getDataFormat()) : $column->getDataFormat();
+                    $cell->getStyle()->applyFromArray($this->nfTrick($format, $value));
                 }
-                $column = $this->result->columns[$cc];
-                $totals = $column->add2Totals($value) || $totals;
-                $format = $dark ? $this->makeDarker($column->getDataFormat()) : $column->getDataFormat();
-                $cell->getStyle()->applyFromArray($this->nfTrick($format, $value));
             }
             $dark = !$dark;
         }

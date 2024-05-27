@@ -4,6 +4,7 @@ namespace losthost\BlagoBot\data;
 
 use losthost\DB\DBObject;
 use losthost\DB\DB;
+use losthost\DB\DBView;
 
 class user extends DBObject {
     
@@ -61,4 +62,38 @@ class user extends DBObject {
         return $result;
     }
     
+    public function getFIO() : string|false {
+        if ($this->surname === null) {
+            return false;
+        }
+        
+        return "$this->surname $this->name $this->fathers_name";
+    }
+    
+    public function getName() : string {
+        $result = $this->getFIO();
+        
+        if ($result === false) {
+            $result = $this->getTelegramName();
+        }
+        
+        return $result;
+    }
+    
+    public function getTelegramName() {
+        $tg_user = new DBView("SELECT * FROM [telle_users] WHERE id = ?", [$this->tg_user]);
+        $tg_user->next();
+        
+        $result = $tg_user->first_name;
+        
+        if ($tg_user->last_name) {
+            $result .= " $tg_user->last_name";
+        }
+        
+        if ($tg_user->username) {
+            $result .= " (@$tg_user->username)";
+        }
+        
+        return $result;
+    }
 }

@@ -47,7 +47,7 @@ class CallbackEditUser extends _Callback {
                     break;
                 case 'bindings':
                     $omsus = (new DBList(x_omsu::class, '1 ORDER BY name', []))->asArray();
-                    $view->show('tpl_user_edit', 'kbd_user_bindings', ['user' => $this->user, 'bindings' => $this->user->getBindings(), 'omsus' => $omsus], $callback_query->getMessage()->getMessageId());
+                    $view->show('tpl_bindings_edit', 'kbd_bindings_edit', ['user' => $this->user, 'bindings' => $this->user->getBindings(), 'omsus' => $omsus], $callback_query->getMessage()->getMessageId());
                     break;
                 case 'delete':
                     $view->show('tpl_user_edit', 'kbd_user_delete', ['user' => $this->user, 'bindings' => $this->user->getBindings()], $callback_query->getMessage()->getMessageId());

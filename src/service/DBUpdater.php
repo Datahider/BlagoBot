@@ -29,21 +29,29 @@ class DBUpdater {
     const GPSHEET_NAME = 'Госпрограмма';
     
     private $year_cells = [
+        24 => ['year' => 0, 'type' => x_year_data::TYPE_SMR],
+        25 => ['year' => 0, 'type' => x_year_data::TYPE_PIR],
         27 => ['year' => 0, 'type' => x_year_data::TYPE_LIMIT_FB],
         28 => ['year' => 0, 'type' => x_year_data::TYPE_LIMIT_BM],
         29 => ['year' => 0, 'type' => x_year_data::TYPE_LIMIT_BMO],
         30 => ['year' => 0, 'type' => x_year_data::TYPE_LIMIT_OMSU],
 
+        31 => ['year' => 1, 'type' => x_year_data::TYPE_SMR],
+        32 => ['year' => 1, 'type' => x_year_data::TYPE_PIR],
         34 => ['year' => 1, 'type' => x_year_data::TYPE_LIMIT_FB],
         35 => ['year' => 1, 'type' => x_year_data::TYPE_LIMIT_BM],
         36 => ['year' => 1, 'type' => x_year_data::TYPE_LIMIT_BMO],
         37 => ['year' => 1, 'type' => x_year_data::TYPE_LIMIT_OMSU],
 
+        38 => ['year' => 2, 'type' => x_year_data::TYPE_SMR],
+        39 => ['year' => 2, 'type' => x_year_data::TYPE_PIR],
         41 => ['year' => 2, 'type' => x_year_data::TYPE_LIMIT_FB],
         42 => ['year' => 2, 'type' => x_year_data::TYPE_LIMIT_BM],
         43 => ['year' => 2, 'type' => x_year_data::TYPE_LIMIT_BMO],
         44 => ['year' => 2, 'type' => x_year_data::TYPE_LIMIT_OMSU],
 
+        45 => ['year' => 3, 'type' => x_year_data::TYPE_SMR],
+        46 => ['year' => 3, 'type' => x_year_data::TYPE_PIR],
         48 => ['year' => 3, 'type' => x_year_data::TYPE_LIMIT_FB],
         49 => ['year' => 3, 'type' => x_year_data::TYPE_LIMIT_BM],
         50 => ['year' => 3, 'type' => x_year_data::TYPE_LIMIT_BMO],
@@ -245,7 +253,7 @@ class DBUpdater {
                         $year_data->value = $value;
                         $year_data->write();
                     } else {
-                        throw new Exception(__("Лимит $data[type] $year для $object->uin уже был задан."));
+                        throw new Exception(__("$data[type] $year для $object->uin уже был задан."));
                     }
                 }
             }
@@ -266,6 +274,8 @@ class DBUpdater {
             $contract->status2 = $cells[4];
             $contract->number = ($cells[96] == 'x' || empty($cells[96])) ? null : $cells[96];
             $contract->date = $cells[95] ? Date::excelToDateTimeObject($cells[21]) : null;
+            $contract->has_pir = strpos($cells[5], 'ПИР') === false ? false : true;
+            $contract->has_smr = strpos($cells[5], 'СМР') === false ? false : true;
             $contract->write();
             
             foreach ($this->contract_cells as $key => $data) {

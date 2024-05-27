@@ -14,6 +14,8 @@ class x_contract extends DBObject {
         'status2' => 'VARCHAR(32) NOT NULL',
         'number' => 'VARCHAR(32)',
         'date' => 'DATETIME',
+        'has_pir' => 'TINYINT(1) NOT NULL DEFAULT 0',
+        'has_smr' => 'TINYINT(1) NOT NULL DEFAULT 0',
         'PRIMARY KEY' => 'id'
     ];
 }

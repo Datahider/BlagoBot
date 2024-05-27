@@ -27,6 +27,9 @@ use losthost\BlagoBot\data\report_param_value;
 use losthost\BlagoBot\data\x_object;
 use losthost\BlagoBot\data\x_omsu;
 use losthost\BlagoBot\data\x_year_data;
+use losthost\BlagoBot\data\x_contract;
+use losthost\BlagoBot\data\x_contract_data;
+use losthost\BlagoBot\data\x_contragent;
 
 require 'vendor/autoload.php';
 require 'src/functions.php';
@@ -41,6 +44,9 @@ user::initDataStructure();
 x_omsu::initDataStructure();
 x_object::initDataStructure();
 x_year_data::initDataStructure();
+x_contract::initDataStructure();
+x_contract_data::initDataStructure();
+x_contragent::initDataStructure();
 
 report::initDataStructure();
 report_param::initDataStructure();
