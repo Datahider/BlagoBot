@@ -21,7 +21,7 @@ function initBUser() {
     }
 }
 
-function addBUser($tg_id, $access_level) {
+function addBUser($tg_id, $access_level) : user {
     $user = new user(['tg_user' => $tg_id], true);
     
     switch ($access_level) {
@@ -34,6 +34,9 @@ function addBUser($tg_id, $access_level) {
         case user::AL_RESTRICTED:
             $user->access_level = user::AL_RESTRICTED;
             break;
+        case user::AL_UNKNOWN:
+            $user->access_level = user::AL_UNKNOWN;
+            break;
         default:
             throw new \Exception("Unknown access level $access_level");
     }
@@ -41,6 +44,7 @@ function addBUser($tg_id, $access_level) {
     if ($user->isModified()) {
         $user->write();
     }
+    return $user;
 }
 
 function __(string $string) : string {

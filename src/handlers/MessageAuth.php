@@ -6,6 +6,8 @@ use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\BlagoBot\data\user;
+use function losthost\BlagoBot\addBUser;
+use function losthost\BlagoBot\showUser;
 
 class MessageAuth extends AbstractHandlerMessage {
     
@@ -26,7 +28,9 @@ class MessageAuth extends AbstractHandlerMessage {
         }
         
         $originator = $message->getForwardFrom();
-        $view->show('tpl_auth', 'kbd_auth', ['originator' => $originator]);
+        $user = addBUser($originator->getId(), user::AL_UNKNOWN);
+        $message_id = showUser($user);
+        MessageFIO::setPriority(['user_id' => $user->id, 'message_id' => $message_id]);
         
         return true;
     }

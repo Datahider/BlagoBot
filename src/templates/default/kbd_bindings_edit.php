@@ -10,7 +10,7 @@ $omsu_roles = [
 ];
 
 foreach ($bindings as $binding) {
-    $keyboard[] = [['text' => "➖ $binding[1] ({$omsu_roles[$binding[2]]})", 'callback_data' => "edit_delhead_$binding[0]"]];
+    $keyboard[] = [['text' => "➖ $binding[1] ({$omsu_roles[$binding[2]]})", 'callback_data' => "edit_unbind{$binding[2]}_{$user->id}_$binding[0]"]];
 }
 
 $keyboard[] = [['text' => '➕ Глава', 'callback_data' => "edit_head_$user->id"], ['text' => '➕ Замглавы', 'callback_data' => "edit_vicehead_$user->id"]];
