@@ -11,6 +11,7 @@ use losthost\BlagoBot\handlers\CommandUpdate;
 use losthost\BlagoBot\handlers\CommandUsers;
 use losthost\BlagoBot\handlers\CommandXUsers;
 use losthost\BlagoBot\handlers\CommandDigits;
+use losthost\BlagoBot\handlers\CommandTest;
 
 use losthost\BlagoBot\handlers\PreCallback;
 use losthost\BlagoBot\handlers\CallbackAddUser;
@@ -23,6 +24,8 @@ use losthost\BlagoBot\data\menu;
 use losthost\BlagoBot\data\report;
 use losthost\BlagoBot\data\report_param;
 use losthost\BlagoBot\data\report_param_value;
+use losthost\BlagoBot\data\department;
+use losthost\BlagoBot\data\user_dept_binding;
 
 use losthost\BlagoBot\data\x_object;
 use losthost\BlagoBot\data\x_omsu;
@@ -41,6 +44,9 @@ Bot::setup();
 
 menu::initDataStructure();
 user::initDataStructure();
+department::initDataStructure();
+user_dept_binding::initDataStructure();
+
 x_omsu::initDataStructure();
 x_object::initDataStructure();
 x_year_data::initDataStructure();
@@ -63,6 +69,7 @@ Bot::addHandler(CommandUpdate::class);
 Bot::addHandler(CommandUsers::class);
 Bot::addHandler(CommandXUsers::class);
 Bot::addHandler(CommandDigits::class);
+Bot::addHandler(CommandTest::class);
 
 
 Bot::addHandler(PreCallback::class);

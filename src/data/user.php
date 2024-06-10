@@ -9,6 +9,7 @@ use losthost\DB\DBView;
 class user extends DBObject {
     
     const AL_ADMIN = 'admin';
+    const AL_OPERATOR = 'operator';
     const AL_USER = 'user';
     const AL_RESTRICTED = 'restricted';
     const AL_UNKNOWN = 'unknown';
@@ -16,7 +17,7 @@ class user extends DBObject {
     const METADATA = [
         'id' => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
         'tg_user' => 'BIGINT NOT NULL',
-        'access_level' => 'ENUM("admin", "user", "restricted", "unknown")',
+        'access_level' => 'ENUM("admin", "operator", "user", "restricted", "unknown")',
         'surname' => 'VARCHAR(50)',
         'name' => 'VARCHAR(50)',
         'fathers_name' => 'VARCHAR(50)',

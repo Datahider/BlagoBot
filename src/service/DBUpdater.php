@@ -187,8 +187,10 @@ class DBUpdater {
         
         //$data =  $sheet->toArray('');
         $row_iterator = $sheet->getRowIterator(6);
+        $row_num = 5;
         
         foreach ($row_iterator as $row) {
+            $row_num++;
             $cell_iterator = $row->getCellIterator();
             $cells = [];
             foreach ($cell_iterator as $cell) {
@@ -232,12 +234,21 @@ class DBUpdater {
                 }
                 $object->x_activity_id = $gasu->id;
 
-                $object->gasu_date = $cells[16];
+                try {
+                    $object->gasu_date = $cells[16] ? Date::excelToDateTimeObject($cells[16]) : null;
+                } catch (\Exception $e) {
+                    throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num, \nЗначение: Дата ГАСУ");
+                }
+                
                 $object->ready_percent = $cells[17];
                 $object->object_char = $cells[18];
                 $object->type = $cells[19];
                 $object->period = $cells[20];
-                $object->open_date_planned = $cells[21] ? Date::excelToDateTimeObject($cells[21]) : null;
+                try {
+                    $object->open_date_planned = $cells[21] ? Date::excelToDateTimeObject($cells[21]) : null;
+                } catch (\Exception $e) {
+                    throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num, \nЗначение: Запланированная дата открытия");
+                }
 
                 $object->write();
             }
@@ -273,7 +284,13 @@ class DBUpdater {
             $contract->status = $cells[3];
             $contract->status2 = $cells[4];
             $contract->number = ($cells[96] == 'x' || empty($cells[96])) ? null : $cells[96];
-            $contract->date = $cells[95] ? Date::excelToDateTimeObject($cells[21]) : null;
+
+            try {
+                $contract->date = $cells[95] ? Date::excelToDateTimeObject($cells[21]) : null;
+            } catch (\Exception $e) {
+                throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num, \nЗначение: Дата контракта");
+            }
+            
             $contract->has_pir = strpos($cells[5], 'ПИР') === false ? false : true;
             $contract->has_smr = strpos($cells[5], 'СМР') === false ? false : true;
             $contract->write();

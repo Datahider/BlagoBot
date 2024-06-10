@@ -1,4 +1,7 @@
 <?php
+
+    use function losthost\BlagoBot\isWoman;
+
     $last_digit = substr($data['total_objects'], -1);
     switch ($last_digit) {
     case '1':
@@ -13,7 +16,7 @@
         $objects_end = 'ов';
     }
 
-?><b>Уважаемый <?=$data['user_name'];?> <?=$data['user_fathers_name'];?>!</b>
+?><b><?=isWoman($data['user_name']) ? "Уважаемая" : "Уважаемый";?> <?=$data['user_name'];?> <?=$data['user_fathers_name'];?>!</b>
 
 На городской округ <?=$data['omsu_name'];?> в <?=$data['current_year'];?> году в рамках госпрограммы «Формирование современной комфортной городской среды» предусмотрено финансирование в размере <b><?= number_format($data['total_limit'], 0, '', ' ');?> тыс. руб.</b> на <?=$data['total_objects'];?> объект<?=$objects_end;?>.
 
