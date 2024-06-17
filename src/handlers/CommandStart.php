@@ -21,8 +21,7 @@ class CommandStart extends AbstractHandlerMessage {
 
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
 
-        $menu_access = new AccessChecker([user::AL_ADMIN, user::AL_USER]);
-        $receive_only = new AccessChecker(user::AL_RESTRICTED);
+        $menu_access = new AccessChecker([user::AL_ADMIN, user::AL_USER, user::AL_OPERATOR, user::AL_RESTRICTED]);
         
         if ($menu_access->isAllowed()) {
             $menu = new menu(['id' => Bot::param('topmenu_id', null)]);
@@ -30,9 +29,6 @@ class CommandStart extends AbstractHandlerMessage {
             $view->show(0);
 
             Bot::$session->set('data', []);
-        } elseif ($receive_only->isAllowed()) {
-            $view = new BotView(Bot::$api, Bot::$chat->id, Bot::$language_code);
-            $view->show('tpl_receive_only');
         }
         return true;
     }

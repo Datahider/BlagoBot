@@ -61,6 +61,10 @@ class CallbackEditUser extends _Callback {
                 $this->user->access_level = user::AL_ADMIN;
                 showUser($this->user, $callback_query->getMessage()->getMessageId());
                 break;
+            case 'operator':
+                $this->user->access_level = user::AL_OPERATOR;
+                showUser($this->user, $callback_query->getMessage()->getMessageId());
+                break;
             case 'user':
                 $this->user->access_level = user::AL_USER;
                 showUser($this->user, $callback_query->getMessage()->getMessageId());

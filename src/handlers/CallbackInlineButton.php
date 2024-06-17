@@ -13,6 +13,8 @@ use losthost\BlagoBot\view\ReportResultView;
 use losthost\BlagoBot\data\report;
 use losthost\BlagoBot\data\report_param_value;
 use losthost\DB\DBList;
+use losthost\BlagoBot\data\user;
+use losthost\BlagoBot\data\x_omsu;
 use Exception;
 
 class CallbackInlineButton extends AbstractHandlerCallback {
@@ -81,6 +83,7 @@ class CallbackInlineButton extends AbstractHandlerCallback {
     }
     
     protected function setDefaultValues(report $report) {
+        global $b_user;
         
         $param_values = Bot::$session->get('data');
         
@@ -91,7 +94,11 @@ class CallbackInlineButton extends AbstractHandlerCallback {
                 continue;
             }
             
-            $values = new DBList(report_param_value::class, "value_set = ? AND is_active = 1 AND is_default = 1 ORDER BY sort, title", $param->value_set);
+            if ($param->name === 'omsu' && $b_user->access_level === user::AL_RESTRICTED) {
+                $values = new DBList(x_omsu::class, 'head_id = ? OR vicehead_id = ?', [$b_user->id, $b_user->id]); 
+            } else {
+                $values = new DBList(report_param_value::class, "value_set = ? AND is_active = 1 AND is_default = 1 ORDER BY sort, title", $param->value_set);
+            }    
             $values_array = $values->asArray();
             
             if (count($values_array) == 0) {

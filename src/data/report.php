@@ -16,6 +16,7 @@ class report extends DBObject {
         'description' => 'VARCHAR(1024)',
         'handler_class' => 'VARCHAR(256)',
         'handler_param' => 'VARCHAR(256)',
+        'accessed_by' => 'VARCHAR(4) NOT NULL DEFAULT "a"',
         'PRIMARY KEY' => 'id'
     ];
     

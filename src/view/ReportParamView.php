@@ -6,6 +6,9 @@ use losthost\BlagoBot\data\report;
 use losthost\BlagoBot\data\report_param;
 use losthost\BotView\BotView;
 use losthost\telle\Bot;
+use losthost\BlagoBot\data\user;
+use losthost\DB\DBList;
+use losthost\BlagoBot\data\x_omsu;
 
 class ReportParamView {
     
@@ -39,9 +42,16 @@ class ReportParamView {
     }
     
     protected function viewData() {
+        global $b_user;
+        
         $data['report'] = new report(['id' => $this->param->report]);
         $data['param'] = $this->param;
-        $data['values'] = $this->param->valuesArray();
+        if ($this->param->name == 'omsu' && $b_user->access_level == user::AL_RESTRICTED) {
+            $omsus = new DBList(x_omsu::class, 'head_id = ? OR vicehead_id = ?', [$b_user->id, $b_user->id]); 
+            $data['values'] = $omsus->asArray();
+        } else {
+            $data['values'] = $this->param->valuesArray();
+        }
         return $data;
     }
 }

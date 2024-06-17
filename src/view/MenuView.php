@@ -34,8 +34,10 @@ class MenuView {
     
     protected function viewData() {
         
+        global $b_user;
+        
         $data['menu'] = $this->menu;
-        $data['submenu'] = $this->menu->getChildren();
+        $data['submenu'] = $this->menu->getChildren($b_user->access_level);
         return $data;
     }
 }
