@@ -9,15 +9,22 @@ use losthost\BlagoBot\service\Exporter;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use losthost\BlagoBot\data\log_report;
 use CURLFile;
 use stdClass;
+
+use function \losthost\BlagoBot\sendSplitMessage;
 
 class ReportResultView {
     
     protected AbstractReport $report;
     protected stdClass $result;
+    protected log_report $log;
     
     public function __construct(AbstractReport $report) {
+        global $b_user;
+        
+        $this->log = log_report::log_start($b_user->id, get_class($report));
         $this->report = $report;
         $this->result = $this->report->build();
     }
@@ -44,8 +51,16 @@ class ReportResultView {
             Bot::$api->sendDocument(Bot::$chat->id, $file_to_send, 'Результат отчета');
             $file_to_send = null;
             unlink($tmp_file);
+        } elseif (is_string($this->result->result_type)) {
+            if (is_a($this->result->result_type, AbstractCustomView::class, true)) {
+                $view = new $this->result->result_type($this->result);
+                $view->show();
+            } else {
+                sendSplitMessage(Bot::$chat->id, "Не удалось отобразить результат отчета. Обратитесь к разработчику.");
+            }
         }
         
+        $this->log->log_stop();
         Bot::$session->set('command', null);
     }
     

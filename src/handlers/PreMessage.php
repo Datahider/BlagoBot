@@ -14,6 +14,9 @@ class PreMessage extends AbstractHandlerMessage {
     protected function check(\TelegramBot\Api\Types\Message &$message): bool {
         global $b_user;
         initBUser();
+
+        \losthost\BlagoBot\log_memory_usage();
+
         return $b_user->access_level == user::AL_UNKNOWN;
     }
 

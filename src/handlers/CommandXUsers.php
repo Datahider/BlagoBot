@@ -2,7 +2,7 @@
 
 namespace losthost\BlagoBot\handlers;
 
-use losthost\telle\abst\AbstractHandlerCommand;
+use losthost\BlagoBot\handlers\AbstractMyCommand;
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
 use losthost\BlagoBot\reports\ReportUsers;
@@ -12,11 +12,13 @@ use losthost\BlagoBot\data\user;
 
 use function \losthost\BlagoBot\showAdminsOnly;
 
-class CommandXUsers extends AbstractHandlerCommand {
+class CommandXUsers extends AbstractMyCommand {
 
     const COMMAND = 'xusers';
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
+        
+        parent::handle($message);
         
         $access = new AccessChecker(user::AL_ADMIN);
         if ($access->isDenied()) {

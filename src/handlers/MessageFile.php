@@ -39,7 +39,6 @@ class MessageFile extends AbstractHandlerMessage {
             $updater = new DBUpdater();
             $view->show('tpl_info', null, ['type' => 'info', 'text' => __('Начинается загрузка файла в БД. Это может занять некоторое время. По окончании загрузки вам придёт ещё одно сообщение')]);
             $updater->update($file_path);
-            unlink($file_path);
         } catch (Exception $exc) {
             $view->show('tpl_info', null, ['type' => 'error','text' => $exc->getMessage()]);
             $has_error = true;

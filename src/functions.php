@@ -232,3 +232,10 @@ function isWoman(string $name) : bool {
     }
     return false;
 }
+
+function log_memory_usage() {
+    $usage = round(memory_get_usage() / 1024 / 1024, 1);
+    $real = round(memory_get_usage(true) / 1024 / 1024, 1);
+    
+    error_log("memory: $usage Mb; real: $real Mb;");
+}

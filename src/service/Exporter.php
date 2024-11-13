@@ -22,7 +22,7 @@ class Exporter {
     
     public function __construct() {
         $this->last_data_group_value = self::SECRET;
-        $this->gp_date = Bot::param('gp_date', 'ГП от НЕОПРЕДЕЛЕНО');
+        $this->gp_date = Bot::param('gp_date', 'НЕОПРЕДЕЛЕНО');
         $this->db_date = Bot::param('db_date', 'НЕОПРЕДЕЛЕНО');
         $this->status_date = Bot::param('status_date', 'НЕОПРЕДЕЛЕНО');
     }
@@ -62,7 +62,7 @@ class Exporter {
         $this->current_row += 2;
         $this->sheet->mergeCells([1, $this->current_row, $last_column, $this->current_row]);
         $cell = $this->sheet->getCell([1,$this->current_row]);
-        $cell->setValue($this->gp_date);
+        $cell->setValue('ГП от '. $this->gp_date);
         $cell->getStyle()->applyFromArray(CellFormat::ReportDBInfo);
 
         $this->current_row++;

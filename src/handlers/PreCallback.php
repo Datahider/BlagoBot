@@ -16,6 +16,9 @@ class PreCallback extends AbstractHandlerCallback {
         
         error_log("Got callback data: ". $callback_query->getData());
         initBUser();
+
+        \losthost\BlagoBot\log_memory_usage();
+
         return $b_user->access_level == user::AL_UNKNOWN;
     }
 

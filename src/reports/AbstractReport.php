@@ -17,11 +17,12 @@ abstract class AbstractReport {
     abstract protected function reportData($params) : array;
     abstract protected function reportSummary($params) : ReportSummary;
 
-    abstract protected function resultType() : int;
+    abstract protected function resultType() : int|string;
 
     abstract protected function checkParamErrors($params) : false|array;
 
     public function build() : stdClass {
+        
         $report_params = Bot::$session->get('data');
         $errors = $this->checkParamErrors($report_params);
         if ($errors !== false) {

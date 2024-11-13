@@ -83,7 +83,9 @@ class user extends DBObject {
     
     public function getTelegramName() {
         $tg_user = new DBView("SELECT * FROM [telle_users] WHERE id = ?", [$this->tg_user]);
-        $tg_user->next();
+        if (!$tg_user->next()) {
+            return 'Пользователь не заходил в бота';
+        }
         
         $result = $tg_user->first_name;
         

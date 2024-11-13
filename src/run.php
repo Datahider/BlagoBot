@@ -12,6 +12,8 @@ use losthost\BlagoBot\handlers\CommandUsers;
 use losthost\BlagoBot\handlers\CommandXUsers;
 use losthost\BlagoBot\handlers\CommandDigits;
 use losthost\BlagoBot\handlers\CommandTest;
+use losthost\BlagoBot\handlers\CommandHelp;
+use losthost\BlagoBot\handlers\CommandStat;
 
 use losthost\BlagoBot\handlers\PreCallback;
 use losthost\BlagoBot\handlers\CallbackAddUser;
@@ -33,6 +35,7 @@ use losthost\BlagoBot\data\x_year_data;
 use losthost\BlagoBot\data\x_contract;
 use losthost\BlagoBot\data\x_contract_data;
 use losthost\BlagoBot\data\x_contragent;
+use losthost\BlagoBot\data\x_prev;
 
 require 'vendor/autoload.php';
 require 'src/functions.php';
@@ -53,6 +56,7 @@ x_year_data::initDataStructure();
 x_contract::initDataStructure();
 x_contract_data::initDataStructure();
 x_contragent::initDataStructure();
+x_prev::initDataStructure();
 
 report::initDataStructure();
 report_param::initDataStructure();
@@ -70,6 +74,8 @@ Bot::addHandler(CommandUsers::class);
 Bot::addHandler(CommandXUsers::class);
 Bot::addHandler(CommandDigits::class);
 Bot::addHandler(CommandTest::class);
+Bot::addHandler(CommandHelp::class);
+Bot::addHandler(CommandStat::class);
 
 
 Bot::addHandler(PreCallback::class);

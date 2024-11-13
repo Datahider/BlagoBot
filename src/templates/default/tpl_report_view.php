@@ -5,6 +5,14 @@ if ($result->ok) {
     switch ($result->result_type) {
         case AbstractReport::RESULT_TYPE_SHOW:
             echo "Обработка завершена. Результаты обработки:\n\n";
+            
+            if (!empty($result->summary->getParams()['stat'])) {
+                foreach($result->summary->getParams()['stat'] as $key=>$value) {
+                    echo "$key: $value\n";
+                }
+                echo "\n";
+            }
+            
             foreach ($result->data as $line) {
                 foreach ($result->columns as $key => $column) {
                     echo "$column: $line[$key]\n";
@@ -24,7 +32,12 @@ if ($result->ok) {
             echo "Результат отчета будет отправлен в виде файла";
             break;
         default:
-            echo "Обработчик вернул неизвестный тип результата. Обратитесь к разработчику.";
+            if (is_string($result->result_type)) { 
+                // предполагаем, что result_type -- это имя класса, который знает что и как выводить
+                echo "Результат(ы) отчета:";
+            } else {
+                echo "Обработчик вернул неизвестный тип результата. Обратитесь к разработчику.";
+            }
     }
 } else {
     echo "При создании отчета возникли ошибки:\n\n";

@@ -2,16 +2,19 @@
 
 namespace losthost\BlagoBot\handlers;
 
-use losthost\telle\abst\AbstractHandlerCommand;
+use losthost\BlagoBot\handlers\AbstractMyCommand;
 use losthost\telle\Bot;
 
 use function losthost\BlagoBot\sendSplitMessage;
 
-class CommandTest extends AbstractHandlerCommand {
+class CommandTest extends AbstractMyCommand {
     
     const COMMAND = 'test';
     
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
+        
+        parent::handle($message);
+        
         $text = <<<FIN
             1
             <!-- SPLIT -->

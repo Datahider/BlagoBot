@@ -7,6 +7,7 @@ use losthost\DB\DB;
 use losthost\telle\Bot;
 use losthost\templateHelper\Template;
 use losthost\BlagoBot\service\ReportSummary;
+use losthost\BlagoBot\view\CustomSentMessages;
 
 use function losthost\BlagoBot\__;
 use function \losthost\BlagoBot\sendSplitMessage;
@@ -27,6 +28,11 @@ class ReportStatusSender extends AbstractReport {
     const QUERY_OBJECTS = 'objects';
     const QUERY_OBJECTS_DELAYED = 'delays';
 
+    protected int $total;
+    protected int $safe;
+    protected int $risky;
+    protected int $sent;
+    protected int $errors;
     
     protected function checkParamErrors($params): false|array {
         return false;
@@ -40,11 +46,20 @@ class ReportStatusSender extends AbstractReport {
         return $this->prepareAndSendMessages($params);
     }
 
-    protected function resultType(): int {
-        return static::RESULT_TYPE_SHOW;
+    protected function resultType(): int|string {
+        return CustomSentMessages::class;
     }
     
     protected function reportSummary($params): ReportSummary {
+        if ($params['msgtype'][0] == 89) {
+            $params['stat'] = [
+                'Всего ОМСУ' => $this->total,
+                'Отсутствуют риски' => $this->safe,
+                'Выявлены риски' => $this->risky,
+                'Направлено сообщений' => $this->sent,
+                'Ошибки отправки' => $this->errors
+            ];
+        }
         return new ReportSummary('Отправка СМС о статусе', date_create_immutable(), $params);
     }
     
@@ -73,7 +88,8 @@ class ReportStatusSender extends AbstractReport {
             $result[] = [
                 $data['omsu_name'],
                 $recipient,
-                $send_result
+                $send_result,
+                $msg_text,
             ];
             
         }
@@ -82,12 +98,17 @@ class ReportStatusSender extends AbstractReport {
     }
     
     protected function sendDelays($omsu_data) : array {
+        
+        $this->total = $this->safe = $this->risky = $this->sent = $this->errors = 0;
+        
         $result = [];
         $template = new Template('tpl_delays.php');
         $template->setTemplateDir('src/templates');
         
         foreach ($omsu_data as $data) {
             
+            $this->total++;
+
             if ($data['total_delays'] == 0) {
 //                if (isset($params['omsu'])) {
                     $result[] = [
@@ -95,11 +116,14 @@ class ReportStatusSender extends AbstractReport {
                         'Не отправлялось',
                         '🟢 Риски отстутсвуют'
                     ];
+                    $this->safe++;
 //                }
                 continue;
             }
             
             
+            $this->risky++;
+                
             if ($data['user_tg_id']) {
                 $template->assign('data', $data);
                 $msg_text = $template->process();
@@ -108,10 +132,13 @@ class ReportStatusSender extends AbstractReport {
                     $recipient = "$data[user_surname] $data[user_name] $data[user_fathers_name]";
                     Bot::$api->sendMessage($data['user_tg_id'], $msg_text, 'HTML');
                     $send_result = '✅ Успех';
+                    $this->sent++;
                 } catch (\Exception $e) {
                     $send_result = '⚠️ Ошибка Телеграм';
+                    $this->errors++;
                 }
             } else {
+                $this->errors++;
                 $recipient = '--НЕ ЗАДАН--';
                 $send_result = '🚫 Не может быть отправлено';
             }
@@ -119,7 +146,8 @@ class ReportStatusSender extends AbstractReport {
             $result[] = [
                 $data['omsu_name'],
                 $recipient,
-                $send_result
+                $send_result,
+                $msg_text,
             ];
         }
         return $result;
@@ -134,7 +162,7 @@ class ReportStatusSender extends AbstractReport {
             $omsu_data = $this->getDelays($params);
             $result = $this->sendDelays($omsu_data);
         }
-                
+        
         return $result;
     }
     
