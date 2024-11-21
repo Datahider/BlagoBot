@@ -16,6 +16,7 @@ class x_object extends DBObject {
         'full_name' => 'VARCHAR(2048) NOT NULL',
         'short_name' => 'VARCHAR(256) NOT NULL',
         'name' => 'VARCHAR(256) NOT NULL',
+        'x_responsible_id' => 'BIGINT(20)',
         'x_category_id' => 'BIGINT(20) NOT NULL',
         'category2_name' => 'VARCHAR(64) NOT NULL DEFAULT ""',
         'x_activity_id' => 'BIGINT(20) NOT NULL', // ex. gasu_code

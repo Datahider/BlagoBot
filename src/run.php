@@ -36,6 +36,7 @@ use losthost\BlagoBot\data\x_contract;
 use losthost\BlagoBot\data\x_contract_data;
 use losthost\BlagoBot\data\x_contragent;
 use losthost\BlagoBot\data\x_prev;
+use losthost\BlagoBot\data\x_responsible;
 
 require 'vendor/autoload.php';
 require 'src/functions.php';
@@ -57,6 +58,7 @@ x_contract::initDataStructure();
 x_contract_data::initDataStructure();
 x_contragent::initDataStructure();
 x_prev::initDataStructure();
+x_responsible::initDataStructure();
 
 report::initDataStructure();
 report_param::initDataStructure();
