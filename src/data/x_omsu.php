@@ -14,4 +14,8 @@ class x_omsu extends DBObject {
         'PRIMARY KEY' => 'id',
         'UNIQUE INDEX NAME' => 'name'
     ];
+    
+    public function getTitle() {
+        return $this->name;
+    }
 }

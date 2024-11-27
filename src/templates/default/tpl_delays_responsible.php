@@ -18,9 +18,9 @@
 
 ?><b><?=isWoman($data['user_name']) ? "Уважаемая" : "Уважаемый";?> <?=$data['user_name'];?> <?=$data['user_fathers_name'];?>!</b>
 
-На городской округ <?=$data['omsu_name'];?> в <?=$data['current_year'];?> году в рамках госпрограммы «Формирование современной комфортной городской среды» предусмотрено финансирование в размере <b><?= number_format($data['total_limit'], 0, '', ' ');?> тыс. руб.</b> на <?=$data['total_objects'];?> объект<?=$objects_end;?>.
+По курируемому Вами направлению в <?=$data['current_year'];?> году в рамках госпрограммы «Формирование современной комфортной городской среды» предусмотрено финансирование в размере <b><?= number_format($data['total_limit'], 0, '', ' ');?> тыс. руб.</b> на <?=$data['total_objects'];?> объект<?=$objects_end;?>.
 
-На <b><?=date_create($data['current_date'])->format('d.m.Y');?></b> городской округ <?=$data['omsu_name'];?> находится в красной зоне по просрочке плановых сроков по:
+На <b><?=date_create($data['current_date'])->format('d.m.Y');?></b> по вашему направлению находится в красной зоне по просрочке плановых сроков по:
 <?php
 
 use losthost\BlagoBot\reports\ReportStatusSender;

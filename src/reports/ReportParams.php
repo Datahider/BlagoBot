@@ -46,6 +46,14 @@ class ReportParams {
                         'title' => $value->name, 
                         'value' => $value->name
                     ];
+                } elseif (is_a($param->value_set, \losthost\DB\DBObject::class, true)) {
+                    $class = $param->value_set;
+                    $value = new $class(['id' => $value_id]);
+                    $this->params[$param->name]['values'][] = [
+                        'id' => $value->id, 
+                        'title' => $value->getTitle(), 
+                        'value' => $value->getValue()
+                    ];
                 } else {
                     $value = new report_param_value(['id' => $value_id]);
                     $this->params[$param->name]['values'][] = [

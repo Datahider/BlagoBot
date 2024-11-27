@@ -18,4 +18,7 @@ class report_param_value extends DBObject {
         'UNIQUE INDEX TITLE_SET' => ['value_set', 'title']
     ];
     
+    public function getTitle() {
+        return $this->title;
+    }
 }

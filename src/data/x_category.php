@@ -12,4 +12,8 @@ class x_category extends DBObject {
         'PRIMARY KEY' => 'id',
         'UNIQUE INDEX NAME' => 'name'
     ];
+    
+    public function getTitle() {
+        return $this->name;
+    }
 }

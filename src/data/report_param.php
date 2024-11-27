@@ -11,7 +11,7 @@ class report_param extends DBObject {
     const METADATA = [
         'id' => 'BIGINT NOT NULL AUTO_INCREMENT',
         'report' => 'BIGINT',
-        'value_set' => 'VARCHAR(32)',
+        'value_set' => 'VARCHAR(128)',
         'sort' => 'BIGINT NOT NULL DEFAULT 0',
         'is_active' => 'TINYINT(1) NOT NULL DEFAULT 1',
         'name' => 'VARCHAR(32)',
@@ -45,7 +45,12 @@ class report_param extends DBObject {
                         FIN, [2024]); // TODO - Заменить год на текущий
                 break;
             default:
-                $values = new DBList(report_param_value::class, "value_set = ? AND is_active = 1 ORDER BY sort, title", $this->value_set);
+                if (is_a($this->value_set, DBObject::class, true)) {
+                    $class = $this->value_set;
+                    $values = new DBList($class, "1 ORDER BY sort", []);
+                } else {
+                    $values = new DBList(report_param_value::class, "value_set = ? AND is_active = 1 ORDER BY sort, title", $this->value_set);
+                }
         }
         return $values->asArray();
     }

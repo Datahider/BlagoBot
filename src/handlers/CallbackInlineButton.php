@@ -13,6 +13,7 @@ use losthost\BlagoBot\view\ReportResultView;
 use losthost\BlagoBot\data\report;
 use losthost\BlagoBot\data\report_param_value;
 use losthost\DB\DBList;
+use losthost\DB\DBValue;
 use losthost\BlagoBot\data\user;
 use losthost\BlagoBot\data\x_omsu;
 use Exception;
@@ -96,7 +97,11 @@ class CallbackInlineButton extends AbstractHandlerCallback {
             
             if ($param->name === 'omsu' && $b_user->access_level === user::AL_RESTRICTED) {
                 $values = new DBList(x_omsu::class, 'head_id = ? OR vicehead_id = ?', [$b_user->id, $b_user->id]); 
+            } elseif (is_a($param->value_set, \losthost\DB\DBObject::class, true)) {
+                $class = $param->value_set;
+                $values = new DBList($class, "0", []); /// Не выбираем значения. Это просто историческая строчка
             } else {
+                
                 $values = new DBList(report_param_value::class, "value_set = ? AND is_active = 1 AND is_default = 1 ORDER BY sort, title", $param->value_set);
             }    
             $values_array = $values->asArray();

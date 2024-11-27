@@ -37,6 +37,7 @@ use losthost\BlagoBot\data\x_contract_data;
 use losthost\BlagoBot\data\x_contragent;
 use losthost\BlagoBot\data\x_prev;
 use losthost\BlagoBot\data\x_responsible;
+use losthost\telle\model\DBPendingUpdate;
 
 require 'vendor/autoload.php';
 require 'src/functions.php';
@@ -50,6 +51,7 @@ menu::initDataStructure();
 user::initDataStructure();
 department::initDataStructure();
 user_dept_binding::initDataStructure();
+DBPendingUpdate::initDataStructure();
 
 x_omsu::initDataStructure();
 x_object::initDataStructure();
