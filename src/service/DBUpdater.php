@@ -30,6 +30,8 @@ class DBUpdater {
     const GPSHEET_NAME = 'Госпрограмма';
     const PREVDATA_NAME = 'База прошлых лет';
     
+    const NOT_MY_FILE_EXCEPTION = 'Not my file';
+    
     protected string $last_cell_checked;
     
     private $year_cells = [
@@ -131,19 +133,14 @@ class DBUpdater {
     ];
 
 
-    public function update(string $file_path) {
-    
-        if (!file_exists($file_path)) {
-            throw new \Exception('File not found: '. $file_path);
+    public function update(Spreadsheet &$spreadsheet) {
+            
+        $sheet = $spreadsheet->getSheetByName(static::WORKSHEET_NAME);
+        if (!$sheet) {
+            throw new \Exception(static::NOT_MY_FILE_EXCEPTION);
         }
     
         $this->truncateDB();
-        
-        $spreadsheet = IOFactory::load($file_path, IReader::READ_DATA_ONLY, [IOFactory::READER_XLS, IOFactory::READER_XLSX]);
-        $sheet = $spreadsheet->getSheetByName(static::WORKSHEET_NAME);
-        if (!$sheet) {
-            throw new \Exception('Не найден лист '. static::WORKSHEET_NAME);
-        }
         $this->updateDB($sheet);
 
         $sheet_prev = $spreadsheet->getSheetByName(static::PREVDATA_NAME);
@@ -162,7 +159,7 @@ class DBUpdater {
 
     }
     
-    protected function updateGP(?Worksheet $sheet) {
+    protected function updateGP(?Worksheet &$sheet) {
         
         $column = 1;
         $row = 6;
@@ -191,7 +188,7 @@ class DBUpdater {
         }
     }
     
-    protected function updatePrev(?Worksheet $sheet) {
+    protected function updatePrev(?Worksheet &$sheet) {
         
         $row_iterator = $sheet->getRowIterator(7);
         $row_num = 6; // Для выдачи номера строки с ошибкой
@@ -230,11 +227,8 @@ class DBUpdater {
         }
     }
     
-    protected function updateDB(?Worksheet $sheet) {
+    protected function updateDB(Worksheet &$sheet) {
         
-        if (!$sheet) {
-            throw new \Exception('Не найден лист '. self::WORKSHEET_NAME);
-        }
         $this->loadDB($sheet);
         
     }
@@ -264,7 +258,7 @@ class DBUpdater {
         DB::exec($sql);
     }
     
-    protected function loadDB(Worksheet $sheet) {
+    protected function loadDB(Worksheet &$sheet) {
     
         
         //$data =  $sheet->toArray('');
@@ -291,8 +285,7 @@ class DBUpdater {
                 ///
                 $omsu = new x_omsu(['name' => $this->checkCell("Округ", $cells[0])], true);
                 if ($omsu->isNew()) {
-                    error_log("Skipped as unknown OMSU name: $cells[0]");
-                    continue;
+                    throw new \Exception("Не известный ОМСУ: $cells[0]");
                 }
                 if (preg_match("/[Пп][Рр][Оо][Чч][Ее][Ее]/", $cells[3])) {
                     error_log("Skipped as status is $cells[3]");

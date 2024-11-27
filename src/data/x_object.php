@@ -23,7 +23,7 @@ class x_object extends DBObject {
         'gasu_date' => 'DATETIME',
 //        'report_status1' => 'VARCHAR(64)',
 //        'report_status2' => 'VARCHAR(64)',
-        'ready_percent' => 'DECIMAL',
+        'ready_percent' => 'DECIMAL(10,2)',
         'object_char' => 'VARCHAR(64)',
         'type' => 'VARCHAR(64)',
         'period' => 'VARCHAR(64)',

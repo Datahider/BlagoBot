@@ -3,24 +3,6 @@
 use losthost\telle\Bot;
 use losthost\BotView\BotView;
 
-use losthost\BlagoBot\handlers\PreMessage;
-use losthost\BlagoBot\handlers\MessageAuth;
-use losthost\BlagoBot\handlers\CommandStart;
-use losthost\BlagoBot\handlers\MessageFile2;
-use losthost\BlagoBot\handlers\CommandUpdate;
-use losthost\BlagoBot\handlers\CommandUsers;
-use losthost\BlagoBot\handlers\CommandXUsers;
-use losthost\BlagoBot\handlers\CommandDigits;
-use losthost\BlagoBot\handlers\CommandTest;
-use losthost\BlagoBot\handlers\CommandHelp;
-use losthost\BlagoBot\handlers\CommandStat;
-
-use losthost\BlagoBot\handlers\PreCallback;
-use losthost\BlagoBot\handlers\CallbackAddUser;
-use losthost\BlagoBot\handlers\CallbackInlineButton;
-use losthost\BlagoBot\handlers\CallbackMakeReport;
-use losthost\BlagoBot\handlers\CallbackEditUser;
-
 use losthost\BlagoBot\data\user;
 use losthost\BlagoBot\data\menu;
 use losthost\BlagoBot\data\report;
@@ -69,24 +51,24 @@ report_param_value::initDataStructure();
 Bot::param('superadmin', 203645978);
 Bot::param('topmenu_id', 1);
 
-Bot::addHandler(PreMessage::class);
-Bot::addHandler(MessageAuth::class);
-Bot::addHandler(CommandStart::class);
-Bot::addHandler(MessageFile2::class);
-Bot::addHandler(CommandUpdate::class);
-Bot::addHandler(CommandUsers::class);
-Bot::addHandler(CommandXUsers::class);
-Bot::addHandler(CommandDigits::class);
-Bot::addHandler(CommandTest::class);
-Bot::addHandler(CommandHelp::class);
-Bot::addHandler(CommandStat::class);
+Bot::addHandler(\losthost\BlagoBot\handlers\PreMessage::class);
+Bot::addHandler(\losthost\BlagoBot\handlers\MessageAuth::class);
+Bot::addHandler(losthost\BlagoBot\handlers\CommandStart::class);
 
+Bot::addHandler(losthost\BlagoBot\handlers\MessageFiles::class);
 
-Bot::addHandler(PreCallback::class);
-Bot::addHandler(CallbackAddUser::class);
-Bot::addHandler(CallbackInlineButton::class);
-Bot::addHandler(CallbackMakeReport::class);
-Bot::addHandler(CallbackEditUser::class);
+Bot::addHandler(losthost\BlagoBot\handlers\CommandUsers::class);
+Bot::addHandler(\losthost\BlagoBot\handlers\CommandXUsers::class);
+Bot::addHandler(\losthost\BlagoBot\handlers\CommandDigits::class);
+Bot::addHandler(\losthost\BlagoBot\handlers\CommandTest::class);
+Bot::addHandler(losthost\BlagoBot\handlers\CommandHelp::class);
+Bot::addHandler(\losthost\BlagoBot\handlers\CommandStat::class);
+
+Bot::addHandler(\losthost\BlagoBot\handlers\PreCallback::class);
+Bot::addHandler(\losthost\BlagoBot\handlers\CallbackAddUser::class);
+Bot::addHandler(\losthost\BlagoBot\handlers\CallbackInlineButton::class);
+Bot::addHandler(\losthost\BlagoBot\handlers\CallbackMakeReport::class);
+Bot::addHandler(losthost\BlagoBot\handlers\CallbackEditUser::class);
 
 Bot::run();
 

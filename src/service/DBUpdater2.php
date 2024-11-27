@@ -8,36 +8,24 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\IReader;
 use losthost\BlagoBot\data\x_responsible;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class DBUpdater2 extends DBUpdater {
     
     const  WORKSHEET_NAME = 'База';
 
-    public function update(string $file_path) {
+    public function update(Spreadsheet &$spreadsheet) {
     
-        if (!file_exists($file_path)) {
-            throw new \Exception('File not found: '. $file_path);
-        }
-    
-        $spreadsheet = IOFactory::load($file_path, IReader::READ_DATA_ONLY, [IOFactory::READER_XLS, IOFactory::READER_XLSX]);
         $sheet = $spreadsheet->getSheetByName(static::WORKSHEET_NAME);
         if (!$sheet) {
-            throw new \Exception('Не найден лист '. static::WORKSHEET_NAME);
+            throw new \Exception(static::NOT_MY_FILE_EXCEPTION);
         }
         $this->updateDB($sheet);
 
     }
     
-    protected function updateDB($sheet) {
-        $this->loadDB($sheet);
-    }
-    
-    protected function loadDB(?\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $sheet) {
+    protected function loadDB(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet &$sheet) {
 
-        if (!$sheet) {
-            throw new \Exception('Не найден лист '. self::WORKSHEET_NAME);
-        }
-        
         $row_iterator = $sheet->getRowIterator(4);
         $row_num = 3;
         
@@ -49,7 +37,6 @@ class DBUpdater2 extends DBUpdater {
                 $cells[] = $cell->getValue();
             }
             
-            error_log($cells[1]);
             if (!preg_match("/^\d+\.\d+$/", $cells[1])) {
                 error_log("Incorrect uin: $cells[1]");
                 continue;
