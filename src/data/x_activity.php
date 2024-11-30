@@ -13,4 +13,8 @@ class x_activity extends DBObject {
         'PRIMARY KEY' => 'id',
         'UNIQUE INDEX GASU_CODE' => 'gasu_code' 
     ];
+    
+    public function getId() {
+        return $this->id;
+    }
 }

@@ -53,4 +53,8 @@ class x_object extends DBObject {
         'ksmr_fact' => 'DATETIME',
         'PRIMARY KEY' => 'id'
     ];
+    
+    public function getId() {
+        return $this->id;
+    }
 }

@@ -10,6 +10,10 @@ use losthost\BlagoBot\service\ReportSummary;
 
 class ReportUsers extends AbstractReport {
     
+    protected function initParams() {
+        $this->params = null;
+    }
+
     protected function checkParamErrors($params): false|array {
         return false;
     }

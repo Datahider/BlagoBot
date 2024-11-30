@@ -16,4 +16,8 @@ class x_category extends DBObject {
     public function getTitle() {
         return $this->name;
     }
+    
+    public function getId() {
+        return $this->id;
+    }
 }

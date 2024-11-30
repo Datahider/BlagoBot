@@ -18,4 +18,8 @@ class x_omsu extends DBObject {
     public function getTitle() {
         return $this->name;
     }
+    
+    public function getId() {
+        return $this->id;
+    }
 }

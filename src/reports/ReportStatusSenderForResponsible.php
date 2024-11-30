@@ -181,6 +181,10 @@ class ReportStatusSenderForResponsible extends ReportStatusSender {
                     object.id
                 FIN;    
 
+    protected function initParams() {
+        $this->params = null;
+    }
+
     protected function getWhere($params) {
         return isset($params['responsible']) ? 'responsible.id IN ('. implode(',', $params['responsible']). ')' : '1';
     }

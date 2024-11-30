@@ -30,6 +30,10 @@ class ReportObjectsByActivity extends AbstractReport {
     protected bool $rest          = false;
     protected bool $topay         = false;
 
+    protected function initParams() {
+        $this->params = null;
+    }
+
     protected function checkParamErrors($params): false|array {
         
         foreach ($params['data'] as $value) {

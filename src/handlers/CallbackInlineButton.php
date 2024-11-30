@@ -17,6 +17,7 @@ use losthost\DB\DBValue;
 use losthost\BlagoBot\data\user;
 use losthost\BlagoBot\data\x_omsu;
 use Exception;
+use losthost\BlagoBot\params\AbstractParamDescription;
 
 class CallbackInlineButton extends AbstractHandlerCallback {
     
@@ -47,7 +48,9 @@ class CallbackInlineButton extends AbstractHandlerCallback {
                     Bot::$session->set('command', $report->id);
                 }
 
-                $this->setDefaultValues($report);
+                if (!$report->setDefaultParamValues()) {
+                    $this->setDefaultValues($report);
+                }
                 $view = new ReportSetupView($report);
                 $view->show($callback_query->getMessage()->getMessageId());
                 break;
@@ -55,10 +58,19 @@ class CallbackInlineButton extends AbstractHandlerCallback {
                 $view = new ReportParamView($this->button->getObject());
                 $view->show($callback_query->getMessage()->getMessageId());
                 break;
+            case InlineButton::MB_NEW_PARAM:
+                $view = new ReportParamView($this->button->getObject());
+                $view->show($callback_query->getMessage()->getMessageId());
+                break;
             case InlineButton::MB_VALUE:
+            case InlineButton::MB_NEW_VALUE:
                 $this->updateParamStoredData();
                 
-                $report = new report(['id' => $this->button->getParam()->report]);
+                if (is_a($this->button->getParam(), AbstractParamDescription::class)) {
+                    $report = new report(['handler_class' => $this->button->getParam()->getReportClass()]);
+                } else {
+                    $report = new report(['id' => $this->button->getParam()->report]);
+                }
 
                 if ($report->isFastSelect()) {
                     $builder_class = $report->handler_class;
@@ -69,7 +81,7 @@ class CallbackInlineButton extends AbstractHandlerCallback {
                 } elseif ($report->hasOneParam()) {
                     $view = new ReportSetupView($report);
                     $view->show($callback_query->getMessage()->getMessageId());
-                } elseif ($this->button->getParam()->is_multiple_choise) {
+                } elseif ($this->button->getParam()->isMultipleChoice()) {
                     $view = new ReportParamView($this->button->getParam());
                     $view->show($callback_query->getMessage()->getMessageId());
                 } else {
@@ -77,6 +89,7 @@ class CallbackInlineButton extends AbstractHandlerCallback {
                     $view->show($callback_query->getMessage()->getMessageId());
                 }
                 break;
+                
         }
         
         try { Bot::$api->answerCallbackQuery($callback_query->getId()); } catch (\Exception $e) {}
@@ -124,15 +137,15 @@ class CallbackInlineButton extends AbstractHandlerCallback {
         $param = $this->button->getParam();
         $value = $this->button->getObject();
         
-        $param_value = $value->id;
-        if (empty($param_values[$param->name]) || !$param->is_multiple_choise) {
-            $param_values[$param->name] = [$param_value];
+        $param_value = $value->getId();
+        if (empty($param_values[$param->getName()]) || !$param->isMultipleChoice()) {
+            $param_values[$param->getName()] = [$param_value];
         } else {
-            $found = array_search($param_value, $param_values[$param->name]);
+            $found = array_search($param_value, $param_values[$param->getName()]);
             if ($found === false) {
-                $param_values[$param->name][] = $param_value;
+                $param_values[$param->getName()][] = $param_value;
             } else {
-                unset($param_values[$param->name][$found]);
+                unset($param_values[$param->getName()][$found]);
             }
         }
         Bot::$session->set('data', $param_values);

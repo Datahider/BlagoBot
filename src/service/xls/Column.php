@@ -38,6 +38,10 @@ class Column {
         $this->totals = [];
     }
     
+    public function setTotalsCollector(AbstractTotalsCollector $collector) {
+        $this->collect_totals = $collector;
+    }
+    
     public function getTitle() {
         return $this->title;
     }

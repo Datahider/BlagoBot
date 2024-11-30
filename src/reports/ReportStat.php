@@ -14,6 +14,10 @@ class ReportStat extends AbstractReport {
         return false;
     }
 
+    protected function initParams() {
+        $this->params = null;
+    }
+
     protected function reportColumns(): array {
         
         $totals_format = [CellFormat::GeneralTotal, CellFormat::GeneralSubtotal];

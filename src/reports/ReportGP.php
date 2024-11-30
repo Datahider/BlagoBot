@@ -687,4 +687,8 @@ class ReportGP extends AbstractReport {
         FROM vt_result AS result;
         FIN;
     }
+
+    protected function initParams() {
+        $this->params = null;
+    }
 }

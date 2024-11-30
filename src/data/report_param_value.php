@@ -21,4 +21,8 @@ class report_param_value extends DBObject {
     public function getTitle() {
         return $this->title;
     }
+    
+    public function getId() {
+        return $this->id;
+    }
 }

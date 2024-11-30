@@ -13,6 +13,10 @@ use losthost\BlagoBot\data\x_omsu;
  */
 class ReportObjectsForOmsu extends ReportObjectsByOmsu {
     
+    protected function initParams() {
+        $this->params = null;
+    }
+
     protected function getOmsuIds() {
         
         global $b_user;

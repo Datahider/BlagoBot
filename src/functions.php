@@ -239,3 +239,30 @@ function log_memory_usage() {
     
     error_log("memory: $usage Mb; real: $real Mb;");
 }
+
+function getClassIndex($object_name_index) {
+    
+    $known = [
+        params\ParamDescriptionOmsu::class,
+        params\ParamDescriptionOmsuAll::class,
+        params\ParamDescriptionPeriod::class,
+        
+        reports\ReportReady::class,
+    ];
+    
+    if (is_numeric($object_name_index)) {
+        return isset($known[$object_name_index]) ? $known[$object_name_index] : null;
+    } elseif (is_string($object_name_index)) {
+        $result = array_search($object_name_index, $known);
+        if ($result === false) {
+            return null;
+        }
+        return $result;
+    } else {
+        $result = array_search(get_class($object_name_index), $known);
+        if ($result === false) {
+            return null;
+        }
+        return $result;
+    }
+}

@@ -29,4 +29,8 @@ class menu extends DBObject {
         $children = new DBList(menu::class, 'is_active = 1 AND parent = ? AND accessed_by LIKE ? ORDER BY sort', [$this->id, $accessed_by]);
         return $children->asArray();
     }
+    
+    public function getTitle() {
+        return $this->title;
+    }
 }

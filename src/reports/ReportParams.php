@@ -21,42 +21,49 @@ class ReportParams {
         
         foreach ($report->paramsArray() as $param) {
             
-            $this->params[$param->name] = [
-                'name' => $param->name, 
-                'title' => $param->title, 
+            $this->params[$param->getName()] = [
+                'name' => $param->getName(), 
+                'title' => $param->getTitle(), 
                 'values' => []
             ];
             
-            if (!isset($session_params[$param->name])) {
+            if (!isset($session_params[$param->getName()])) {
                 continue;
             }
             
-            foreach ($session_params[$param->name] as $value_id) {
-                if ($param->value_set == 'omsu') {
+            foreach ($session_params[$param->getName()] as $value_id) {
+                if ($param->getValueSet() == 'omsu') {
                     $value = new x_omsu(['id' => $value_id]);
-                    $this->params[$param->name]['values'][] = [
+                    $this->params[$param->getName()]['values'][] = [
                         'id' => $value->id, 
                         'title' => $value->name, 
                         'value' => $value->name
                     ];
-                } elseif ($param->value_set == 'activity') {
+                } elseif ($param->getValueSet() == 'activity') {
                     $value = new x_category(['id' => $value_id]);
-                    $this->params[$param->name]['values'][] = [
+                    $this->params[$param->getName()]['values'][] = [
                         'id' => $value->id, 
                         'title' => $value->name, 
                         'value' => $value->name
                     ];
-                } elseif (is_a($param->value_set, \losthost\DB\DBObject::class, true)) {
+                } elseif (is_a($param->getValueSet(), \losthost\DB\DBObject::class, true)) {
                     $class = $param->value_set;
                     $value = new $class(['id' => $value_id]);
-                    $this->params[$param->name]['values'][] = [
+                    $this->params[$param->getName()]['values'][] = [
                         'id' => $value->id, 
                         'title' => $value->getTitle(), 
                         'value' => $value->getValue()
                     ];
+                } elseif (is_array($param->getValueSet())) {
+                    $value = $param->valueByValue($value_id);
+                    $this->params[$param->getName()]['values'][] = [
+                        'id' => $value->getId(),
+                        'title' => $value->getTitle(),
+                        'value' => $value->getValue()
+                    ];
                 } else {
                     $value = new report_param_value(['id' => $value_id]);
-                    $this->params[$param->name]['values'][] = [
+                    $this->params[$param->getName()]['values'][] = [
                         'id' => $value->id, 
                         'title' => $value->title, 
                         'value' => $value->value

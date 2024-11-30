@@ -6,6 +6,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use losthost\BlagoBot\data\x_object;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use losthost\BlagoBot\data\x_responsible;
 
 class DBUpdater3 extends DBUpdater2 {
 
@@ -34,6 +35,7 @@ class DBUpdater3 extends DBUpdater2 {
                 $object = new x_object(['uin' => $m[1]]);
                 $object->ready_percent = $cells[8];
 
+                $object->x_responsible_id = x_responsible::getByFio($cells[1])->id;
                 $object->open_date_planned = $cells[6] ? Date::excelToDateTimeObject($cells[6]) : null;
                 $object->open_date_fact = $cells[7] ? Date::excelToDateTimeObject($cells[7]) : null;
                 $object->write();

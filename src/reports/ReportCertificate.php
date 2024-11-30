@@ -37,6 +37,9 @@ class ReportCertificate extends AbstractReport {
     protected array $years;
     protected array $omsu_names;
 
+    protected function initParams() {
+        $this->params = null;
+    }
 
     protected function checkParamErrors($params): false|array {
         $this->years = [];

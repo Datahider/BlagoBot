@@ -44,8 +44,8 @@ class DBUpdater2 extends DBUpdater {
             
             try {
                 $object = new x_object(['uin' => $cells[1]]);
-                $object->x_responsible_id = x_responsible::getByFio($cells[6])->id;
-                $object->open_date_fact = $cells[9] ? Date::excelToDateTimeObject($cells[9]) : null;
+//                $object->x_responsible_id = x_responsible::getByFio($cells[6])->id;
+//                $object->open_date_fact = $cells[9] ? Date::excelToDateTimeObject($cells[9]) : null;
                 $object->moge_in_plan = $cells[18] ? Date::excelToDateTimeObject($cells[18]) : null;
                 $object->moge_in_fact = $cells[20] ? Date::excelToDateTimeObject($cells[20]) : null;
                 $object->moge_out_plan = $cells[21] ? Date::excelToDateTimeObject($cells[21]) : null;

@@ -46,6 +46,13 @@ class CallbackMakeReport extends AbstractHandlerCallback {
     }
     
     protected function mandatoryParamsOk(report $report) {
+        
+        $report_handler_class = $report->handler_class;
+        $report_handler = new $report_handler_class();
+        if ($report_handler->getParams() !== null) {
+            return $report_handler->areMandatoryOk();
+        }
+        
         $mandatory = new DBList(report_param::class, ['report' => $report->id, 'is_mandatory' => 1]);
         $param_data = Bot::$session->get('data');
         foreach ($mandatory->asArray() as $param) {

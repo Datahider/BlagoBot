@@ -54,4 +54,24 @@ class report_param extends DBObject {
         }
         return $values->asArray();
     }
+    
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getTitle() {
+        return $this->title;
+    }
+    
+    public function isMandatory() {
+        return $this->is_mandatory;
+    }
+    
+    public function isMultipleChoice() {
+        return $this->is_multiple_choise;
+    }
+
+    public function getValueSet() {
+        return $this->value_set;
+    }
 }

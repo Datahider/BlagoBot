@@ -1,7 +1,7 @@
-Установка параметра <b><?=$param->title;?></b> для отчета «<?=$report->title;?>»
+Установка параметра <b><?=$param->getTitle();?></b> для отчета «<?=$report->getTitle();?>»
 
 <?php
-if ($param->is_multiple_choise) {
+if ($param->isMultipleChoice()) {
     echo 'Отметьте необходимые значения и нажмите кнопку «Назад»';
 } else {
     echo 'Выберите значение параметра';

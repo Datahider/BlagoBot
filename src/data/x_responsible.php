@@ -37,6 +37,10 @@ class x_responsible extends DBObject {
     public function getValue() {
         return $this->getTitle();
     }
+    
+    public function getId() {
+        return $this->id;
+    }
 }
 
 

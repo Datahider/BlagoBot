@@ -21,9 +21,16 @@ class report extends DBObject {
     ];
     
     public function paramsArray() {
+
+        $param_handler_class = $this->handler_class;
+        $ph = new $param_handler_class;
         
-        $params = new DBList(report_param::class, "report = ? AND is_active = 1 ORDER BY sort, title", $this->id);
-        return $params->asArray();
+        if (is_null($ph->getParams())) {
+            $params = new DBList(report_param::class, "report = ? AND is_active = 1 ORDER BY sort, title", $this->id);
+            return $params->asArray();
+        }
+        
+        return $ph->getParams();
     }
     
     public function hasNoParams() {
@@ -37,5 +44,21 @@ class report extends DBObject {
     public function isFastSelect() {
         $params = $this->paramsArray();
         return count($params) == 1 && !$params[0]->is_multiple_choise; 
+    }
+    
+    public function setDefaultParamValues() {
+        $report_handler = $this->handler_class;
+        
+        $ph = new $report_handler();
+        if ($ph->getParams() === null) {
+            return false;
+        }
+        
+        $ph->setDefaultParamValues();
+        return true;
+    }
+    
+    public function getTitle() {
+        return $this->title;
     }
 }

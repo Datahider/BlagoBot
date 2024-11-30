@@ -10,7 +10,11 @@ use losthost\telle\Bot;
 use losthost\BlagoBot\data\x_omsu;
 use losthost\BlagoBot\data\x_category;
 use losthost\BlagoBot\data\x_responsible;
+use losthost\BlagoBot\params\AbstractParamDescription;
+use losthost\BlagoBot\params\ParamValue;
 use Exception;
+
+use function \losthost\BlagoBot\getClassIndex;
 
 class InlineButton {
     
@@ -18,6 +22,8 @@ class InlineButton {
     const MB_REPORT = 1;
     const MB_PARAM = 2;
     const MB_VALUE = 3;
+    const MB_NEW_PARAM = 4;
+    const MB_NEW_VALUE = 5;
     
     protected $type;
     protected $object;
@@ -30,7 +36,7 @@ class InlineButton {
 
 
     // Interface
-public function __construct(menu|report|report_param|report_param_value|x_omsu|x_category|x_responsible|string $object, ?report_param $param=null) {
+public function __construct(ParamValue|AbstractParamDescription|menu|report|report_param|report_param_value|x_omsu|x_category|x_responsible|string $object, null|report_param|AbstractParamDescription $param=null) {
         if (is_a($object, menu::class)) {
             $this->type = self::MB_SUBMENU;
         } elseif (is_a($object, report::class)) {
@@ -45,6 +51,10 @@ public function __construct(menu|report|report_param|report_param_value|x_omsu|x
             $this->type = self::MB_VALUE;
         } elseif (is_a($object, x_responsible::class)) {
             $this->type = self::MB_VALUE;
+        } elseif (is_a($object, AbstractParamDescription::class)) {
+            $this->type = self::MB_NEW_PARAM;
+        } elseif (is_a($object, ParamValue::class)) {
+            $this->type = self::MB_NEW_VALUE;
         } elseif (is_string($object)) {
             $this->setupByString($object);
             return;
@@ -66,6 +76,20 @@ public function __construct(menu|report|report_param|report_param_value|x_omsu|x
                 break;
             case self::MB_PARAM:
                 $data = "param_{$this->object->id}";
+                break;
+            case self::MB_NEW_PARAM:
+                $report_class = $this->object->getReportClass();
+                $report_index = getClassIndex($report_class);
+                $report = new $report_class();
+                $param_index = $report->getParamIndexByClass($this->object);
+                $data = "newparam_{$report_index}_$param_index";
+                break;
+            case self::MB_NEW_VALUE:
+                $report_class = $this->param->getReportClass();
+                $report_index = getClassIndex($report_class);
+                $report = new $report_class();
+                $param_index = $report->getParamIndexByClass($this->param);
+                $data = "newvalue_{$report_index}_{$param_index}_{$this->object->getValue()}";
                 break;
             case self::MB_VALUE:
                 $data = "value_{$this->object->id}_{$this->param->id}";
@@ -103,7 +127,7 @@ public function __construct(menu|report|report_param|report_param_value|x_omsu|x
         
         $m = [];
         
-        if (preg_match("/^(submenu_|report_|param_)(\d+)$/", $string, $m)) {
+        if (preg_match("/^(submenu_|report_|param_)(\S+)$/", $string, $m)) {
             $this->param = null;
             switch ($m[1]) {
                 case 'submenu_':
@@ -123,6 +147,17 @@ public function __construct(menu|report|report_param|report_param_value|x_omsu|x
             $this->object = new report_param_value(['id' => $m[1]]);
             $this->param = new report_param(['id' => $m[2]]);
             $this->type = self::MB_VALUE;
+        } elseif (preg_match("/^newparam_(\d+)_(\d+)$/", $string, $m)) {
+            $report_class = getClassIndex($m[1]);
+            $report = new $report_class();
+            $this->object = $report->getParams()[$m[2]];
+            $this->type = self::MB_NEW_PARAM;
+        } elseif (preg_match("/^newvalue_(\d+)_(\d+)_(.+)$/", $string, $m)) {
+            $report_class = getClassIndex($m[1]);
+            $report = new $report_class();
+            $this->param = $report->getParams()[$m[2]];
+            $this->object = $this->param->valueByValue($m[3]);
+            $this->type = self::MB_NEW_VALUE;
         } else {
             throw new Exception('Invalid button data.');
         }
@@ -131,20 +166,22 @@ public function __construct(menu|report|report_param|report_param_value|x_omsu|x
         
         switch ($this->type) {
             case self::MB_VALUE:
+            case self::MB_NEW_VALUE:
                 return $this->getValueIcon(). $this->icon_delimiter. $this->object->getTitle();
             case self::MB_PARAM:
+            case self::MB_NEW_PARAM:
                 $text = $this->getParamIcon();
-                return $text ? $text. $this->icon_delimiter. $this->object->title : $this->object->title;
+                return $text ? $text. $this->icon_delimiter. $this->object->getTitle() : $this->object->getTitle();
             default:
-                return $this->object->title;
+                return $this->object->getTitle();
         }
     }
     protected function getValueIcon() {
         $param_values = Bot::$session->get('data');
         
-        if (empty($param_values[$this->param->name])) {
+        if (empty($param_values[$this->param->getName()])) {
             return $this->icon_unselected;
-        } elseif (array_search($this->object->id, $param_values[$this->param->name]) === false) {
+        } elseif (array_search($this->object->getId(), $param_values[$this->param->getName()]) === false) {
             return $this->icon_unselected;
         }
         
@@ -154,7 +191,7 @@ public function __construct(menu|report|report_param|report_param_value|x_omsu|x
     protected function getParamIcon() {
         $param_values = Bot::$session->get('data');
         
-        if (empty($param_values[$this->object->name]) && $this->object->is_mandatory) {
+        if (empty($param_values[$this->object->getName()]) && $this->object->isMandatory()) {
             return $this->icon_warning;
         }
         

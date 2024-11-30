@@ -9,19 +9,20 @@ use losthost\telle\Bot;
 use losthost\BlagoBot\data\user;
 use losthost\DB\DBList;
 use losthost\BlagoBot\data\x_omsu;
+use losthost\BlagoBot\params\AbstractParamDescription;
 
 class ReportParamView {
     
     protected $param;
     
-    public function __construct(report_param $param) {
+    public function __construct(report_param|AbstractParamDescription $param) {
         $this->param = $param;
     }
     
     public function button() {
         
         $button = [
-            'text' => $this->buttonIcon(). $this->param->title,
+            'text' => $this->buttonIcon(). $this->param->getTitle(),
             'callback_data' => 'param_'. $this->param->id
         ];
         return $button;
@@ -42,6 +43,11 @@ class ReportParamView {
     }
     
     protected function viewData() {
+        
+        if (is_a($this->param, AbstractParamDescription::class)) {
+            return $this->newViewData();
+        }
+
         global $b_user;
         
         $data['report'] = new report(['id' => $this->param->report]);
@@ -52,6 +58,14 @@ class ReportParamView {
         } else {
             $data['values'] = $this->param->valuesArray();
         }
+        return $data;
+    }
+    
+    protected function newViewData() {
+        $report_class = $this->param->getReportClass();
+        $data['report'] = new report(['handler_class' => $report_class]);
+        $data['param'] = $this->param;
+        $data['values'] = $this->param->getValueSet();
         return $data;
     }
 }
