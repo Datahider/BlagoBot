@@ -102,5 +102,9 @@ abstract class AbstractReport {
             ];
         }
     }
+    
+    public function getCustomResultViewClass() : ?string {
+        return null;
+    }
    
 }

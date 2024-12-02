@@ -6,6 +6,7 @@ use losthost\BlagoBot\params\ParamDescriptionPeriod;
 use losthost\BlagoBot\params\ParamDescriptionOmsuAll;
 use losthost\BlagoBot\params\ParamDescriptionCategory2All;
 use losthost\BlagoBot\params\ParamDescriptionResponsibleAll;
+use losthost\BlagoBot\params\ParamDescriptionRiskyOnly;
 use losthost\BlagoBot\params\ParamDescriptionReadyGroupBy;
 use losthost\BlagoBot\params\ParamDescriptionReadySortBy;
 
@@ -41,6 +42,7 @@ class ReportReady extends AbstractReport {
                 AND o.category2_name IN (%cat2%)
                 AND o.x_responsible_id IN (%responsible%)
                 AND o.omsu_id IN (%omsu%)
+                AND (%risky_only% = 0 OR o.open_date_fact IS NULL AND o.open_date_planned < NOW() OR o.open_date_fact IS NOT NULL AND o.ready_percent < 100)
             ORDER BY    
                 %group_order%;
             
@@ -52,9 +54,9 @@ class ReportReady extends AbstractReport {
             DROP TEMPORARY TABLE IF EXISTS vt_result;
             FIN;
 
-    protected int $all;
-    protected int $open;
-    protected int $not_open;
+    protected array $all;
+    protected array $open;
+    protected array $not_open;
 
 
     protected function checkParamErrors($params): false|array {
@@ -111,6 +113,7 @@ class ReportReady extends AbstractReport {
             $group_order = $params['groupby'][0]. ', '. $group_order;
         }
         $sql = str_replace('%group_order%', $group_order, $sql);
+        $sql = str_replace('%risky_only%', (string)$params['risky_only'], $sql);
         
         $sth = DB::prepare($sql);
         $sth->execute();
@@ -119,27 +122,55 @@ class ReportReady extends AbstractReport {
         $sth->nextRowset();
 
         $result = $sth->fetchAll(\PDO::FETCH_NUM);
-        $this->all = 0;
-        $this->open = 0;
-        $this->not_open = 0;
+        $this->all = [];
+        $this->open = [];
+        $this->not_open = [];
         
         foreach ($result as $row) {
-            $this->all++;
-            if ($row[6]) {
-                $this->open++;
+            $responsible = $row[1];
+            $open_date_fact = $row[6];
+            
+            isset($this->all['total']) ? $this->all['total']++ : $this->all['total'] = 1;
+            isset($this->all[$responsible]) ? $this->all[$responsible]++ : $this->all[$responsible] = 1;
+            if ($open_date_fact) {
+                isset($this->open['total']) ? $this->open['total']++ : $this->open['total'] = 1;
+                isset($this->open[$responsible]) ? $this->open[$responsible]++ : $this->open[$responsible] = 1;
             } else {
-                $this->not_open++;
+                isset($this->not_open['total']) ? $this->not_open['total']++ : $this->not_open['total'] = 1;
+                isset($this->not_open[$responsible]) ? $this->not_open[$responsible]++ : $this->not_open[$responsible] = 1;
             }
         }
         return $result;
     }
 
     protected function reportSummary($params): \losthost\BlagoBot\service\ReportSummary {
-        return new ReportSummary('Степень готовности объектов', date_create_immutable(), [
-            ['title' => 'Всего объектов', 'value' => $this->all],
-            ['title' => 'Открыто объектов', 'value' => $this->open],
-            ['title' => 'Не открыто объектов', 'value' => $this->not_open],
-        ]);
+        
+        $totals = [
+            ['title' => 'Всего объектов', 'value' => $this->all['total']],
+            ['title' => 'Открыто объектов', 'value' => $this->open['total']],
+            ['title' => 'Не открыто объектов', 'value' => $this->not_open['total']],
+            null,
+            ['title' => 'В том числе по ответственным', 'value' => ''],
+        ];
+        
+        unset($this->all['total']);
+        unset($this->open['total']);
+        unset($this->not_open['total']);
+        
+        ksort($this->all);
+        ksort($this->open);
+        ksort($this->not_open);
+        
+        foreach ($this->all as $key => $value) {
+            $totals[] = null;
+            $totals[] = ['title' => $key, 'value' => ''];
+            $totals[] = ['title' => 'Всего объектов', 'value' => $value];
+            $totals[] = ['title' => 'Открыто объектов', 'value' => empty($this->open[$key])?0:$this->open[$key]];
+            $totals[] = ['title' => 'Не открыто объектов', 'value' => empty($this->not_open[$key])?0:$this->not_open[$key]];
+            
+        }
+        
+        return new ReportSummary('Степень готовности объектов', date_create_immutable(), $totals);
     }
 
     protected function resultType(): int|string {
@@ -152,9 +183,13 @@ class ReportReady extends AbstractReport {
             new ParamDescriptionCategory2All($this),
             new ParamDescriptionResponsibleAll($this),
             new ParamDescriptionOmsuAll($this),
+            new ParamDescriptionRiskyOnly($this),
             new ParamDescriptionReadyGroupBy($this),
             new ParamDescriptionReadySortBy($this),
         ];
     }
     
+    public function getCustomResultViewClass(): ?string {
+        return \losthost\BlagoBot\view\ReportReadyView::class;
+    }
 }

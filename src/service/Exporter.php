@@ -82,7 +82,13 @@ class Exporter {
             $this->current_row++;
             $this->sheet->mergeCells([1, $this->current_row, $last_column, $this->current_row]);
             $cell = $this->sheet->getCell([1,$this->current_row]);
-            $cell->setValue("{$param['title']}: {$param['value']}");
+
+            if (empty($param)) {
+                $cell->setValue(" ");
+            } else {
+                $cell->setValue("{$param['title']}: {$param['value']}");
+            }
+
             $cell->getStyle()->applyFromArray(CellFormat::ReportParams);
         }
 

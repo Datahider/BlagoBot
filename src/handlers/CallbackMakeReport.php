@@ -28,7 +28,13 @@ class CallbackMakeReport extends AbstractHandlerCallback {
             $builder_class = $report->handler_class;
             $builder = new $builder_class;
 
-            $view = new ReportResultView($builder);
+            $viewer = $builder->getCustomResultViewClass();
+            if (!$viewer) {
+                $view = new ReportResultView($builder);
+            } else {
+                $view = new $viewer($builder);
+            }
+            
             $view->show($callback_query->getMessage()->getMessageId());
 
             Bot::$session->set('data', []);

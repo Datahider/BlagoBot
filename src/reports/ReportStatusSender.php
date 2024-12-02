@@ -207,11 +207,11 @@ class ReportStatusSender extends AbstractReport {
     protected int $errors;
     
     protected function initParams() {
-        return null;
+        $this->params = null;
     }
 
     protected function checkParamErrors($params): false|array {
-        $this->params = null;
+        return false;
     }
 
     protected function reportColumns(): array {
