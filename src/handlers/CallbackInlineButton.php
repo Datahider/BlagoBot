@@ -138,7 +138,18 @@ class CallbackInlineButton extends AbstractHandlerCallback {
         $value = $this->button->getObject();
         
         $param_value = $value->getId();
-        if (empty($param_values[$param->getName()]) || !$param->isMultipleChoice()) {
+        if ($param_value == '<=reverse=>') {
+            $new_values = isset($param_values[$param->getName()]) ? $param_values[$param->getName()] : [];
+            foreach ($param->getValueSet() as $v) {
+                $found = array_search($v->getId(), $new_values);
+                if ($found === false) {
+                    $new_values[] = $v->getId();
+                } else {
+                    unset($new_values[$found]);
+                }
+            }
+            $param_values[$param->getName()] = $new_values;
+        } elseif (empty($param_values[$param->getName()]) || !$param->isMultipleChoice()) {
             $param_values[$param->getName()] = [$param_value];
         } else {
             $found = array_search($param_value, $param_values[$param->getName()]);

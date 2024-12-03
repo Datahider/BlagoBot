@@ -156,7 +156,11 @@ public function __construct(ParamValue|AbstractParamDescription|menu|report|repo
             $report_class = getClassIndex($m[1]);
             $report = new $report_class();
             $this->param = $report->getParams()[$m[2]];
-            $this->object = $this->param->valueByValue($m[3]);
+            if ($m[3] == '<=reverse=>') {
+                $this->object = new ParamValue('Инвертировать выбор', '<=reverse=>');
+            } else {
+                $this->object = $this->param->valueByValue($m[3]);
+            }
             $this->type = self::MB_NEW_VALUE;
         } else {
             throw new Exception('Invalid button data.');
