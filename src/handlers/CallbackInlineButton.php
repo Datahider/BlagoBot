@@ -18,6 +18,7 @@ use losthost\BlagoBot\data\user;
 use losthost\BlagoBot\data\x_omsu;
 use Exception;
 use losthost\BlagoBot\params\AbstractParamDescription;
+use losthost\BlagoBot\data\report_param;
 
 class CallbackInlineButton extends AbstractHandlerCallback {
     
@@ -176,5 +177,13 @@ class CallbackInlineButton extends AbstractHandlerCallback {
             }
         }
         Bot::$session->set('data', $param_values);
+    }
+    
+    protected function getValues($param) {
+        if (is_a($param, report_param::class)) {
+            
+        } else {
+            $param->getValueSet();
+        }
     }
 }

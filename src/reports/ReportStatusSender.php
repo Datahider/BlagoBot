@@ -350,7 +350,7 @@ class ReportStatusSender extends AbstractReport {
     
     protected function getSql($query, $params_recipient, $params_omsu) {
         $recipient = $params_recipient[0] == 86 ? 'head_id' : 'vicehead_id';
-        $current_year = date('Y');
+        $current_year = $this->getCurrentYear();
         $where = isset($params_omsu) ? 'omsu.id IN ('. implode(',', $params_omsu). ')' : '1';
     
         

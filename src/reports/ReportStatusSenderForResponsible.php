@@ -201,7 +201,7 @@ class ReportStatusSenderForResponsible extends ReportStatusSender {
         $responsible_view = new DBView($sql_responsible);
         
         $current_date = date_create_immutable()->format(DB::DATE_FORMAT);
-        $current_year = date('Y');
+        $current_year = $this->getCurrentYear();
         
         $objects_view = new DBView($sql_objects);
         
@@ -256,7 +256,7 @@ class ReportStatusSenderForResponsible extends ReportStatusSender {
         
         $responsible_view = new DBView($sql_responsible);
         $current_date = date_create_immutable()->format(DB::DATE_FORMAT);
-        $current_year = date('Y');
+        $current_year = $this->getCurrentYear();
         $objects_view = new DBView($sql_objects, ['current_date' => $current_date]);
         
         while ($responsible_view->next()) {

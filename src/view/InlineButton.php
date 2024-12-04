@@ -144,7 +144,11 @@ public function __construct(ParamValue|AbstractParamDescription|menu|report|repo
                     break;
             }
         } elseif (preg_match("/^value_(\d+)_(\d+)$/", $string, $m)) {
-            $this->object = new report_param_value(['id' => $m[1]]);
+            if ($m[1] == 999999999) {
+                $this->object = new ParamValue('Инвертировать выбор', '<=reverse=>'); 
+            } else {
+                $this->object = new report_param_value(['id' => $m[1]]);
+            }
             $this->param = new report_param(['id' => $m[2]]);
             $this->type = self::MB_VALUE;
         } elseif (preg_match("/^newparam_(\d+)_(\d+)$/", $string, $m)) {
