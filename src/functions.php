@@ -248,6 +248,19 @@ function getClassIndex($object_name_index) {
         params\ParamDescriptionPeriod::class,
         
         reports\ReportReady::class,
+        reports\ReportCertificate::class,
+        reports\ReportCertificateForOmsu::class,
+        reports\ReportGP::class,
+        reports\ReportObjectsByActivity::class,
+        reports\ReportObjectsByOmsu::class,
+        reports\ReportObjectsForOmsu::class,
+        reports\ReportParams::class,
+        reports\ReportStat::class,
+        reports\ReportStatusSender::class,
+        reports\ReportStatusSenderForOmsu::class,
+        reports\ReportStatusSenderForResponsible::class,
+        reports\ReportUsers::class,
+        
     ];
     
     if (is_numeric($object_name_index)) {

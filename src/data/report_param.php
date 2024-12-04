@@ -5,6 +5,7 @@ namespace losthost\BlagoBot\data;
 use losthost\DB\DBObject;
 use losthost\DB\DBList;
 use losthost\BlagoBot\data\report_param_value;
+use losthost\BlagoBot\data\report;
 
 class report_param extends DBObject {
 
@@ -73,5 +74,10 @@ class report_param extends DBObject {
 
     public function getValueSet() {
         return $this->value_set;
+    }
+    
+    public function getReportClass() {
+        $report = new report(['id' => $this->report]);
+        return $report->handler_class;
     }
 }

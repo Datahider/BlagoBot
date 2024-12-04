@@ -27,12 +27,30 @@ class CallbackInlineButton extends AbstractHandlerCallback {
         try {
             $this->button = new InlineButton($callback_query->getData());
         } catch (Exception $ex) {
+            Bot::logException($ex);
             return false;
         }
         return true;
     }
 
     protected function handle(\TelegramBot\Api\Types\CallbackQuery &$callback_query): bool {
+        
+        try {
+            $error = null;
+            $this->processQuery($callback_query);
+        } catch (\Exception $ex) {
+            $error = $ex->getMessage();
+            Bot::logException($ex);
+        } catch (\TypeError $ex) {
+            $error = $ex->getMessage();
+            Bot::logException($ex);
+        }
+        
+        try { Bot::$api->answerCallbackQuery($callback_query->getId(), $error); } catch (\Exception $e) {}
+        return true;
+    }
+    
+    protected function processQuery(\TelegramBot\Api\Types\CallbackQuery &$callback_query) {
         
         switch ($this->button->getType()) {
             case InlineButton::MB_SUBMENU:
@@ -48,6 +66,7 @@ class CallbackInlineButton extends AbstractHandlerCallback {
                     Bot::$session->set('command', $report->id);
                 }
 
+                // TODO - Сделать проверку на наличие класса хендлера отчета. 
                 if (!$report->setDefaultParamValues()) {
                     $this->setDefaultValues($report);
                 }
@@ -91,9 +110,6 @@ class CallbackInlineButton extends AbstractHandlerCallback {
                 break;
                 
         }
-        
-        try { Bot::$api->answerCallbackQuery($callback_query->getId()); } catch (\Exception $e) {}
-        return true;
     }
     
     protected function setDefaultValues(report $report) {

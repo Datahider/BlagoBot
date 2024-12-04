@@ -4,6 +4,7 @@ namespace losthost\BlagoBot\reports;
 
 use losthost\telle\Bot;
 use losthost\BlagoBot\service\ReportSummary;
+use losthost\BlagoBot\data\report_param;
 use Exception;
 use stdClass;
 
