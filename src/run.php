@@ -66,9 +66,9 @@ Bot::addHandler(\losthost\BlagoBot\handlers\CommandStat::class);
 
 Bot::addHandler(\losthost\BlagoBot\handlers\PreCallback::class);
 Bot::addHandler(\losthost\BlagoBot\handlers\CallbackAddUser::class);
-Bot::addHandler(\losthost\BlagoBot\handlers\CallbackInlineButton::class);
 Bot::addHandler(\losthost\BlagoBot\handlers\CallbackMakeReport::class);
 Bot::addHandler(losthost\BlagoBot\handlers\CallbackEditUser::class);
+Bot::addHandler(\losthost\BlagoBot\handlers\CallbackInlineButton::class);
 
 Bot::run();
 

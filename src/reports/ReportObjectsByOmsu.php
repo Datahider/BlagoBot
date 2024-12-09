@@ -11,6 +11,8 @@ use losthost\BlagoBot\data\x_omsu;
 use losthost\DB\DBList;
 use losthost\BlagoBot\service\TotalPercentage;
 use losthost\BlagoBot\service\TotalTrickyPercentage;
+use losthost\BlagoBot\params\ParamDescriptionOmsu;
+use losthost\BlagoBot\params\ParamDescriptionDataIncluded;
 
 class ReportObjectsByOmsu extends AbstractReport {
     
@@ -31,7 +33,10 @@ class ReportObjectsByOmsu extends AbstractReport {
     protected bool $topay         = false;
 
     protected function initParams() {
-        $this->params = null;
+        $this->params = [
+            new ParamDescriptionOmsu($this),
+            new ParamDescriptionDataIncluded($this)
+        ];
     }
     
     protected function checkParamErrors($params): false|array {

@@ -113,7 +113,7 @@ class ReportReady extends AbstractReport {
             $group_order = $params['groupby'][0]. ', '. $group_order;
         }
         $sql = str_replace('%group_order%', $group_order, $sql);
-        $sql = str_replace('%risky_only%', (string)$params['risky_only'], $sql);
+        $sql = str_replace('%risky_only%', (string)$params['risky_only'][0], $sql);
         
         $sth = DB::prepare($sql);
         $sth->execute();
