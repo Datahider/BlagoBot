@@ -31,7 +31,10 @@ class ReportObjectsByActivity extends AbstractReport {
     protected bool $topay         = false;
 
     protected function initParams() {
-        $this->params = null;
+        $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionCategory($this),
+            new \losthost\BlagoBot\params\ParamDescriptionDataIncluded($this),
+        ];
     }
 
     protected function checkParamErrors($params): false|array {

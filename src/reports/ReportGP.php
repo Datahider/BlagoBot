@@ -11,11 +11,11 @@ use losthost\BlagoBot\service\ReportSummary;
 
 class ReportGP extends AbstractReport {
 
-    const ID_FB = 97;
-    const ID_BM = 98;
-    const ID_BMO = 99;
-    const ID_OMSU = 100;
-    const ID_OMSU2 = 101;
+    const ID_FB = 'fb';
+    const ID_BM = 'bm';
+    const ID_BMO = 'bmo';
+    const ID_OMSU = 'omsu';
+    const ID_OMSU2 = 'omsu2';
     
     protected bool $show_fb    = false;
     protected bool $show_bm    = false;
@@ -201,7 +201,7 @@ class ReportGP extends AbstractReport {
                 
         $sql = $this->getSqlQuery();
         
-        $period = (new report_param_value(['id' => $params['period'][0]]))->value;
+        $period = $params['year'][0];
         $sql = str_replace('{:current_year}', $period, $sql);
 
         if (!$this->show_fb) {
@@ -239,7 +239,7 @@ class ReportGP extends AbstractReport {
 
     protected function reportSummary($params): \losthost\BlagoBot\service\ReportSummary {
 
-        $period = (new report_param_value(['id' => $params['period'][0]]))->value;
+        $period = $params['year'][0];
         
         return new ReportSummary(
                 "Статус реализации мероприятий по ГП \"Формирование современной комфортной городской среды\" в $period году", 
@@ -689,6 +689,9 @@ class ReportGP extends AbstractReport {
     }
 
     protected function initParams() {
-        $this->params = null;
+        $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionPeriodSingle($this),
+            new \losthost\BlagoBot\params\ParamDescriptionSources($this)
+        ];
     }
 }
