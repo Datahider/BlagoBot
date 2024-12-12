@@ -207,7 +207,12 @@ class ReportStatusSender extends AbstractReport {
     protected int $errors;
     
     protected function initParams() {
-        $this->params = null;
+        $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionAddressee($this),
+            new \losthost\BlagoBot\params\ParamDescriptionMessageType($this),
+            new \losthost\BlagoBot\params\ParamDescriptionOmsu($this),
+            new \losthost\BlagoBot\params\ParamDescriptionSelfCopy($this)
+        ];
     }
 
     protected function checkParamErrors($params): false|array {

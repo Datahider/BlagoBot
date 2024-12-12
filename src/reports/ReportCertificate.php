@@ -38,7 +38,10 @@ class ReportCertificate extends AbstractReport {
     protected array $omsu_names;
 
     protected function initParams() {
-        $this->params = null;
+        $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionOmsu($this),
+            new \losthost\BlagoBot\params\ParamDescriptionYearFull($this)
+        ];
     }
 
     protected function checkParamErrors($params): false|array {

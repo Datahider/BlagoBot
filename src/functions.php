@@ -260,6 +260,11 @@ function getClassIndex($object_name_index) {
         reports\ReportStatusSenderForOmsu::class,
         reports\ReportStatusSenderForResponsible::class,
         reports\ReportUsers::class,
+        reports\ReportStatusSenderAuto::class,
+        reports\ReportStatusSenderForResponsible::class,
+        reports\ReportStatusSenderNY::class,
+        reports\ReportStatusSenderAutoNY::class,
+        reports\ReportStatusSenderForResponsibleNY::class,
         
     ];
     

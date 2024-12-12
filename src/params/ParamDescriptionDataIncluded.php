@@ -15,7 +15,7 @@ class ParamDescriptionDataIncluded extends AbstractParamDescription {
         ];
         
         $this->defaults = $this->value_set;
-        unset($this->defaults[0]);
+        array_splice($this->defaults, 0, 1);
     }
 
     public function getName(): string {

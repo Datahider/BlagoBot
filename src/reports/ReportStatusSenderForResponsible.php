@@ -182,7 +182,11 @@ class ReportStatusSenderForResponsible extends ReportStatusSender {
                 FIN;    
 
     protected function initParams() {
-        $this->params = null;
+        $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionResponsible($this),
+            new \losthost\BlagoBot\params\ParamDescriptionMessageType($this),
+            new \losthost\BlagoBot\params\ParamDescriptionSelfCopy($this)
+        ];
     }
 
     protected function getWhere($params) {
