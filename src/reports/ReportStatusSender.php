@@ -393,7 +393,7 @@ class ReportStatusSender extends AbstractReport {
         
         $omsu_view = new DBView($sql_omsu);
         $current_date = date_create_immutable()->format(DB::DATE_FORMAT);
-        $current_year = date('Y');
+        $current_year = $this->getCurrentYear();
         $objects_view = new DBView($sql_objects);
         
         while ($omsu_view->next()) {
@@ -447,7 +447,7 @@ class ReportStatusSender extends AbstractReport {
         
         $omsu_view = new DBView($sql_omsu);
         $current_date = date_create_immutable()->format(DB::DATE_FORMAT);
-        $current_year = date('Y');
+        $current_year = $this->getCurrentYear();
         $objects_view = new DBView($sql_objects, ['current_date' => $current_date]);
         
         while ($omsu_view->next()) {
