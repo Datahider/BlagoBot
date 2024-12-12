@@ -14,7 +14,9 @@ use losthost\BlagoBot\data\x_omsu;
 class ReportStatusSenderForOmsu extends ReportStatusSender {
     
     protected function initParams() {
-        $this->params = null;
+        $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionMessageType($this)
+        ];
     }
 
     protected function getOmsuIds() {

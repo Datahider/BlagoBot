@@ -29,4 +29,10 @@ class ReportCertificateForOmsu extends ReportCertificate {
         return parent::checkParamErrors($params);
     }
     
+    protected function initParams() {
+        $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionYearFull($this)
+        ];
+    }
+    
 }

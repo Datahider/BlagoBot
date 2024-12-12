@@ -14,7 +14,9 @@ use losthost\BlagoBot\data\x_omsu;
 class ReportObjectsForOmsu extends ReportObjectsByOmsu {
     
     protected function initParams() {
-        $this->params = null;
+        $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionDataIncluded($this)
+        ];
     }
 
     protected function getOmsuIds() {

@@ -43,7 +43,7 @@ class report extends DBObject {
     
     public function isFastSelect() {
         $params = $this->paramsArray();
-        return count($params) == 1 && !$params[0]->is_multiple_choise; 
+        return count($params) == 1 && !$params[0]->isMultipleChoice(); 
     }
     
     public function setDefaultParamValues() {
