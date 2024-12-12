@@ -46,13 +46,12 @@ class ReportCertificate extends AbstractReport {
 
     protected function checkParamErrors($params): false|array {
         $this->years = [];
-        foreach ($params['certyears'] as $id) {
-            $year = new report_param_value(['id' => $id]);
-            $this->years[] = (int)$year->value;
+        foreach ($params['certyears'] as $value) {
+            $this->years[] = $value;
         }
         
         $this->omsu_names = [];
-        foreach ($params['muni'] as $id) {
+        foreach ($params['omsu'] as $id) {
             $omsu = new x_omsu(['id' => $id]);
             $this->omsu_names[] = $omsu->name;
         }

@@ -25,7 +25,7 @@ class ReportCertificateForOmsu extends ReportCertificate {
     }
     
     protected function checkParamErrors($params): false|array {
-        $params['muni'] = $this->getOmsuIds();
+        $params['omsu'] = $this->getOmsuIds();
         return parent::checkParamErrors($params);
     }
     
