@@ -20,7 +20,7 @@ if (count($report_params) == 0) {
         if ($param->isMandatory()) {
             $title = "<b>$title</b>";
         }
-        $value = $selected_params->paramTitlesAsString($param->getName());
+        $value = str_replace("<", "&lt;", $selected_params->paramTitlesAsString($param->getName()));
         echo "$title: <i>$value</i>\n\n";
     }
 

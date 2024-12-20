@@ -42,7 +42,7 @@ class ReportReady extends AbstractReport {
                 AND o.category2_name IN (%cat2%)
                 AND o.x_responsible_id IN (%responsible%)
                 AND o.omsu_id IN (%omsu%)
-                AND (%risky_only% = 0 OR o.open_date_fact IS NULL AND o.open_date_planned < NOW() OR o.open_date_fact IS NOT NULL AND o.ready_percent < 100)
+                AND (%risky_only% = 0 OR o.open_date_fact IS NULL AND o.open_date_planned < NOW() AND %risky_only% IN (1,3) OR o.open_date_fact IS NOT NULL AND o.ready_percent < 100 AND %risky_only% IN (2,3))
             ORDER BY    
                 %group_order%;
             
