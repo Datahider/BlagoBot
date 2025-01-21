@@ -35,100 +35,106 @@ class DBUpdater {
     protected string $last_cell_checked;
     
     private $year_cells = [
-        26 => ['year' => 0, 'type' => x_year_data2::TYPE_SMR],
-        27 => ['year' => 0, 'type' => x_year_data2::TYPE_PIR],
-        29 => ['year' => 0, 'type' => x_year_data2::TYPE_LIMIT_FB],
-        30 => ['year' => 0, 'type' => x_year_data2::TYPE_LIMIT_BM],
-        31 => ['year' => 0, 'type' => x_year_data2::TYPE_LIMIT_BMO],
-        32 => ['year' => 0, 'type' => x_year_data2::TYPE_LIMIT_OMSU],
+        22 => ['year' => 0, 'type' => x_year_data2::TYPE_SMR],
+        23 => ['year' => 0, 'type' => x_year_data2::TYPE_PIR],
+        25 => ['year' => 0, 'type' => x_year_data2::TYPE_LIMIT_FB],
+        26 => ['year' => 0, 'type' => x_year_data2::TYPE_LIMIT_BM],
+        27 => ['year' => 0, 'type' => x_year_data2::TYPE_LIMIT_BMO],
+        28 => ['year' => 0, 'type' => x_year_data2::TYPE_LIMIT_OMSU],
 
-        33 => ['year' => 1, 'type' => x_year_data2::TYPE_SMR],
-        34 => ['year' => 1, 'type' => x_year_data2::TYPE_PIR],
-        36 => ['year' => 1, 'type' => x_year_data2::TYPE_LIMIT_FB],
-        37 => ['year' => 1, 'type' => x_year_data2::TYPE_LIMIT_BM],
-        38 => ['year' => 1, 'type' => x_year_data2::TYPE_LIMIT_BMO],
-        39 => ['year' => 1, 'type' => x_year_data2::TYPE_LIMIT_OMSU],
+        29 => ['year' => 1, 'type' => x_year_data2::TYPE_SMR],
+        30 => ['year' => 1, 'type' => x_year_data2::TYPE_PIR],
+        32 => ['year' => 1, 'type' => x_year_data2::TYPE_LIMIT_FB],
+        33 => ['year' => 1, 'type' => x_year_data2::TYPE_LIMIT_BM],
+        34 => ['year' => 1, 'type' => x_year_data2::TYPE_LIMIT_BMO],
+        35 => ['year' => 1, 'type' => x_year_data2::TYPE_LIMIT_OMSU],
 
-        40 => ['year' => 2, 'type' => x_year_data2::TYPE_SMR],
-        41 => ['year' => 2, 'type' => x_year_data2::TYPE_PIR],
-        43 => ['year' => 2, 'type' => x_year_data2::TYPE_LIMIT_FB],
-        44 => ['year' => 2, 'type' => x_year_data2::TYPE_LIMIT_BM],
-        45 => ['year' => 2, 'type' => x_year_data2::TYPE_LIMIT_BMO],
-        46 => ['year' => 2, 'type' => x_year_data2::TYPE_LIMIT_OMSU],
+        36 => ['year' => 2, 'type' => x_year_data2::TYPE_SMR],
+        37 => ['year' => 2, 'type' => x_year_data2::TYPE_PIR],
+        39 => ['year' => 2, 'type' => x_year_data2::TYPE_LIMIT_FB],
+        40 => ['year' => 2, 'type' => x_year_data2::TYPE_LIMIT_BM],
+        41 => ['year' => 2, 'type' => x_year_data2::TYPE_LIMIT_BMO],
+        42 => ['year' => 2, 'type' => x_year_data2::TYPE_LIMIT_OMSU],
 
-        47 => ['year' => 3, 'type' => x_year_data2::TYPE_SMR],
-        48 => ['year' => 3, 'type' => x_year_data2::TYPE_PIR],
-        50 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_FB],
-        51 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_BM],
-        52 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_BMO],
-        53 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_OMSU],
+        43 => ['year' => 3, 'type' => x_year_data2::TYPE_SMR],
+        44 => ['year' => 3, 'type' => x_year_data2::TYPE_PIR],
+        46 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_FB],
+        47 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_BM],
+        48 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_BMO],
+        49 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_OMSU],
+        
+        53 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_FB],
+        54 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_BM],
+        55 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_BMO],
+        56 => ['year' => 3, 'type' => x_year_data2::TYPE_LIMIT_OMSU],
+        
     ];
     
     private $contract_cells = [
-        56 => ['year' => 0, 'type' => x_contract_data2::TYPE_RG_FB],
-        57 => ['year' => 0, 'type' => x_contract_data2::TYPE_RG_BM],
-        58 => ['year' => 0, 'type' => x_contract_data2::TYPE_RG_BMO],
-        59 => ['year' => 0, 'type' => x_contract_data2::TYPE_RG_OMSU],
-        60 => ['year' => 0, 'type' => x_contract_data2::TYPE_RG_OMSU2],
+        60 => ['year' => 0, 'type' => x_contract_data2::TYPE_RG_FB],
+        61 => ['year' => 0, 'type' => x_contract_data2::TYPE_RG_BM],
+        62 => ['year' => 0, 'type' => x_contract_data2::TYPE_RG_BMO],
+        63 => ['year' => 0, 'type' => x_contract_data2::TYPE_RG_OMSU],
+        64 => ['year' => 0, 'type' => x_contract_data2::TYPE_RG_OMSU2],
         
-        62 => ['year' => 1, 'type' => x_contract_data2::TYPE_RG_FB],
-        63 => ['year' => 1, 'type' => x_contract_data2::TYPE_RG_BM],
-        64 => ['year' => 1, 'type' => x_contract_data2::TYPE_RG_BMO],
-        65 => ['year' => 1, 'type' => x_contract_data2::TYPE_RG_OMSU],
-        66 => ['year' => 1, 'type' => x_contract_data2::TYPE_RG_OMSU2],
+        66 => ['year' => 1, 'type' => x_contract_data2::TYPE_RG_FB],
+        67 => ['year' => 1, 'type' => x_contract_data2::TYPE_RG_BM],
+        68 => ['year' => 1, 'type' => x_contract_data2::TYPE_RG_BMO],
+        69 => ['year' => 1, 'type' => x_contract_data2::TYPE_RG_OMSU],
+        70 => ['year' => 1, 'type' => x_contract_data2::TYPE_RG_OMSU2],
         
-        68 => ['year' => 2, 'type' => x_contract_data2::TYPE_RG_FB],
-        69 => ['year' => 2, 'type' => x_contract_data2::TYPE_RG_BM],
-        70 => ['year' => 2, 'type' => x_contract_data2::TYPE_RG_BMO],
-        71 => ['year' => 2, 'type' => x_contract_data2::TYPE_RG_OMSU],
-        72 => ['year' => 2, 'type' => x_contract_data2::TYPE_RG_OMSU2],
+        72 => ['year' => 2, 'type' => x_contract_data2::TYPE_RG_FB],
+        73 => ['year' => 2, 'type' => x_contract_data2::TYPE_RG_BM],
+        73 => ['year' => 2, 'type' => x_contract_data2::TYPE_RG_BMO],
+        75 => ['year' => 2, 'type' => x_contract_data2::TYPE_RG_OMSU],
+        76 => ['year' => 2, 'type' => x_contract_data2::TYPE_RG_OMSU2],
         
-        78 => ['year' => 0, 'type' => x_contract_data2::TYPE_NMCK_FB],
-        79 => ['year' => 0, 'type' => x_contract_data2::TYPE_NMCK_BM],
-        80 => ['year' => 0, 'type' => x_contract_data2::TYPE_NMCK_BMO],
-        81 => ['year' => 0, 'type' => x_contract_data2::TYPE_NMCK_OMSU],
-        82 => ['year' => 0, 'type' => x_contract_data2::TYPE_NMCK_OMSU2],
+        82 => ['year' => 0, 'type' => x_contract_data2::TYPE_NMCK_FB],
+        83 => ['year' => 0, 'type' => x_contract_data2::TYPE_NMCK_BM],
+        84 => ['year' => 0, 'type' => x_contract_data2::TYPE_NMCK_BMO],
+        85 => ['year' => 0, 'type' => x_contract_data2::TYPE_NMCK_OMSU],
+        86 => ['year' => 0, 'type' => x_contract_data2::TYPE_NMCK_OMSU2],
         
-        84 => ['year' => 1, 'type' => x_contract_data2::TYPE_NMCK_FB],
-        85 => ['year' => 1, 'type' => x_contract_data2::TYPE_NMCK_BM],
-        86 => ['year' => 1, 'type' => x_contract_data2::TYPE_NMCK_BMO],
-        87 => ['year' => 1, 'type' => x_contract_data2::TYPE_NMCK_OMSU],
-        88 => ['year' => 1, 'type' => x_contract_data2::TYPE_NMCK_OMSU2],
+        88 => ['year' => 1, 'type' => x_contract_data2::TYPE_NMCK_FB],
+        89 => ['year' => 1, 'type' => x_contract_data2::TYPE_NMCK_BM],
+        90 => ['year' => 1, 'type' => x_contract_data2::TYPE_NMCK_BMO],
+        91 => ['year' => 1, 'type' => x_contract_data2::TYPE_NMCK_OMSU],
+        92 => ['year' => 1, 'type' => x_contract_data2::TYPE_NMCK_OMSU2],
         
-        90 => ['year' => 2, 'type' => x_contract_data2::TYPE_NMCK_FB],
-        91 => ['year' => 2, 'type' => x_contract_data2::TYPE_NMCK_BM],
-        92 => ['year' => 2, 'type' => x_contract_data2::TYPE_NMCK_BMO],
-        93 => ['year' => 2, 'type' => x_contract_data2::TYPE_NMCK_OMSU],
-        94 => ['year' => 2, 'type' => x_contract_data2::TYPE_NMCK_OMSU2],
+        94 => ['year' => 2, 'type' => x_contract_data2::TYPE_NMCK_FB],
+        95 => ['year' => 2, 'type' => x_contract_data2::TYPE_NMCK_BM],
+        96 => ['year' => 2, 'type' => x_contract_data2::TYPE_NMCK_BMO],
+        97 => ['year' => 2, 'type' => x_contract_data2::TYPE_NMCK_OMSU],
+        98 => ['year' => 2, 'type' => x_contract_data2::TYPE_NMCK_OMSU2],
         
-        100 => ['year' => 0, 'type' => x_contract_data2::TYPE_CONTRACT_FB],
-        101 => ['year' => 0, 'type' => x_contract_data2::TYPE_CONTRACT_BM],
-        102 => ['year' => 0, 'type' => x_contract_data2::TYPE_CONTRACT_BMO],
-        103 => ['year' => 0, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU],
-        104 => ['year' => 0, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU2],
+        104 => ['year' => 0, 'type' => x_contract_data2::TYPE_CONTRACT_FB],
+        105 => ['year' => 0, 'type' => x_contract_data2::TYPE_CONTRACT_BM],
+        106 => ['year' => 0, 'type' => x_contract_data2::TYPE_CONTRACT_BMO],
+        107 => ['year' => 0, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU],
+        108 => ['year' => 0, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU2],
         
-        106 => ['year' => 1, 'type' => x_contract_data2::TYPE_CONTRACT_FB],
-        107 => ['year' => 1, 'type' => x_contract_data2::TYPE_CONTRACT_BM],
-        108 => ['year' => 1, 'type' => x_contract_data2::TYPE_CONTRACT_BMO],
-        109 => ['year' => 1, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU],
-        110 => ['year' => 1, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU2],
+        110 => ['year' => 1, 'type' => x_contract_data2::TYPE_CONTRACT_FB],
+        111 => ['year' => 1, 'type' => x_contract_data2::TYPE_CONTRACT_BM],
+        112 => ['year' => 1, 'type' => x_contract_data2::TYPE_CONTRACT_BMO],
+        113 => ['year' => 1, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU],
+        114 => ['year' => 1, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU2],
         
-        112 => ['year' => 2, 'type' => x_contract_data2::TYPE_CONTRACT_FB],
-        113 => ['year' => 2, 'type' => x_contract_data2::TYPE_CONTRACT_BM],
-        114 => ['year' => 2, 'type' => x_contract_data2::TYPE_CONTRACT_BMO],
-        115 => ['year' => 2, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU],
-        116 => ['year' => 2, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU2],
+        116 => ['year' => 2, 'type' => x_contract_data2::TYPE_CONTRACT_FB],
+        117 => ['year' => 2, 'type' => x_contract_data2::TYPE_CONTRACT_BM],
+        118 => ['year' => 2, 'type' => x_contract_data2::TYPE_CONTRACT_BMO],
+        119 => ['year' => 2, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU],
+        120 => ['year' => 2, 'type' => x_contract_data2::TYPE_CONTRACT_OMSU2],
         
-        118 => ['year' => 0, 'type' => x_contract_data2::TYPE_ORDER_FB],
-        119 => ['year' => 0, 'type' => x_contract_data2::TYPE_ORDER_BM],
-        120 => ['year' => 0, 'type' => x_contract_data2::TYPE_ORDER_BMO],
-        121 => ['year' => 0, 'type' => x_contract_data2::TYPE_ORDER_OMSU],
-        122 => ['year' => 0, 'type' => x_contract_data2::TYPE_ORDER_OMSU2],
-        124 => ['year' => 0, 'type' => x_contract_data2::TYPE_PAYMENT_FB],
-        125 => ['year' => 0, 'type' => x_contract_data2::TYPE_PAYMENT_BM],
-        126 => ['year' => 0, 'type' => x_contract_data2::TYPE_PAYMENT_BMO],
-        127 => ['year' => 0, 'type' => x_contract_data2::TYPE_PAYMENT_OMSU],
-        128 => ['year' => 0, 'type' => x_contract_data2::TYPE_PAYMENT_OMSU2],
+        122 => ['year' => 0, 'type' => x_contract_data2::TYPE_ORDER_FB],
+        123 => ['year' => 0, 'type' => x_contract_data2::TYPE_ORDER_BM],
+        124 => ['year' => 0, 'type' => x_contract_data2::TYPE_ORDER_BMO],
+        125 => ['year' => 0, 'type' => x_contract_data2::TYPE_ORDER_OMSU],
+        126 => ['year' => 0, 'type' => x_contract_data2::TYPE_ORDER_OMSU2],
+        128 => ['year' => 0, 'type' => x_contract_data2::TYPE_PAYMENT_FB],
+        129 => ['year' => 0, 'type' => x_contract_data2::TYPE_PAYMENT_BM],
+        130 => ['year' => 0, 'type' => x_contract_data2::TYPE_PAYMENT_BMO],
+        131 => ['year' => 0, 'type' => x_contract_data2::TYPE_PAYMENT_OMSU],
+        132 => ['year' => 0, 'type' => x_contract_data2::TYPE_PAYMENT_OMSU2],
         
     ];
 
@@ -209,16 +215,16 @@ class DBUpdater {
                 $prev = new x_prev2();
                 $prev->year = $this->checkCell('Год', $cells[1]);
                 $prev->omsu_name = $this->checkCell('Округ', $cells[3]);
-                $prev->object_name = $this->checkCell('Объект3', $cells[15]);
-                $prev->category2_name = $this->checkCell('Категория2', $cells[19]);
-                $prev->object_count = $this->checkCell('Количество объектов', $cells[30]);
-                $prev->payment_total = $this->checkCell('Оплата ФБ', $cells[86])
-                        + $this->checkCell('Оплата БМ', $cells[87])
-                        + $this->checkCell('Оплата БМО', $cells[88])
-                        + $this->checkCell('Оплата ОМСУ', $cells[89])
-                        + $this->checkCell('Оплата ОМСУ2', $cells[90])
-                        + $this->checkCell('Оплата ДФ', $cells[91])
-                        + $this->checkCell('Оплата Внебюд.', $cells[92]);
+                $prev->object_name = $this->checkCell('Объект3', $cells[11]);
+                $prev->category2_name = $this->checkCell('Категория2', $cells[13]);
+                $prev->object_count = $this->checkCell('Количество объектов', $cells[22]);
+                $prev->payment_total = $this->checkCell('Оплата ФБ', $cells[75])
+                        + $this->checkCell('Оплата БМ', $cells[76])
+                        + $this->checkCell('Оплата БМО', $cells[77])
+                        + $this->checkCell('Оплата ОМСУ', $cells[78])
+                        + $this->checkCell('Оплата ОМСУ2', $cells[79])
+                        + $this->checkCell('Оплата ДФ', $cells[80])
+                        + $this->checkCell('Оплата Внебюд.', $cells[81]);
                 $prev->write();
                 error_log("Written $cells[0] -- $row_num");
             }
@@ -275,7 +281,7 @@ class DBUpdater {
                 }
 
 
-                $uin = $this->checkCell("УИН", $cells[6]);
+                $uin = $this->checkCell("УИН", $cells[4]);
 
                 if (!preg_match("/^\d+\.\d+\s*$/", $uin)) {
                     error_log("Skipped as uin=$uin");
@@ -287,8 +293,8 @@ class DBUpdater {
                 if ($omsu->isNew()) {
                     throw new \Exception("Не известный ОМСУ: $cells[0]");
                 }
-                if (preg_match("/[Пп][Рр][Оо][Чч][Ее][Ее]/", $cells[3])) {
-                    error_log("Skipped as status is $cells[3]");
+                if (preg_match("/[Пп][Рр][Оо][Чч][Ее][Ее]/", $cells[1])) {
+                    error_log("Skipped as status is $cells[1]");
                     continue;
                 }
 
@@ -298,38 +304,29 @@ class DBUpdater {
                     $object->uin = $uin;
                     $object->omsu_id = $omsu->id;
 
-                    $object->full_name = $this->checkCell("Объект1", $cells[7]);
-                    $object->short_name = $this->checkCell("Объект2", $cells[8]);
-                    $object->name = $this->checkCell("Объект3", $cells[9]);
+                    $object->full_name = $this->checkCell("Объект1", $cells[6]);
+                    $object->short_name = $this->checkCell("Объект2", $cells[7]);
+                    $object->name = $this->checkCell("Объект3", $cells[8]);
 
-                    $category = new x_category(['name' => $this->checkCell("Категория", $cells[10])], true);
+                    $category = new x_category(['name' => $this->checkCell("Категория", $cells[9])], true);
                     if ($category->isNew()) {
                         $category->write();
                     }
                     $object->x_category_id = $category->id;
-                    $object->category2_name = $this->checkCell("Категория2", $cells[11]);
+                    $object->category2_name = $this->checkCell("Категория2", $cells[10]);
 
-                    $gasu = new x_activity(['gasu_code' => $this->checkCell("Код Гасу", $cells[13])], true);
+                    $gasu = new x_activity(['gasu_code' => $this->checkCell("Код Гасу", $cells[12])], true);
                     if ($gasu->isNew()) {
-                        $gasu->name = $this->checkCell("Мероприятие кратко", $cells[14]);
+                        $gasu->name = $this->checkCell("Мероприятие кратко", $cells[13]);
                         $gasu->write();
                     }
                     $object->x_activity_id = $gasu->id;
 
-                    try {
-                        $object->gasu_date = $cells[17] ? Date::excelToDateTimeObject($this->checkCell("Дата открытия ГАСУ", $cells[17])) : null;
-                    } catch (\Exception $e) {
-                        throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num, \nЗначение: Дата ГАСУ");
-                    } catch (\TypeError $e) {
-                        throw new \Exception($e->getMessage(). "\n\nСтрока $row_num, \nЗначение: Дата ГАСУ");
-                    }
-
-                    $object->ready_percent = $this->checkCell("% выполнения работ", $cells[18]);
                     $object->object_char = $this->checkCell("Характеристика объекта", $cells[19]);
-                    $object->type = $this->checkCell("ТИП", $cells[20]);
-                    $object->period = $this->checkCell("Срок", $cells[21]);
+                    $object->type = $this->checkCell("ТИП", $cells[16]);
+                    $object->period = $this->checkCell("Срок", $cells[17]);
                     try {
-                        $object->open_date_planned = $cells[22] ? Date::excelToDateTimeObject($this->checkCell("Плановая дата открытия объекта", $cells[22])) : null;
+                        $object->open_date_planned = $cells[18] ? Date::excelToDateTimeObject($this->checkCell("Плановая дата открытия объекта", $cells[18])) : null;
                     } catch (\Exception $e) {
                         throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num, \nЗначение: Запланированная дата открытия");
                     } catch (\TypeError $e) {
@@ -360,8 +357,8 @@ class DBUpdater {
 
                 // Contract
                 try {
-                    $contragent = new x_contragent(['inn' => $this->checkCell("Контракт ИНН", $cells[96])], true);
-                    $contragent->name = $this->checkCell("Контракт победитель", $cells[95]);
+                    $contragent = new x_contragent(['inn' => $this->checkCell("Контракт ИНН", $cells[100])], true);
+                    $contragent->name = $this->checkCell("Контракт победитель", $cells[99]);
                     if ($contragent->isNew() && 'x' != $contragent->inn && '' != $contragent->inn) {
                         $contragent->write();
                     } elseif ($contragent->isModified()) {
@@ -373,12 +370,12 @@ class DBUpdater {
                 $contract = new x_contract2();
                 $contract->x_contragent_id = $contragent->id;
                 $contract->x_object_id = $object->id;
-                $contract->status = $this->checkCell("Статус", $cells[3]);
-                $contract->status2 = $this->checkCell("Статус2", $cells[4]);
-                $contract->number = ($cells[98] == 'x' || empty($cells[98])) ? null : $this->checkCell("Контракт номер", $cells[98]);
+                $contract->status = $this->checkCell("Статус", $cells[1]);
+                $contract->status2 = $this->checkCell("Статус2", $cells[2]);
+                $contract->number = ($cells[102] == 'x' || empty($cells[102])) ? null : $this->checkCell("Контракт номер", $cells[102]);
 
                 try {
-                    $contract->date = $cells[97] ? Date::excelToDateTimeObject($this->checkCell("Контракт дата", $cells[97])) : null;
+                    $contract->date = $cells[101] ? Date::excelToDateTimeObject($this->checkCell("Контракт дата", $cells[101])) : null;
                 } catch (\Exception $e) {
                     throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num, \nЗначение: Дата контракта");
                     } catch (\TypeError $e) {
@@ -386,7 +383,7 @@ class DBUpdater {
                 }
 
                 $contract->has_pir = strpos($this->checkCell("Вид работ по контракту", $cells[5]), 'ПИР') === false ? false : true;
-                $contract->has_smr = strpos($cells[5], 'СМР') === false ? false : true;
+                $contract->has_smr = strpos($cells[3], 'СМР') === false ? false : true;
                 $contract->write();
 
                 foreach ($this->contract_cells as $key => $data) {

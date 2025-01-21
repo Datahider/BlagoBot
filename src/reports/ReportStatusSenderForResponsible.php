@@ -34,7 +34,7 @@ class ReportStatusSenderForResponsible extends ReportStatusSender {
                 AND year_data.value IS NOT NULL
 
             GROUP BY 
-                responsible.id, user_id, user_surname, user_name, user_fathers_name, user_tg_id
+                responsible.id, responsible.user_id, user_surname, user_name, user_fathers_name, user_tg_id
             FIN;
     
     const SQL_QUERY_OBJECTS_DELAYED = <<<FIN
@@ -253,7 +253,6 @@ class ReportStatusSenderForResponsible extends ReportStatusSender {
         $replace = [
             'where' => $this->getWhere($params),
             'current_year' => $this->getCurrentYear(),
-            'recipient' => $this->getRecipientField($params)
         ];
         $sql_responsible = $this->replaceVars(self::SQL_QUERY_RESPONSIBLE, $replace);
         $sql_objects = $this->replaceVars(self::SQL_QUERY_OBJECTS_DELAYED, $replace);
