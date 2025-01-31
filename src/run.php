@@ -10,6 +10,7 @@ use losthost\BlagoBot\data\report_param;
 use losthost\BlagoBot\data\report_param_value;
 use losthost\BlagoBot\data\department;
 use losthost\BlagoBot\data\user_dept_binding;
+use losthost\BlagoBot\data\copy_message;
 
 use losthost\BlagoBot\data\x_object;
 use losthost\BlagoBot\data\x_omsu;
@@ -34,6 +35,7 @@ user::initDataStructure();
 department::initDataStructure();
 user_dept_binding::initDataStructure();
 DBPendingUpdate::initDataStructure();
+copy_message::initDataStructure();
 
 x_omsu::initDataStructure();
 x_object::initDataStructure();

@@ -277,7 +277,7 @@ class ReportStatusSender extends AbstractReport {
                 $msg_text = $template->process();
 
                 try {
-                    sendSplitMessage($data['user_tg_id'], $msg_text);
+                    sendSplitMessage($data['user_tg_id'], $msg_text, null, true);
                     $send_result = '✅ Успех';
                 } catch (\Exception $e) {
                     $send_result = '⚠️ Ошибка Телеграм';
@@ -321,7 +321,7 @@ class ReportStatusSender extends AbstractReport {
                 $msg_text = $template->process();
 
                 try {
-                    sendSplitMessage($data['user_tg_id'], $msg_text);
+                    sendSplitMessage($data['user_tg_id'], $msg_text, null, true);
                     $send_result = '✅ Успех';
                     $this->sent++;
                 } catch (\Exception $e) {

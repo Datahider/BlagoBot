@@ -6,6 +6,7 @@ use losthost\BlagoBot\data\user;
 use losthost\telle\Bot;
 use losthost\passg\Pass;
 use losthost\templateHelper\Template;
+use losthost\DB\DBView;
 
 function initBUser() {
     global $b_user;
@@ -62,15 +63,28 @@ function checkAdmin(?int $message_id=null) {
     }
 }
 
-function sendSplitMessage($chat_id, $text, $separator='<!-- SPLIT -->') : void {
+function sendSplitMessage($chat_id, $text, $separator=null, $send_copy=false) : void {
     
-    $messages = explode($separator, $text);
+    $messages = explode(
+            is_null($separator) ? '<!-- SPLIT -->' : $separator, 
+            $text);
+    
+    $copy = false;
+    if ($send_copy) {
+        $copy = new DBView('SELECT copy_user_id FROM [copy_message] WHERE user_id=?', [$chat_id]);
+    }
     
     foreach ($messages as $message) {
         
         while (true) {
             if ($message) {
                 Bot::$api->sendMessage($chat_id, $message, 'HTML');
+                if ($copy) {
+                    $copy->reset();
+                    while ($copy->next()) {
+                        Bot::$api->sendMessage($copy->copy_user_id, $message, 'HTML');
+                    }
+                }
             }
             break;
         }
