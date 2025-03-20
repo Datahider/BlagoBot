@@ -32,6 +32,7 @@ class ReportObjectsByActivity extends AbstractReport {
 
     protected function initParams() {
         $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionYearLast($this),
             new \losthost\BlagoBot\params\ParamDescriptionCategory($this),
             new \losthost\BlagoBot\params\ParamDescriptionDataIncluded($this),
         ];

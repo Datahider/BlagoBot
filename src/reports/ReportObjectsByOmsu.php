@@ -34,6 +34,7 @@ class ReportObjectsByOmsu extends AbstractReport {
 
     protected function initParams() {
         $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionYearLast($this),
             new ParamDescriptionOmsu($this),
             new ParamDescriptionDataIncluded($this)
         ];
