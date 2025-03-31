@@ -12,7 +12,7 @@ use function losthost\BlagoBot\showUser;
 class MessageAuth extends AbstractHandlerMessage {
     
     protected function check(\TelegramBot\Api\Types\Message &$message): bool {
-        if ($message->getText() && $message->getForwardFrom()) {
+        if ($message->getText() && $message->getForwardOrigin()) {
             return true;
         }
         return false;

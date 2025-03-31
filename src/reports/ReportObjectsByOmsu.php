@@ -207,6 +207,7 @@ class ReportObjectsByOmsu extends AbstractReport {
         $sql = $this->getSqlQuery();
         $sql = str_replace('{:current_year}', date('Y'), $sql);
         $sql = str_replace('{:omsu_ids}', implode(',', $params['omsu']), $sql);
+        $sql = str_replace('{:selected_years}', implode(',', $params['gpyears']), $sql);
         
         if (!$this->limit_details) {
             $sql = preg_replace("/\/\*\* limit details \>\> \*\*\/.*?\/\*\* \<\< limit details \*\*\//s", '', $sql);
@@ -545,7 +546,8 @@ class ReportObjectsByOmsu extends AbstractReport {
                     LEFT JOIN vt_limits AS limits ON limits.object_id = object.id
                     LEFT JOIN vt_contract_agregates AS contract ON contract.object_id = object.id
             WHERE
-                    IFNULL(limits.fb_limit, 0) + IFNULL(limits.bm_limit, 0) + IFNULL(limits.bmo_limit, 0) + IFNULL(limits.omsu_limit, 0) > 0
+                    YEAR(object.open_date_planned) IN ({:selected_years})
+                    AND IFNULL(limits.fb_limit, 0) + IFNULL(limits.bm_limit, 0) + IFNULL(limits.bmo_limit, 0) + IFNULL(limits.omsu_limit, 0) > 0
                     AND omsu.id IN ({:omsu_ids})
             GROUP BY 
                     omsu.name, object.name, category.name
@@ -569,7 +571,7 @@ class ReportObjectsByOmsu extends AbstractReport {
             $omsus[] = $omsu->name;
         }
         return new ReportSummary(
-                'Статус реализации мероприятий по ГП "Формирование современной комфортной городской среды" в 2024 году', 
+                'Статус реализации мероприятий по ГП "Формирование современной комфортной городской среды" в 2025 году', 
                 date_create_immutable(), 
                 [
                     ['title' => 'ОМСУ', 'value' => implode(', ', $omsus)]

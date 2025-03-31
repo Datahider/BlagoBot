@@ -56,11 +56,13 @@ class ReportParams {
                     ];
                 } elseif (is_array($param->getValueSet())) {
                     $value = $param->valueByValue($value_id);
-                    $this->params[$param->getName()]['values'][] = [
-                        'id' => $value->getId(),
-                        'title' => $value->getTitle(),
-                        'value' => $value->getValue()
-                    ];
+                    if (!is_null($value)) {
+                        $this->params[$param->getName()]['values'][] = [
+                            'id' => $value->getId(),
+                            'title' => $value->getTitle(),
+                            'value' => $value->getValue()
+                        ];
+                    }
                 } else {
                     $value = new report_param_value(['id' => $value_id]);
                     $this->params[$param->getName()]['values'][] = [

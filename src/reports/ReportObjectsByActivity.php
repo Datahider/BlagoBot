@@ -205,6 +205,7 @@ class ReportObjectsByActivity extends AbstractReport {
         $sql = $this->getSqlQuery();
         $sql = str_replace('{:current_year}', date('Y'), $sql);
         $sql = str_replace('{:category_ids}', implode(',', $params['activity']), $sql);
+        $sql = str_replace('{:selected_years}', implode(',', $params['gpyears']), $sql);
         
         if (!$this->limit_details) {
             $sql = preg_replace("/\/\*\* limit details \>\> \*\*\/.*?\/\*\* \<\< limit details \*\*\//s", '', $sql);
@@ -280,6 +281,8 @@ class ReportObjectsByActivity extends AbstractReport {
                     LEFT JOIN [x_year_data] AS bm ON object.id = bm.x_object_id AND bm.type = "Лимит БМ" AND bm.year = {:current_year}
                     LEFT JOIN [x_year_data] AS bmo ON object.id = bmo.x_object_id AND bmo.type = "Лимит БМО" AND bmo.year = {:current_year}
                     LEFT JOIN [x_year_data] AS omsu ON object.id = omsu.x_object_id AND omsu.type = "Лимит ОМСУ" AND omsu.year = {:current_year}
+            WHERE 
+                    YEAR(object.open_date_planned) IN ({:selected_years})
             GROUP BY 
                     object.id
             HAVING 
@@ -543,7 +546,8 @@ class ReportObjectsByActivity extends AbstractReport {
                     LEFT JOIN vt_limits AS limits ON limits.object_id = object.id
                     LEFT JOIN vt_contract_agregates AS contract ON contract.object_id = object.id
             WHERE
-                    IFNULL(limits.fb_limit, 0) + IFNULL(limits.bm_limit, 0) + IFNULL(limits.bmo_limit, 0) + IFNULL(limits.omsu_limit, 0) > 0
+                    YEAR(object.open_date_planned) IN ({:selected_years})
+                    AND IFNULL(limits.fb_limit, 0) + IFNULL(limits.bm_limit, 0) + IFNULL(limits.bmo_limit, 0) + IFNULL(limits.omsu_limit, 0) > 0
                     AND category.id IN ({:category_ids})
             GROUP BY 
                     category.name, omsu.name, object.name 
@@ -567,7 +571,7 @@ class ReportObjectsByActivity extends AbstractReport {
             $omsus[] = $omsu->name;
         }
         return new ReportSummary(
-                'Статус реализации мероприятий по ГП "Формирование современной комфортной городской среды" в 2024 году', 
+                'Статус реализации мероприятий по ГП "Формирование современной комфортной городской среды" в 2025 году', 
                 date_create_immutable(), 
                 [
                     ['title' => 'Мероприятия', 'value' => implode(', ', $omsus)]

@@ -48,7 +48,7 @@ abstract class AbstractParamDescription {
         return $result;
     }
     
-    public function valueByValue(string|int $value) : ParamValue {
+    public function valueByValue(string|int $value) : ?ParamValue {
         foreach ($this->value_set as $value_from_set) {
             if ($value_from_set->getValue() == $value) {
                 return $value_from_set; 
