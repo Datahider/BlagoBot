@@ -29,6 +29,7 @@ class x_object extends DBObject {
         'period' => 'VARCHAR(64)',
         'open_date_planned' => 'DATETIME',
         'open_date_fact' => 'DATETIME',
+        'finish_date' => 'DATETIME',
 //        'object_count' => 'INT(11)',
 //        'rg_date' => 'DATETIME',
 //        'nmck_date' => 'DATETIME',

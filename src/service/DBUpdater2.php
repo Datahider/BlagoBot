@@ -57,6 +57,9 @@ class DBUpdater2 extends DBUpdater {
                 $object->ksmr_plan = $cells[35] ? Date::excelToDateTimeObject($cells[35]) : null;
                 $object->ksmr_fact = $cells[37] ? Date::excelToDateTimeObject($cells[37]) : null;
                 $object->purchase_level = $cells[27];
+                if (!$object->purchase_level) {
+                    throw new \Exception("Не заполнен уровень закупки");
+                }
                 $object->write();
             } catch (\Exception $e) {
                 throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num");

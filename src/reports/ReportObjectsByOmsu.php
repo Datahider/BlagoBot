@@ -33,7 +33,8 @@ class ReportObjectsByOmsu extends AbstractReport {
     protected bool $topay         = false;
 
     protected function initParams() {
-        $this->params = [
+        $this->params = [,
+            new \losthost\BlagoBot\params\ParamDescriptionPeriod($this),
             new \losthost\BlagoBot\params\ParamDescriptionYearLast($this),
             new ParamDescriptionOmsu($this),
             new ParamDescriptionDataIncluded($this)
@@ -204,8 +205,10 @@ class ReportObjectsByOmsu extends AbstractReport {
     
     protected function queryReportData($params) {
         
+        $period = $params['year'][0];
+        
         $sql = $this->getSqlQuery();
-        $sql = str_replace('{:current_year}', date('Y'), $sql);
+        $sql = str_replace('{:current_year}', $period, $sql);
         $sql = str_replace('{:omsu_ids}', implode(',', $params['omsu']), $sql);
         $sql = str_replace('{:selected_years}', implode(',', $params['gpyears']), $sql);
         

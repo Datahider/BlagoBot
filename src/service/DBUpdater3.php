@@ -33,11 +33,12 @@ class DBUpdater3 extends DBUpdater2 {
             
             try {
                 $object = new x_object(['uin' => $m[1]]);
-                $object->ready_percent = $cells[8];
+                $object->ready_percent = $cells[9];
 
                 $object->x_responsible_id = x_responsible::getByFio($cells[1])->id;
-                $object->open_date_planned = $cells[6] ? Date::excelToDateTimeObject($cells[6]) : null;
-                $object->open_date_fact = $cells[7] ? Date::excelToDateTimeObject($cells[7]) : null;
+                $object->open_date_planned = $cells[7] ? Date::excelToDateTimeObject($cells[7]) : null;
+                $object->open_date_fact = $cells[8] ? Date::excelToDateTimeObject($cells[8]) : null;
+                $object->finish_date = $cells[6] ? Date::excelToDateTimeObject($cells[6]) : null;
                 $object->write();
             } catch (\Exception $e) {
                 throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num");

@@ -32,6 +32,7 @@ class ReportObjectsByActivity extends AbstractReport {
 
     protected function initParams() {
         $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionPeriod($this),
             new \losthost\BlagoBot\params\ParamDescriptionYearLast($this),
             new \losthost\BlagoBot\params\ParamDescriptionCategory($this),
             new \losthost\BlagoBot\params\ParamDescriptionDataIncluded($this),
@@ -202,8 +203,10 @@ class ReportObjectsByActivity extends AbstractReport {
     
     protected function queryReportData($params) {
         
+        $period = $params['year'][0];
+
         $sql = $this->getSqlQuery();
-        $sql = str_replace('{:current_year}', date('Y'), $sql);
+        $sql = str_replace('{:current_year}', $period, $sql);
         $sql = str_replace('{:category_ids}', implode(',', $params['activity']), $sql);
         $sql = str_replace('{:selected_years}', implode(',', $params['gpyears']), $sql);
         
