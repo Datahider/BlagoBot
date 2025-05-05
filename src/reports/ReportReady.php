@@ -2,13 +2,14 @@
 
 namespace losthost\BlagoBot\reports;
 
-use losthost\BlagoBot\params\ParamDescriptionPeriod;
+use losthost\BlagoBot\params\ParamDescriptionOpenYear;
 use losthost\BlagoBot\params\ParamDescriptionOmsuAll;
 use losthost\BlagoBot\params\ParamDescriptionCategory2All;
 use losthost\BlagoBot\params\ParamDescriptionResponsibleAll;
 use losthost\BlagoBot\params\ParamDescriptionRiskyOnly;
 use losthost\BlagoBot\params\ParamDescriptionReadyGroupBy;
 use losthost\BlagoBot\params\ParamDescriptionReadySortBy;
+use losthost\BlagoBot\params\ParamDescriptionCompletion;
 
 use losthost\BlagoBot\service\xls\Column;
 use losthost\BlagoBot\service\xls\CellFormat;
@@ -43,6 +44,7 @@ class ReportReady extends AbstractReport {
                 AND o.x_responsible_id IN (%responsible%)
                 AND o.omsu_id IN (%omsu%)
                 AND (%risky_only% = 0 OR o.open_date_fact IS NULL AND o.open_date_planned < NOW() AND %risky_only% IN (1,3) OR o.open_date_fact IS NOT NULL AND o.ready_percent < 100 AND %risky_only% IN (2,3))
+                %completion%
             ORDER BY    
                 %group_order%;
             
@@ -94,11 +96,17 @@ class ReportReady extends AbstractReport {
         $sql = static::SQL_QUERY;
         
         foreach ($params as $key => $value) {
-            if ($key != 'cat2') {
+            if ($key == 'completion') {
+                if (empty($value)) {
+                    $sql = str_replace('%completion%', '', $sql);
+                } else {
+                    $sql = str_replace('%completion%', 'AND YEAR(o.finish_date) IN ('. implode(',', $value). ')', $sql);
+                }
+            } elseif ($key != 'cat2') {
                 $sql = str_replace("%$key%", implode(',', $value), $sql);
             } else {
                 $cats = []; 
-                $param_descr = $this->getParams()[1];
+                $param_descr = $this->getParams()[2];
                 foreach ($value as $v) {
                     $cat = $param_descr->valueByValue($v);
                     $cats[] = $cat->getTitle();
@@ -114,6 +122,8 @@ class ReportReady extends AbstractReport {
         }
         $sql = str_replace('%group_order%', $group_order, $sql);
         $sql = str_replace('%risky_only%', (string)$params['risky_only'][0], $sql);
+        
+        Bot::logComment($sql);
         
         $sth = DB::prepare($sql);
         $sth->execute();
@@ -179,7 +189,8 @@ class ReportReady extends AbstractReport {
     
     protected function initParams() {
         $this->params = [
-            new ParamDescriptionPeriod($this),
+            new ParamDescriptionCompletion($this),
+            new ParamDescriptionOpenYear($this),
             new ParamDescriptionCategory2All($this),
             new ParamDescriptionResponsibleAll($this),
             new ParamDescriptionOmsuAll($this),
