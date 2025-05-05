@@ -39,7 +39,7 @@ class ReportReady extends AbstractReport {
                 LEFT JOIN [user] AS u ON r.user_id = u.id
                 LEFT JOIN [x_omsu] AS m ON m.id = o.omsu_id
             WHERE
-                YEAR(o.open_date_planned) IN (%year%)
+                YEAR(o.open_date_planned) IN (%openyear%)
                 AND o.category2_name IN (%cat2%)
                 AND o.x_responsible_id IN (%responsible%)
                 AND o.omsu_id IN (%omsu%)
