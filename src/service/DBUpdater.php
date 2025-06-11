@@ -218,6 +218,8 @@ class DBUpdater {
                 $prev->object_name = $this->checkCell('Объект3', $cells[11]);
                 $prev->category2_name = $this->checkCell('Категория2', $cells[13]);
                 $prev->object_count = $this->checkCell('Количество объектов', $cells[22]);
+                $prev->contract_inn = $this->checkCell('Контракт ИНН', preg_replace("/^_/", '', $cells[55]));
+                $prev->contract_winner = $this->checkCell('Контракт Победитель', $cells[54]);
                 $prev->payment_total = $this->checkCell('Оплата ФБ', $cells[75])
                         + $this->checkCell('Оплата БМ', $cells[76])
                         + $this->checkCell('Оплата БМО', $cells[77])
@@ -357,11 +359,11 @@ class DBUpdater {
 
                 // Contract
                 try {
-                    $contragent = new x_contragent(['inn' => $this->checkCell("Контракт ИНН", $cells[100])], true);
+                    $contragent = new x_contragent(['inn' => $this->checkCell("Контракт ИНН", preg_replace("/^\'/", '', $cells[100]))], true);
                     $contragent->name = $this->checkCell("Контракт победитель", $cells[99]);
-                    if ($contragent->isNew() && 'x' != $contragent->inn && '' != $contragent->inn) {
+                    if ($contragent->isNew() && 'x' != $contragent->inn && '' != $contragent->inn && null != $contragent->name) {
                         $contragent->write();
-                    } elseif ($contragent->isModified()) {
+                    } elseif ($contragent->isModified() && null != $contragent->name) {
                         $contragent->write();
                     }
                 } catch (\Exception $e) {

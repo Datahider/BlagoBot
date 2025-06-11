@@ -257,9 +257,28 @@ function log_memory_usage() {
 function getClassIndex($object_name_index) {
     
     $known = [
+        params\ParamDescriptionAddressee::class,
+        params\ParamDescriptionCategory::class,
+        params\ParamDescriptionCategory2All::class,
+        params\ParamDescriptionCompletion::class,
+        params\ParamDescriptionDataIncluded::class,
+        params\ParamDescriptionMessageType::class,
         params\ParamDescriptionOmsu::class,
         params\ParamDescriptionOmsuAll::class,
+        params\ParamDescriptionOpenYear::class,
         params\ParamDescriptionPeriod::class,
+        params\ParamDescriptionPeriodSingle::class,
+        params\ParamDescriptionReadyGroupBy::class,
+        params\ParamDescriptionReadySortBy::class,
+        params\ParamDescriptionResponsible::class,
+        params\ParamDescriptionResponsibleAll::class,
+        params\ParamDescriptionRiskyOnly::class,
+        params\ParamDescriptionSelfCopy::class,
+        params\ParamDescriptionSources::class,
+        params\ParamDescriptionWinners::class,
+        params\ParamDescriptionYearFull::class,
+        params\ParamDescriptionYearLast::class,
+        
         
         reports\ReportReady::class,
         reports\ReportCertificate::class,
@@ -282,6 +301,7 @@ function getClassIndex($object_name_index) {
         reports\ReportObjectsForOmsu::class,
         reports\ReportCertificateForOmsu::class,
         reports\ReportStatusSenderForOmsu::class,
+        reports\ReportWinners::class,
         
     ];
     
