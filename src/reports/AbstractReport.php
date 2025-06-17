@@ -13,6 +13,7 @@ abstract class AbstractReport {
     const RESULT_TYPE_XLSX = 0;
     const RESULT_TYPE_SHOW = 1;
     const RESULT_TYPE_CUSTOM = 2;
+    const RESULT_TYPE_NONE = 3;
 
     protected ?array $params;
     

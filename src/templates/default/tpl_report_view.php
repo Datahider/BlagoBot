@@ -31,6 +31,8 @@ if ($result->ok) {
         case AbstractReport::RESULT_TYPE_XLSX:
             echo "Результат отчета будет отправлен в виде файла";
             break;
+        case AbstractReport::RESULT_TYPE_NONE:
+            break; // Никакой вывод не требуется
         default:
             if (is_string($result->result_type)) { 
                 // предполагаем, что result_type -- это имя класса, который знает что и как выводить

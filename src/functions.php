@@ -292,6 +292,7 @@ function getClassIndex($object_name_index) {
         reports\ReportStatusSender::class,
         reports\ReportStatusSenderForOmsu::class,
         reports\ReportStatusSenderForResponsible::class,
+        reports\ReportStatusSenderTotal::class,
         reports\ReportUsers::class,
         reports\ReportStatusSenderAuto::class,
         reports\ReportStatusSenderForResponsible::class,

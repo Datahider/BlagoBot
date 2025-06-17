@@ -200,7 +200,7 @@ class ReportStatusSenderForResponsible extends ReportStatusSender {
         ];
         
         $sql_responsible = $this->replaceVars(static::SQL_QUERY_RESPONSIBLE, $replace);
-        $sql_objects = $this->replaceVars(self::SQL_QUERY_OBJECTS, $replace);
+        $sql_objects = $this->replaceVars(static::SQL_QUERY_OBJECTS, $replace);
 
         $responsible_view = new DBView($sql_responsible);
         
@@ -254,8 +254,8 @@ class ReportStatusSenderForResponsible extends ReportStatusSender {
             'where' => $this->getWhere($params),
             'current_year' => $this->getCurrentYear(),
         ];
-        $sql_responsible = $this->replaceVars(self::SQL_QUERY_RESPONSIBLE, $replace);
-        $sql_objects = $this->replaceVars(self::SQL_QUERY_OBJECTS_DELAYED, $replace);
+        $sql_responsible = $this->replaceVars(static::SQL_QUERY_RESPONSIBLE, $replace);
+        $sql_objects = $this->replaceVars(static::SQL_QUERY_OBJECTS_DELAYED, $replace);
         
         $responsible_view = new DBView($sql_responsible);
         $current_date = date_create_immutable()->format(DB::DATE_FORMAT);
