@@ -32,7 +32,7 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
             FIN;
     
     const SQL_QUERY_OBJECTS_DELAYED = <<<FIN
-                SELECT 
+                SELECT DISTINCT
                     0 as responsible_id,
                     1 as delay_type,
                     object.name as object_name,
@@ -48,7 +48,7 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
 
                 UNION ALL
 
-                SELECT
+                SELECT DISTINCT
                     0,
                     2,
                     object.name,
@@ -64,7 +64,7 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
 
                 UNION ALL
 
-                SELECT
+                SELECT DISTINCT
                     0,
                     3,
                     object.name,
@@ -81,7 +81,7 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
 
                 UNION ALL
 
-                SELECT
+                SELECT DISTINCT
                     0,
                     4,
                     object.name,
@@ -98,7 +98,7 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
 
                 UNION ALL
 
-                SELECT
+                SELECT DISTINCT
                     0,
                     5,
                     object.name,
@@ -114,7 +114,7 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
 
                 UNION ALL
 
-                SELECT
+                SELECT DISTINCT
                     0,
                     6,
                     object.name,
@@ -130,7 +130,7 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
 
                 UNION ALL
 
-                SELECT
+                SELECT DISTINCT
                     0,
                     7,
                     object.name,
