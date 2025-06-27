@@ -41,6 +41,7 @@ class x_object extends DBObject {
 //        'contract_number' => 'VARCHAR(32)',
 //        'contract_date' => 'DATETIME',
 //        'href' => 'VARCHAR(512)',
+        'nmck_purchase_number' => 'VARCHAR(30)',
         'purchase_level' => 'ENUM("1","2")',
         'moge_in_plan' => 'DATETIME',
         'moge_out_plan' => 'DATETIME',

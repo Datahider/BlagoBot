@@ -327,6 +327,9 @@ class DBUpdater {
                     $object->object_char = $this->checkCell("Характеристика объекта", $cells[19]);
                     $object->type = $this->checkCell("ТИП", $cells[16]);
                     $object->period = $this->checkCell("Срок", $cells[17]);
+                    
+                    $object->nmck_purchase_number = $this->checkCell("№ Закупки", $cells[77]);
+                    
                     try {
                         $object->open_date_planned = $cells[18] ? Date::excelToDateTimeObject($this->checkCell("Плановая дата открытия объекта", $cells[18])) : null;
                     } catch (\Exception $e) {
