@@ -25,15 +25,24 @@
 
 use losthost\BlagoBot\reports\ReportStatusSender;
 
+$more_data_by_type = [];
+
+for ($i = 1; $i<=7; $i++) {
+
+    echo "\n<b>". ReportStatusSender::DELAY_TYPES[$i]. "</b>:\n";
+
+    $more_data_array = [];
+    foreach ($data['more_data'. $i] as $key => $value) {
+        $more_data_array[] = "$key $value";
+        echo "• $key - $value\n";
+    }
+    $more_data_by_type[$i] = implode(', ', $more_data_array);
+}
+
 for ($i = 1; $i<=7; $i++) {
     if (count($data[$i])) {
         echo '<!-- SPLIT -->';
-        $more_data_array = [];
-        foreach ($data['more_data'. $i] as $key => $value) {
-            $more_data_array[] = "$key $value";
-        }
-        $more_data = implode(', ', $more_data_array);
-        echo "<b>". ReportStatusSender::DELAY_TYPES[$i]. ":($more_data)</b>\n";
+        echo "<b>". ReportStatusSender::DELAY_TYPES[$i]. ":({$more_data_by_type[$i]})</b>\n";
         $current_length = 0;
         foreach ($data[$i] as $object_data) {
             $date_planned = $object_data['date_planned']->format('d.m.Y');
