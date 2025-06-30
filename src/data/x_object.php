@@ -33,7 +33,7 @@ class x_object extends DBObject {
 //        'object_count' => 'INT(11)',
 //        'rg_date' => 'DATETIME',
 //        'nmck_date' => 'DATETIME',
-//        'nmck_opz_date' => 'DATETIME',
+        'nmck_opz_date' => 'DATETIME',
 //        'nmck_numsign' => 'VARCHAR(20)',
 //        'ikz' => 'VARCHAR(60)',
 //        'contract_winner' => 'VARCHAR(128)',

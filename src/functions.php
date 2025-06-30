@@ -303,6 +303,7 @@ function getClassIndex($object_name_index) {
         reports\ReportCertificateForOmsu::class,
         reports\ReportStatusSenderForOmsu::class,
         reports\ReportWinners::class,
+        reports\ReportOPZStatus::class,
         
     ];
     

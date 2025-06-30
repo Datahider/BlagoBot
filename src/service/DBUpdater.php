@@ -331,6 +331,14 @@ class DBUpdater {
                     $object->nmck_purchase_number = $this->checkCell("№ Закупки", $cells[77]);
                     
                     try {
+                        $object->nmck_opz_date = $cells[80] ? Date::excelToDateTimeObject($this->checkCell("НМЦК дата ОПЗ", $cells[80])) : null;
+                    } catch (\Exception $e) {
+                        throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num, \nЗначение: НМЦК дата ОПЗ");
+                    } catch (\TypeError $e) {
+                        throw new \Exception($e->getMessage(). "\n\nСтрока $row_num, \nЗначение: НМЦК дата ОПЗ");
+                    }
+                    
+                    try {
                         $object->open_date_planned = $cells[18] ? Date::excelToDateTimeObject($this->checkCell("Плановая дата открытия объекта", $cells[18])) : null;
                     } catch (\Exception $e) {
                         throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num, \nЗначение: Запланированная дата открытия");
