@@ -25,7 +25,7 @@ class CustomSentMessagesByOne extends AbstractCustomView {
             }
             $report_data[] = $message_text;
         }
-        $report_text = str_replace("\n", '<!-- SPLIT -->', $report_text);
+
         sendSplitMessage(Bot::$chat->id, implode('<!-- SPLIT -->', $report_data));
     }
 }
