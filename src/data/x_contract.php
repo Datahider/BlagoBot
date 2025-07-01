@@ -16,6 +16,8 @@ class x_contract extends DBObject {
         'date' => 'DATETIME',
         'has_pir' => 'TINYINT(1) NOT NULL DEFAULT 0',
         'has_smr' => 'TINYINT(1) NOT NULL DEFAULT 0',
+        'nmck_opz_date' => 'DATETIME',
+        'nmck_purchase_number' => 'VARCHAR(30)',
         'PRIMARY KEY' => 'id'
     ];
 }

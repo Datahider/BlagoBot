@@ -14,7 +14,7 @@ class x_prev extends DBObject {
         'category2_name' => 'VARCHAR(64) NOT NULL',
         'object_count' => 'INT(11) NOT NULL',
         'payment_total' => 'DECIMAL',
-        'contract_inn' => 'VARCHAR(12)',
+        'contract_inn' => 'VARCHAR(30)',
         'contract_winner' => 'VARCHAR(128)',
         'PRIMARY KEY' => 'id'
     ];

@@ -27,7 +27,7 @@ class ReportOPZStatus extends AbstractReport {
             ;            
 
             SELECT 
-              object.nmck_purchase_number,
+              contract.nmck_purchase_number,
               object.name,
               contract.status2 AS status,
               CASE
@@ -36,7 +36,7 @@ class ReportOPZStatus extends AbstractReport {
                     ELSE CONCAT(:current_year, "-", :current_year-2)
               END AS period,
               CONCAT(REPLACE(FORMAT((data0.value + IFNULL(data1.value, 0) + IFNULL(data2.value, 0)) / 1000, 0), ',', ' '), " тыс. руб.")  AS nmck,
-              object.nmck_opz_date
+              DATE_FORMAT(contract.nmck_opz_date, '%d.%m.%Y')
             FROM 
               [x_object] AS object
               LEFT JOIN [x_contract] AS contract ON contract.x_object_id = object.id
@@ -44,8 +44,8 @@ class ReportOPZStatus extends AbstractReport {
               LEFT JOIN vt_contract_data AS data1 ON data1.x_contract_id = contract.id AND data1.year = :current_year+1
               LEFT JOIN vt_contract_data AS data2 ON data2.x_contract_id = contract.id AND data2.year = :current_year+2
             WHERE 
-              object.nmck_purchase_number IS NOT NULL 
-              AND object.nmck_purchase_number NOT IN ('', '0', "'нд") 
+              contract.nmck_purchase_number IS NOT NULL 
+              AND contract.nmck_purchase_number NOT IN ('', '0', "'нд") 
               AND data0.value IS NOT NULL
               AND contract.status2 = 'Закупка опубликована'
             FIN;

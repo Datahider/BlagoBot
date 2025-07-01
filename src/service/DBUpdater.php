@@ -328,16 +328,6 @@ class DBUpdater {
                     $object->type = $this->checkCell("ТИП", $cells[16]);
                     $object->period = $this->checkCell("Срок", $cells[17]);
                     
-                    $object->nmck_purchase_number = $this->checkCell("№ Закупки", $cells[77]);
-                    
-                    try {
-                        $object->nmck_opz_date = $cells[80] ? Date::excelToDateTimeObject($this->checkCell("НМЦК дата ОПЗ", $cells[80])) : null;
-                    } catch (\Exception $e) {
-                        throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num, \nЗначение: НМЦК дата ОПЗ");
-                    } catch (\TypeError $e) {
-                        throw new \Exception($e->getMessage(). "\n\nСтрока $row_num, \nЗначение: НМЦК дата ОПЗ");
-                    }
-                    
                     try {
                         $object->open_date_planned = $cells[18] ? Date::excelToDateTimeObject($this->checkCell("Плановая дата открытия объекта", $cells[18])) : null;
                     } catch (\Exception $e) {
@@ -397,6 +387,17 @@ class DBUpdater {
 
                 $contract->has_pir = strpos($this->checkCell("Вид работ по контракту", $cells[5]), 'ПИР') === false ? false : true;
                 $contract->has_smr = strpos($cells[3], 'СМР') === false ? false : true;
+                
+                $contract->nmck_purchase_number = $this->checkCell("№ Закупки", $cells[77]);
+
+                try {
+                    $contract->nmck_opz_date = $cells[80] ? Date::excelToDateTimeObject($this->checkCell("НМЦК дата ОПЗ", $cells[80])) : null;
+                } catch (\Exception $e) {
+                    throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num, \nЗначение: НМЦК дата ОПЗ");
+                } catch (\TypeError $e) {
+                    throw new \Exception($e->getMessage(). "\n\nСтрока $row_num, \nЗначение: НМЦК дата ОПЗ");
+                }
+                
                 $contract->write();
 
                 foreach ($this->contract_cells as $key => $data) {
