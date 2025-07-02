@@ -532,7 +532,7 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
         $rows = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($rows as $row) {
-            $result[0]['more_data'. $row['delay_type']][$row['responsible_surname']] = $row['objects_total']
+            $result[0]['more_data'. $row['delay_type']][$row['responsible_surname']] = 'всего '. $row['objects_total']
                     . '/ выполнено '. $row['objects_done']
                     . '/ не выполнено '. $row['objects_not_done']
                     . ', в т.ч. просрочено '. $row['objects_delayed'];
