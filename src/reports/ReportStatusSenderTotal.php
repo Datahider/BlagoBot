@@ -177,6 +177,20 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
                     COUNT(object.id) as objects_total,
                     SUM(
                         CASE
+                            WHEN object.moge_in_fact IS NOT NULL AND year_data.value IS NOT NULL
+                                THEN 1
+                            ELSE 0
+                        END
+                    ) as objects_done,
+                    SUM(
+                        CASE
+                            WHEN object.moge_in_fact IS NULL AND year_data.value IS NOT NULL
+                                THEN 1
+                            ELSE 0
+                        END
+                    ) as objects_not_done,
+                    SUM(
+                        CASE
                             WHEN object.moge_in_plan IS NOT NULL AND object.moge_in_plan < :current_date AND object.moge_in_fact IS NULL AND year_data.value IS NOT NULL
                                 THEN 1
                             ELSE 0
@@ -199,6 +213,20 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
                     IFNULL(user.surname, "Без ответственного") as responsible_surname,
                     2,
                     COUNT(object.id),
+                    SUM(
+                        CASE
+                            WHEN object.moge_out_fact IS NOT NULL AND year_data.value IS NOT NULL
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
+                    SUM(
+                        CASE
+                            WHEN object.moge_out_fact IS NULL AND year_data.value IS NOT NULL
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
                     SUM(
                         CASE
                             WHEN object.moge_out_plan IS NOT NULL AND object.moge_out_plan < :current_date AND object.moge_out_fact IS NULL AND year_data.value IS NOT NULL
@@ -225,6 +253,20 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
                     COUNT(object.id),
                     SUM(
                         CASE
+                            WHEN object.rgmin_in_fact IS NOT NULL AND year_data.value IS NOT NULL AND object.purchase_level = 2
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
+                    SUM(
+                        CASE
+                            WHEN object.rgmin_in_fact IS NULL AND year_data.value IS NOT NULL AND object.purchase_level = 2
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
+                    SUM(
+                        CASE
                             WHEN object.rgmin_in_plan IS NOT NULL AND object.rgmin_in_plan < :current_date AND object.rgmin_in_fact IS NULL AND year_data.value IS NOT NULL AND object.purchase_level = 2
                                 THEN 1
                             ELSE 0
@@ -247,6 +289,20 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
                     IFNULL(user.surname, "Без ответственного") as responsible_surname,
                     4,
                     COUNT(object.id),
+                    SUM(
+                        CASE
+                            WHEN object.rgmin_in_fact IS NOT NULL AND year_data.value IS NOT NULL AND object.purchase_level = 1
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
+                    SUM(
+                        CASE
+                            WHEN object.rgmin_in_fact IS NULL AND year_data.value IS NOT NULL AND object.purchase_level = 1
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
                     SUM(
                         CASE
                             WHEN object.rgmin_in_plan IS NOT NULL AND object.rgmin_in_plan < :current_date AND object.rgmin_in_fact IS NULL AND year_data.value IS NOT NULL AND object.purchase_level = 1
@@ -273,6 +329,20 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
                     COUNT(object.id),
                     SUM(
                         CASE
+                            WHEN object.psmr_fact IS NOT NULL AND year_data.value IS NOT NULL
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
+                    SUM(
+                        CASE
+                            WHEN object.psmr_fact IS NULL AND year_data.value IS NOT NULL
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
+                    SUM(
+                        CASE
                             WHEN object.psmr_plan IS NOT NULL AND object.psmr_plan < :current_date AND object.psmr_fact IS NULL AND year_data.value IS NOT NULL
                                 THEN 1
                             ELSE 0
@@ -297,6 +367,20 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
                     COUNT(object.id),
                     SUM(
                         CASE
+                            WHEN object.ksmr_fact IS NOT NULL AND year_data.value IS NOT NULL
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
+                    SUM(
+                        CASE
+                            WHEN object.ksmr_fact IS NULL AND year_data.value IS NOT NULL
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
+                    SUM(
+                        CASE
                             WHEN object.ksmr_plan IS NOT NULL AND object.ksmr_plan < :current_date AND object.ksmr_fact IS NULL AND year_data.value IS NOT NULL
                                 THEN 1
                             ELSE 0
@@ -319,6 +403,20 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
                     IFNULL(user.surname, "Без ответственного") as responsible_surname,
                     7,
                     COUNT(object.id),
+                    SUM(
+                        CASE
+                            WHEN object.open_date_fact IS NOT NULL AND year_data.value IS NOT NULL
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
+                    SUM(
+                        CASE
+                            WHEN object.open_date_fact IS NULL AND year_data.value IS NOT NULL
+                                THEN 1
+                            ELSE 0
+                        END
+                    ),
                     SUM(
                         CASE
                             WHEN object.open_date_planned IS NOT NULL AND object.open_date_planned < :current_date AND object.open_date_fact IS NULL AND year_data.value IS NOT NULL
@@ -434,7 +532,10 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
         $rows = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($rows as $row) {
-            $result[0]['more_data'. $row['delay_type']][$row['responsible_surname']] = $row['objects_delayed']. '/'. $row['objects_total'];
+            $result[0]['more_data'. $row['delay_type']][$row['responsible_surname']] = $row['objects_total']
+                    . '/ выполнено '. $row['objects_done']
+                    . '/ не выполнено '. $row['objects_not_done']
+                    . ', в т.ч. просрочено '. $row['objects_delayed'];
         }
         
         return $result;
