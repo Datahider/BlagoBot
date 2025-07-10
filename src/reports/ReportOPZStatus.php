@@ -53,6 +53,8 @@ class ReportOPZStatus extends AbstractReport {
                 WHERE 
                   contract.nmck_purchase_number IS NOT NULL AND contract.nmck_purchase_number NOT IN ('', '0', "'нд") AND data0.value IS NOT NULL
                   AND contract.status2 = 'Закупка опубликована'
+                ORDER BY
+                    data0.nmck_opz_date
                 FIN;
     
     #[\Override]
