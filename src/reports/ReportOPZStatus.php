@@ -2,7 +2,7 @@
 
 namespace losthost\BlagoBot\reports;
 
-use losthost\BlagoBot\view\CustomSentMessagesByOne;
+use losthost\BlagoBot\view\CustomSentMessagesForOPZ;
 use losthost\DB\DB;
 use losthost\BlagoBot\service\ReportSummary;
 
@@ -43,7 +43,11 @@ class ReportOPZStatus extends AbstractReport {
                         ELSE CONCAT(:current_year, "-", :current_year+2)
                   END AS period,
                   CONCAT(REPLACE(FORMAT((data0.value + IFNULL(data1.value, 0) + IFNULL(data2.value, 0)) / 1000, 0), ',', ' '), " тыс. руб.")  AS nmck,
-                  DATE_FORMAT(data0.nmck_opz_date, '%d.%m.%Y')
+                  DATE_FORMAT(data0.nmck_opz_date, '%d.%m.%Y'),
+                  CASE
+                        WHEN data0.nmck_opz_date < CURDATE() THEN 1
+                        ELSE 0
+                  END AS on_signing
                 FROM 
                   [x_object] AS object
                   LEFT JOIN [x_contract] AS contract ON contract.x_object_id = object.id
@@ -95,6 +99,6 @@ class ReportOPZStatus extends AbstractReport {
     
     #[\Override]
     protected function resultType(): int|string {
-        return CustomSentMessagesByOne::class;
+        return CustomSentMessagesForOPZ::class;
     }
 }
