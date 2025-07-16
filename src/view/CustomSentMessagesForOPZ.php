@@ -18,7 +18,7 @@ class CustomSentMessagesForOPZ extends AbstractCustomView {
         foreach ($this->result->data as $line) {
             $message_text = '';
             $messages_total++;
-            if ($line[6]) {
+            if ($line[8]) {
                 $messages_on_signing++;
             } else {
                 $messages_in_future++;
