@@ -20,11 +20,14 @@ class ReportOPZStatus extends AbstractReport {
                         SUM(contract_data.value) AS value,
                         MAX(contract.id) AS x_contract_id,
                         MAX(object.name) AS name,
+                        MAX(omsu.name) AS omsu,
+                        MAX(object.category2_name) AS category,
                         MAX(contract.status2) AS status2,
                         MAX(contract.nmck_opz_date) AS nmck_opz_date
                 FROM [x_contract_data] AS contract_data
                 LEFT JOIN [x_contract] AS contract ON contract.id = contract_data.x_contract_id
                 LEFT JOIN [x_object] AS object ON contract.x_object_id = object.id
+                LEFT JOIN [x_omsu] AS omsu ON object.omsu_id = omsu.id
                 WHERE
                         contract_data.type IN ('Нмцк ФБ', 'Нмцк БМ', 'Нмцк БМО', 'Нмцк ОМСУ', 'Нмцк ОМСУ2')
                         AND contract.status2 = 'Закупка опубликована'
@@ -35,6 +38,8 @@ class ReportOPZStatus extends AbstractReport {
 
                 SELECT DISTINCT 
                   data0.nmck_purchase_number,
+                  data0.omsu,
+                  data0.category,
                   data0.name,
                   data0.status2 AS status,
                   CASE
@@ -73,7 +78,7 @@ class ReportOPZStatus extends AbstractReport {
 
     #[\Override]
     protected function reportColumns(): array {
-        return [__('№ Закупки'), __('Объект'), __('Статус'), __('Период'), __('НМЦК'), __('ОПЗ')];
+        return [__('№ Закупки'), __('ОМСУ'), __('Мероприятие'), __('Объект'), __('Статус'), __('Период'), __('НМЦК'), __('ОПЗ')];
     }
 
     #[\Override]
