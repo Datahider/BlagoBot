@@ -531,11 +531,29 @@ class ReportStatusSenderTotal extends ReportStatusSenderForResponsible {
         $sth->nextRowset();
         $rows = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
+        $totals = [];
         foreach ($rows as $row) {
+            
+            if (!isset($totals[$row['delay_type']])) {
+                $totals[$row['delay_type']] = ['objects_total' => 0, 'objects_done' => 0, 'objects_not_done' => 0, 'objects_delayed' => 0];
+            }
+            
             $result[0]['more_data'. $row['delay_type']][$row['responsible_surname']] = 'всего '. $row['objects_total']
                     . '/ выполнено '. $row['objects_done']
                     . '/ не выполнено '. $row['objects_not_done']
                     . ', в т.ч. просрочено '. $row['objects_delayed'];
+            
+            $totals[$row['delay_type']]['objects_total']    += $row['objects_total'];
+            $totals[$row['delay_type']]['objects_done']     += $row['objects_done'];
+            $totals[$row['delay_type']]['objects_not_done'] += $row['objects_not_done'];
+            $totals[$row['delay_type']]['objects_delayed']  += $row['objects_delayed'];
+        }
+
+        foreach ($totals as $key => $value) {
+            $result[0]['more_data'. $key]['ИТОГО'] = 'всего '. $value['objects_total']
+                    . '/ выполнено '. $value['objects_done']
+                    . '/ не выполнено '. $value['objects_not_done']
+                    . ', в т.ч. просрочено '. $value['objects_delayed'];
         }
         
         return $result;
