@@ -62,6 +62,7 @@ class ReportOPZStatus extends AbstractReport {
                 WHERE 
                   contract.nmck_purchase_number IS NOT NULL AND contract.nmck_purchase_number NOT IN ('', '0', "'нд") AND data0.value IS NOT NULL
                   AND contract.status2 = 'Закупка опубликована'
+                  AND %filter%
                 ORDER BY
                     data0.nmck_opz_date
                 FIN;
@@ -73,7 +74,9 @@ class ReportOPZStatus extends AbstractReport {
 
     #[\Override]
     protected function initParams() {
-        $this->params = [];
+        $this->params = [
+            new \losthost\BlagoBot\params\ParamDescriptionOPZStatus($this)
+        ];
     }
 
     #[\Override]
@@ -84,6 +87,15 @@ class ReportOPZStatus extends AbstractReport {
     #[\Override]
     protected function reportData($params): array {
         $sql = static::SQL_GET_DATA;
+        
+        if (count($params['filter']) == 2) {
+            $filter = 'TRUE';
+        } elseif ($params['filter'][0] == '<') {
+            $filter = 'data0.nmck_opz_date < CURDATE()';
+        } else {
+            $filter = 'data0.nmck_opz_date >= CURDATE()';
+        }
+        $sql = str_replace('%filter%', $filter, $sql);
         
         $sth = DB::prepare($sql);
         $sth->execute(['current_year' => $this->getCurrentYear()]);
