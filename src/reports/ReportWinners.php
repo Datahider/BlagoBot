@@ -17,6 +17,7 @@ class ReportWinners extends AbstractReport {
     
     const SQL = <<<FIN
             DROP TEMPORARY TABLE IF EXISTS vt_prev;
+            DROP TEMPORARY TABLE IF EXISTS vt_years_data;
             DROP TEMPORARY TABLE IF EXISTS vt_result;
 
             CREATE TEMPORARY TABLE vt_prev SELECT
@@ -38,6 +39,21 @@ class ReportWinners extends AbstractReport {
               contract_inn, 
               contract_winner;
 
+            CREATE TEMPORARY TABLE vt_years_data SELECT
+                year,
+                x_contract_id,
+                SUM(CASE
+                    WHEN type LIKE ('Контракт %') THEN value
+                    ELSE 0
+                END) AS contract_value,
+                SUM(CASE
+                    WHEN type LIKE ('Оплата %') THEN value
+                    ELSE 0
+                END) AS payment_value
+            FROM 
+                [x_contract_data]
+            GROUP BY
+                year, x_contract_id;  
 
             CREATE TEMPORARY TABLE vt_result SELECT
               contragent.name AS winner,
@@ -45,36 +61,23 @@ class ReportWinners extends AbstractReport {
               omsu.name AS omsu,
               object.name AS object,
               object.category2_name AS category,
-              ROUND((IFNULL(bprevyear.payment_total, 0) + IFNULL(prevyear.payment_total, 0) + SUM(IFNULL(contract_fb.value, 0) + IFNULL(contract_bm.value, 0) + IFNULL(contract_bmo.value, 0) + IFNULL(contract_omsu.value, 0) + IFNULL(contract_omsu2.value, 0))) / 1000) AS total,
+              ROUND((IFNULL(bprevyear.payment_total, 0) + IFNULL(prevyear.payment_total, 0) + current_year_data.payment_value) / 1000) AS total,
               ROUND((IFNULL(bprevyear.payment_total, 0)) / 1000) AS payment_bprev,
               ROUND((IFNULL(prevyear.payment_total, 0)) / 1000) AS payment_prev,
-              ROUND(SUM(IFNULL(contract_fb.value, 0) + IFNULL(contract_bm.value, 0) + IFNULL(contract_bmo.value, 0) + IFNULL(contract_omsu.value, 0) + IFNULL(contract_omsu2.value, 0)) / 1000) AS contract_current,
-              ROUND(SUM(IFNULL(next_contract_fb.value, 0) + IFNULL(next_contract_bm.value, 0) + IFNULL(next_contract_bmo.value, 0) + IFNULL(next_contract_omsu.value, 0) + IFNULL(next_contract_omsu2.value, 0)) / 1000) AS contract_next,
-              ROUND(SUM(IFNULL(payment_fb.value, 0) + IFNULL(payment_bm.value, 0) + IFNULL(payment_bmo.value, 0) + IFNULL(payment_omsu.value, 0) + IFNULL(payment_omsu2.value, 0)) / 1000) AS payment_current,
-              ROUND(SUM(IFNULL(payment_fb.value, 0) + IFNULL(payment_bm.value, 0) + IFNULL(payment_bmo.value, 0) + IFNULL(payment_omsu.value, 0) + IFNULL(payment_omsu2.value, 0)) / SUM(IFNULL(contract_fb.value, 0) + IFNULL(contract_bm.value, 0) + IFNULL(contract_bmo.value, 0) + IFNULL(contract_omsu.value, 0) + IFNULL(contract_omsu2.value, 0)) * 100, 2) AS dp_current,
-              ROUND((SUM(IFNULL(contract_fb.value, 0) + IFNULL(contract_bm.value, 0) + IFNULL(contract_bmo.value, 0) + IFNULL(contract_omsu.value, 0) + IFNULL(contract_omsu2.value, 0)) - SUM(IFNULL(payment_fb.value, 0) + IFNULL(payment_bm.value, 0) + IFNULL(payment_bmo.value, 0) + IFNULL(payment_omsu.value, 0) + IFNULL(payment_omsu2.value, 0))) / 1000) AS payment_rest
+              ROUND(current_year_data.contract_value / 1000) AS contract_current,
+              ROUND(next_year_data.contract_value / 1000) AS contract_next,
+              ROUND(current_year_data.payment_value / 1000) AS payment_current,
+              ROUND(current_year_data.payment_value / current_year_data.contract_value * 100, 2) AS dp_current,
+              ROUND((current_year_data.contract_value - current_year_data.payment_value) / 1000) AS payment_rest
             FROM 
               [x_contract] AS contract
               LEFT JOIN [x_contragent] AS contragent ON contragent.id = contract.x_contragent_id
               LEFT JOIN [x_object] AS object ON object.id = contract.x_object_id
               LEFT JOIN [x_omsu] AS omsu ON omsu.id = object.omsu_id
-              LEFT JOIN [x_contract_data] AS contract_fb ON contract_fb.year = :current_year AND contract_fb.x_contract_id = contract.id AND contract_fb.type = 'Контракт ФБ'
-              LEFT JOIN [x_contract_data] AS contract_bm ON contract_bm.year = :current_year AND contract_bm.x_contract_id = contract.id AND contract_bm.type = 'Контракт БМ'
-              LEFT JOIN [x_contract_data] AS contract_bmo ON contract_bmo.year = :current_year AND contract_bmo.x_contract_id = contract.id AND contract_bmo.type = 'Контракт БМО'
-              LEFT JOIN [x_contract_data] AS contract_omsu ON contract_omsu.year = :current_year AND contract_omsu.x_contract_id = contract.id AND contract_omsu.type = 'Контракт ОМСУ'
-              LEFT JOIN [x_contract_data] AS contract_omsu2 ON contract_omsu2.year = :current_year AND contract_omsu2.x_contract_id = contract.id AND contract_omsu2.type = 'Контракт ОМСУ2'
-              LEFT JOIN [x_contract_data] AS payment_fb ON payment_fb.year = :current_year AND payment_fb.x_contract_id = contract.id AND payment_fb.type = 'Оплата ФБ'
-              LEFT JOIN [x_contract_data] AS payment_bm ON payment_bm.year = :current_year AND payment_bm.x_contract_id = contract.id AND payment_bm.type = 'Оплата БМ'
-              LEFT JOIN [x_contract_data] AS payment_bmo ON payment_bmo.year = :current_year AND payment_bmo.x_contract_id = contract.id AND payment_bmo.type = 'Оплата БМО'
-              LEFT JOIN [x_contract_data] AS payment_omsu ON payment_omsu.year = :current_year AND payment_omsu.x_contract_id = contract.id AND payment_omsu.type = 'Оплата ОМСУ'
-              LEFT JOIN [x_contract_data] AS payment_omsu2 ON payment_omsu2.year = :current_year AND payment_omsu2.x_contract_id = contract.id AND payment_omsu2.type = 'Оплата ОМСУ2'
+              LEFT JOIN vt_years_data AS current_year_data ON current_year_data.year = :current_year AND contract.id = current_year_data.x_contract_id
+              LEFT JOIN vt_years_data AS next_year_data ON next_year_data.year = :next_year AND contract.id = next_year_data.x_contract_id
               LEFT JOIN vt_prev AS prevyear ON prevyear.year = :prev_year AND contragent.inn = prevyear.contract_inn AND prevyear.object_name = object.name
               LEFT JOIN vt_prev AS bprevyear ON bprevyear.year = :bprev_year AND contragent.inn = bprevyear.contract_inn AND bprevyear.object_name = object.name
-              LEFT JOIN [x_contract_data] AS next_contract_fb ON contract_fb.year = :next_year AND contract_fb.x_contract_id = contract.id AND contract_fb.type = 'Контракт ФБ'
-              LEFT JOIN [x_contract_data] AS next_contract_bm ON contract_bm.year = :next_year AND contract_bm.x_contract_id = contract.id AND contract_bm.type = 'Контракт БМ'
-              LEFT JOIN [x_contract_data] AS next_contract_bmo ON contract_bmo.year = :next_year AND contract_bmo.x_contract_id = contract.id AND contract_bmo.type = 'Контракт БМО'
-              LEFT JOIN [x_contract_data] AS next_contract_omsu ON contract_omsu.year = :next_year AND contract_omsu.x_contract_id = contract.id AND contract_omsu.type = 'Контракт ОМСУ'
-              LEFT JOIN [x_contract_data] AS next_contract_omsu2 ON contract_omsu2.year = :next_year AND contract_omsu2.x_contract_id = contract.id AND contract_omsu2.type = 'Контракт ОМСУ2'
             WHERE
               contract.x_contragent_id IN (%WINNERS_LIST%)
             GROUP BY
@@ -96,6 +99,7 @@ class ReportWinners extends AbstractReport {
             FROM vt_result AS result;
             
             DROP TEMPORARY TABLE vt_prev;
+            DROP TEMPORARY TABLE IF EXISTS vt_years_data;
             DROP TEMPORARY TABLE vt_result;
             
             FIN;
@@ -166,6 +170,8 @@ class ReportWinners extends AbstractReport {
         $sth->execute($query_params);
         error_log($sth->queryString);
         
+        $sth->nextRowset();
+        $sth->nextRowset();
         $sth->nextRowset();
         $sth->nextRowset();
         $sth->nextRowset();
