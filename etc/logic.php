@@ -1,7 +1,8 @@
 <?php
 
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
- */
+use losthost\BotView\BotView;
 
+require 'src/functions.php';
+require 'src/show.php';
+
+BotView::setTemplateDir(__DIR__. '/../src/templates');

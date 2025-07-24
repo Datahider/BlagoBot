@@ -23,10 +23,7 @@ use losthost\BlagoBot\data\x_responsible;
 use losthost\telle\model\DBPendingUpdate;
 
 require 'vendor/autoload.php';
-require 'src/functions.php';
-require 'src/show.php';
 
-BotView::setTemplateDir(__DIR__. '/templates');
 
 Bot::setup();
 
@@ -71,6 +68,8 @@ Bot::addHandler(\losthost\BlagoBot\handlers\CallbackAddUser::class);
 Bot::addHandler(\losthost\BlagoBot\handlers\CallbackMakeReport::class);
 Bot::addHandler(losthost\BlagoBot\handlers\CallbackEditUser::class);
 Bot::addHandler(\losthost\BlagoBot\handlers\CallbackInlineButton::class);
+
+Bot::addHandler(losthost\BlagoBot\handlers\CommandBg::class);
 
 Bot::run();
 
