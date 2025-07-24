@@ -78,17 +78,35 @@ function sendSplitMessage($chat_id, $text, $separator=null, $send_copy=false) : 
         
         while (true) {
             if ($message) {
-                Bot::$api->sendMessage($chat_id, $message, 'HTML');
+                sendMessageWithRetry($chat_id, $message, 'HTML');
                 if ($copy) {
                     $copy->reset();
                     while ($copy->next()) {
-                        Bot::$api->sendMessage($copy->copy_user_id, $message, 'HTML');
+                        sendMessageWithRetry($copy->copy_user_id, $message, 'HTML');
                     }
                 }
             }
             break;
         }
     }
+}
+
+function sendMessageWithRetry($chat_id, $message, $parse_mode, $max_retries=3) {
+    
+    for ($i=0;$i<$max_retries;$i++) {
+        try {
+            Bot::$api->sendMessage($chat_id, $message, $parse_mode);
+            break;
+        } catch (\Exception $exc) {
+            $m = [];
+            if (preg_match("/^Too Many Requests: retry after (\d+)/", $exc->getMessage(), $m)) {
+                sleep($m[1]);
+            } else {
+                throw $exc;
+            }
+        }
+    }
+
 }
 
 function procedurePlanFact(string $title, ?\DateTimeImmutable $db_plan, ?\DateTimeImmutable $db_fact) : string {
