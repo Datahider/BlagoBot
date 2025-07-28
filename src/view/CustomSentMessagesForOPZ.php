@@ -30,13 +30,29 @@ class CustomSentMessagesForOPZ extends AbstractCustomView {
             $report_data[] = $message_text;
         }
 
-        $messages = <<<FIN
-                Всего закупок: <b>$messages_total</b>
-                Из них:
-                • На подписании: <b>$messages_on_signing</b>
-                • ОПЗ не наступило: <b>{$messages_in_future}</b>
-                <!-- SPLIT -->
-                FIN. implode('<!-- SPLIT -->', $report_data);
+        if (count($this->result->params['filter']) == 2) { 
+            $messages = <<<FIN
+                    Всего закупок: <b>$messages_total</b>
+                    Из них:
+                    • На подписании: <b>$messages_on_signing</b>
+                    • ОПЗ не наступило: <b>{$messages_in_future}</b>
+                    <!-- SPLIT -->
+                    FIN. implode('<!-- SPLIT -->', $report_data);
+        } elseif ($this->result->params['filter'][0] == '<') {
+            $messages = <<<FIN
+                    Всего закупок: <b>$messages_total</b>
+                    Из них:
+                    • На подписании: <b>$messages_on_signing</b>
+                    <!-- SPLIT -->
+                    FIN. implode('<!-- SPLIT -->', $report_data);
+        } else {
+            $messages = <<<FIN
+                    Всего закупок: <b>$messages_total</b>
+                    Из них:
+                    • ОПЗ не наступило: <b>{$messages_in_future}</b>
+                    <!-- SPLIT -->
+                    FIN. implode('<!-- SPLIT -->', $report_data);
+        }
         sendSplitMessage(Bot::$chat->id, $messages);
     }
 }
