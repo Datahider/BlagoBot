@@ -218,7 +218,7 @@ class DBUpdater {
                 $prev->object_name = $this->checkCell('Объект3', $cells[11]);
                 $prev->category2_name = $this->checkCell('Категория2', $cells[13]);
                 $prev->object_count = $this->checkCell('Количество объектов', $cells[22]);
-                $prev->contract_inn = $this->checkCell('Контракт ИНН', preg_replace("/^_/", '', $cells[55]));
+                $prev->contract_inn = $this->checkCell('Контракт ИНН', preg_replace("/^'/", '', $cells[55]));
                 $prev->contract_winner = $this->checkCell('Контракт Победитель', $cells[54]);
                 $prev->payment_total = $this->checkCell('Оплата ФБ', $cells[75])
                         + $this->checkCell('Оплата БМ', $cells[76])
