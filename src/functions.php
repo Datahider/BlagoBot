@@ -15,8 +15,10 @@ function initBUser() {
     if ($b_user->isNew()) {
         if ($b_user->tg_user == Bot::param('superadmin', null)) {
             $b_user->access_level = 'admin';
+            $b_user->ai_context_starts = date_create();
         } else {
             $b_user->access_level = 'unknown';
+            $b_user->ai_context_starts = date_create();
         }
         $b_user->write();
     }
@@ -24,7 +26,8 @@ function initBUser() {
 
 function addBUser($tg_id, $access_level) : user {
     $user = new user(['tg_user' => $tg_id], true);
-    
+    $user->ai_context_starts = date_create();
+
     switch ($access_level) {
         case user::AL_ADMIN:
             $user->access_level = user::AL_ADMIN;

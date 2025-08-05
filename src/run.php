@@ -21,6 +21,7 @@ use losthost\BlagoBot\data\x_contragent;
 use losthost\BlagoBot\data\x_prev;
 use losthost\BlagoBot\data\x_responsible;
 use losthost\telle\model\DBPendingUpdate;
+use losthost\BlagoBot\data\ai_context;
 
 require 'vendor/autoload.php';
 
@@ -43,6 +44,8 @@ x_contragent::initDataStructure();
 x_prev::initDataStructure();
 x_responsible::initDataStructure();
 
+ai_context::initDataStructure();
+
 report::initDataStructure();
 report_param::initDataStructure();
 report_param_value::initDataStructure();
@@ -62,6 +65,7 @@ Bot::addHandler(\losthost\BlagoBot\handlers\CommandDigits::class);
 Bot::addHandler(\losthost\BlagoBot\handlers\CommandTest::class);
 Bot::addHandler(losthost\BlagoBot\handlers\CommandHelp::class);
 Bot::addHandler(\losthost\BlagoBot\handlers\CommandStat::class);
+Bot::addHandler(\losthost\BlagoBot\handlers\CommandReset::class);
 
 Bot::addHandler(\losthost\BlagoBot\handlers\PreCallback::class);
 Bot::addHandler(\losthost\BlagoBot\handlers\CallbackAddUser::class);
@@ -71,6 +75,8 @@ Bot::addHandler(\losthost\BlagoBot\handlers\CallbackInlineButton::class);
 
 Bot::addHandler(losthost\BlagoBot\handlers\CommandBg::class);
 Bot::addHandler(\losthost\BlagoBot\handlers\CommandAi::class);
+
+Bot::addHandler(losthost\BlagoBot\handlers\MessageRegular::class);
 
 Bot::run();
 
