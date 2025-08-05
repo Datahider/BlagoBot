@@ -25,6 +25,7 @@ class user extends DBObject {
         'phone' => 'VARCHAR(14)',
         'phone2' => 'VARCHAR(14)',
         'notes' => 'VARCHAR(1024)',
+        'ai_context_starts' => "DATETIME NOT NULL DEFAULT '2025-08-04 00:00:00'",
         'PRIMARY KEY' => 'id', 
         'UNIQUE INDEX TG_USER' => 'tg_user', 
     ];
