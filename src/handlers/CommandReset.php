@@ -2,15 +2,13 @@
 
 namespace losthost\BlagoBot\handlers;
 
-use losthost\telle\abst\AbstractHandlerCommand;
+use losthost\telle\abst\AbstractHandlerMessage;
 use losthost\telle\Bot;
 
 use function losthost\BlagoBot\__;
 use function \losthost\BlagoBot\sendMessageWithRetry;
 
-class CommandReset extends AbstractHandlerCommand {
-    
-    const COMMAND = 'reset';
+class CommandReset extends AbstractHandlerMessage {
     
     #[\Override]
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
@@ -21,5 +19,13 @@ class CommandReset extends AbstractHandlerCommand {
         
         sendMessageWithRetry(Bot::$chat->id, __('Контекст работы с ИИ-ассистентом сброшен.'), null);
         return true;
+    }
+
+    #[\Override]
+    protected function check(\TelegramBot\Api\Types\Message &$message): bool {
+        if ($message->getText() && preg_match('/^\/reset$/i', $message->getText())) {
+            return true;
+        }
+        return false;
     }
 }

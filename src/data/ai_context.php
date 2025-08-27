@@ -11,7 +11,8 @@ class ai_context extends DBObject {
         'date_added' => 'DATETIME NOT NULL',
         'user_id' => 'BIGINT(20) NOT NULL',
         'role' => 'ENUM("user", "assistant", "system")',
-        'text' => 'TEXT',
+        'text' => 'MEDIUMTEXT',
+        'data' => 'MEDIUMTEXT',
         'PRIMARY KEY' => 'id',
         'INDEX idx_1' => ['user_id', 'date_added']
     ];

@@ -4,12 +4,15 @@ namespace losthost\BlagoBot\service;
 
 use losthost\telle\Bot;
 
+use function \losthost\BlagoBot\sendMessageWithRetry;
+
 class AIGateway {
     
     protected string $api_key;
     protected string $api_url;
     protected string $model;
-    
+
+
     public function __construct() {
 
         require 'etc/bot_config.php';
@@ -17,10 +20,9 @@ class AIGateway {
         $this->api_key = $ai_key;
         $this->api_url = $ai_url;
         $this->model = $ai_model;
-        
     }
     
-    public function completion(array $context) {
+    public function completion(array $context, ?array $functions=null) {
         $data = [
             'modelUri' => $this->model,
             'completionOptions' => [
@@ -31,6 +33,11 @@ class AIGateway {
             'messages' => $context
         ];
         
+        if (!is_null($functions)) {
+            $data['tools'] = $functions;
+        }
+        
+        Bot::logComment(json_encode($data));
         return $this->call('/completion', $data);
     }
     
@@ -55,8 +62,8 @@ class AIGateway {
 
         // === Если всё ок — выводим результат ===
         $decoded = json_decode($result['response'], true);
-        if (isset($decoded['result']['alternatives'][0]['message']['text'])) {
-            return $this->ok($decoded['result']['alternatives'][0]['message']['text']);
+        if (isset($decoded['result']['alternatives'][0]['message'])) {
+            return $this->ok($decoded['result']['alternatives'][0]['message']);
         } else {
             return $this->modelError(print_r($decoded, true));
         }
@@ -66,12 +73,15 @@ class AIGateway {
         
         $headers = [
             "Authorization: Api-Key $this->api_key",
-            "Content-Type: application/json"
+            "Content-Type: application/json",
         ];
+        
+        $json = json_encode($data);
+        Bot::logComment($json);
         
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_CAINFO, 'vendor/losthost/telle/src/cacert.pem');  
         
@@ -111,10 +121,10 @@ class AIGateway {
         ];
     }
     
-    protected function ok($text) {
+    protected function ok($message) {
         return [
             'error' => false,
-            'text' => $text
+            'message' => $message
         ];
     }
 }

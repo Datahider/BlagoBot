@@ -6,6 +6,11 @@ use losthost\BlagoBot\service\AIGateway;
 use losthost\DB\DB;
 use losthost\telle\Bot;
 use losthost\BlagoBot\data\ai_context;
+use losthost\templateHelper\Template;
+use losthost\BlagoBot\reports\ReportObjectsByOmsu;
+use losthost\telle\model\DBSession;
+
+use losthost\BlagoBot\service\AIToolCaller;
 
 use function \losthost\BlagoBot\sendMessageWithRetry;
 
@@ -20,20 +25,52 @@ class MessageRegular extends AbstractHandlerMessage {
     protected function handle(\TelegramBot\Api\Types\Message &$message): bool {
         
         global $b_user;
-        
-        $messages = $this->makeContext($message->getText());
+
+        $user_message = [
+            'role' => 'user',
+            'text' => $message->getText()
+        ];
+        $this->addToContext($b_user->id, $user_message['role'], $user_message['text'], $user_message);
+        $functions = $this->getFunctions();
         
         $ai = new AIGateway();
-        $result = $ai->completion($messages);
         
-        if (!$result['error']) {
-            $this->addToContext($b_user->id, 'assistant', $result['text']);
-            sendMessageWithRetry(Bot::$chat->id, $result['text'], null);
-        } else {
-            $this->reportErrorToUser($result);
-        }
+        while (true) {
+    
+            $messages = $this->getContext();
+            $result = $ai->completion($messages, $functions);
+
+            if ($result['error']) {
+                $this->reportErrorToUser($result);
+                return true;
+            }
+
+            $model_message = $result['message'];
+            if (isset($model_message['text'])) {
+                $this->addToContext($b_user->id, $model_message['role'], $model_message['text'], $model_message);
+                break;
+            } elseif (isset($model_message['toolCallList'])) {
+                $this->addToContext($b_user->id, $model_message['role'], '[Вызов функции]', $model_message);
+                $call_result = $this->toolCalls($model_message['toolCallList']['toolCalls']);
+                $this->addToContext($b_user->id, $call_result['role'], '[Результат функции]', $call_result);
+            } else {
+                sendMessageWithRetry(Bot::$chat->id, "Получен непредусмотренный ответ модели:\n\n". json_encode($model_message), null);
+                return true;
+            }
+
+        };
+        
+        sendMessageWithRetry(Bot::$chat->id, $model_message['text'], null);
         
         return true;
+    }
+    
+    protected function getFunctions() : array {
+
+        $functions_template = new Template('functions.php', Bot::$language_code);
+        $functions_template->setTemplateDir('src/templates');
+        
+        return unserialize($functions_template->process());
     }
     
     protected function reportErrorToUser($result) {
@@ -75,13 +112,56 @@ class MessageRegular extends AbstractHandlerMessage {
         return $current_messages;
     }
     
+    protected function contextCountMessages() : int {
+        global $b_user;
+        
+        $sql = $this->sqlContextCountMessages();
+        
+        $sth = DB::prepare($sql);
+        $sth->execute([$b_user->id, $b_user->ai_context_starts->format(DB::DATE_FORMAT)]);
+        
+        $row = $sth->fetch(\PDO::FETCH_NUM);
+        return $row[0];
+        
+    }
+    
+    protected function sqlContextCountMessages() {
+        return <<<FIN
+            SELECT
+                COUNT(id)
+            FROM
+                [ai_context]
+            WHERE
+                user_id = ?
+                AND date_added >= ?
+            FIN;
+    }
+    
     protected function getContext() : array {
         global $b_user;
         
-        $sql = <<<FIN
+        if ($this->contextCountMessages() == 0) {
+            $this->makePrompt();
+        }
+        
+        $sql = $this->sqlGetContext();
+        
+        $sth = DB::prepare($sql);
+        $sth->execute([$b_user->id, $b_user->ai_context_starts->format(DB::DATE_FORMAT)]);
+        $query_result = $sth->fetchAll(\PDO::FETCH_ASSOC);
+        
+        $result = [];
+        foreach ($query_result as $row) {
+            $result[] = unserialize($row['data']);
+        }
+        
+        return $result;
+    }
+    
+    protected function sqlGetContext() : string {
+        return <<<FIN
             SELECT
-                role,
-                text
+                data
             FROM
                 [ai_context]
             WHERE
@@ -89,45 +169,75 @@ class MessageRegular extends AbstractHandlerMessage {
                 AND date_added >= ?
             ORDER BY date_added
             FIN;
-        
-        $sth = DB::prepare($sql);
-        $sth->execute([$b_user->id, $b_user->ai_context_starts->format(DB::DATE_FORMAT)]);
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     protected function makePrompt() {
         global $b_user;
-        return $this->addToContext($b_user->id, 'system', $this->getPromptText());
+        
+        $prompt = [
+            'role' => 'system',
+            'text' => $this->getPromptText()
+        ];
+        
+        $ai_context = new ai_context();
+        $ai_context->date_added = date_create();
+        $ai_context->user_id = $b_user->id;
+        $ai_context->role = $prompt['role'];
+        $ai_context->text = $prompt['text'];
+        $ai_context->data = serialize($prompt);
+        $ai_context->write();
+
     }
 
     protected function getPromptText() {
         
         global $b_user;
         
-        $prompt = Bot::param('ai_prompt_tpl', 'Ты ассистент, работающий в министерстве. Используй официальный стиль общения. Ко мне обращайся на Вы. Называй меня {{name}} {{fathers_name}}. Не забудь поздороваться в первом сообщении.');
-
+        $prompt_template = new Template('prompt.php', Bot::$language_code);
+        $prompt_template->setTemplateDir('src/templates');
+        
         $vars = [
             'name' => $b_user->name,
-            'fathers_name' => $b_user->fathers_name
+            'fathers_name' => $b_user->fathers_name,
+            //'json' => $this->getJsonData()    
         ];
         
         foreach ($vars as $key => $value) {
-            $prompt = str_replace("{{{$key}}}", $value, $prompt);
+            $prompt_template->assign($key, $value);
         }
         
-        return $prompt;
+        return $prompt_template->process();
     }
     
-    protected function addToContext($user_id, $role, $text) {
+    protected function addToContext($user_id, $role, $text, $data) {
+        
+        if ($this->contextCountMessages() == 0) {
+            $this->makePrompt();
+        }
         
         $ai_context = new ai_context();
         $ai_context->date_added = date_create();
         $ai_context->user_id = $user_id;
         $ai_context->role = $role;
         $ai_context->text = $text;
+        $ai_context->data = serialize($data);
         $ai_context->write();
         
         return $ai_context;
+    }
+    
+    protected function toolCalls(array $tool_calls) {
+        $caller = new AIToolCaller();
+        $results_array = $caller->getToolResults($tool_calls);
+        
+        $call_result = [
+            'role' => 'user',
+            'toolResultList' => [
+                'toolResults' => $results_array
+            ]
+        ];
+        
+        return $call_result;
     }
     
 }
