@@ -7,6 +7,7 @@ use losthost\DB\DB;
 use losthost\telle\Bot;
 use losthost\BlagoBot\data\ai_context;
 use losthost\templateHelper\Template;
+use losthost\BlagoBot\service\TableMap;
 use losthost\BlagoBot\reports\ReportObjectsByOmsu;
 use losthost\telle\model\DBSession;
 
@@ -69,6 +70,20 @@ class MessageRegular extends AbstractHandlerMessage {
 
         $functions_template = new Template('functions.php', Bot::$language_code);
         $functions_template->setTemplateDir('src/templates');
+        
+        $omsu_map = new TableMap('x_omsu', 'id', 'name');
+        $category_map = new TableMap('x_category', 'id', 'name');
+        $winners_map = new TableMap('x_contragent', 'id', 'name');
+        
+        $vars = [
+            'omsus' => $omsu_map->values(),
+            'categories' => $category_map->values(),
+            'winners' => $winners_map->values()
+        ];
+        
+        foreach ($vars as $key => $value) {
+            $functions_template->assign($key, $value);
+        }
         
         return unserialize($functions_template->process());
     }
