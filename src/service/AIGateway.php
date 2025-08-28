@@ -37,7 +37,6 @@ class AIGateway {
             $data['tools'] = $functions;
         }
         
-        Bot::logComment(json_encode($data));
         return $this->call('/completion', $data);
     }
     
@@ -77,7 +76,6 @@ class AIGateway {
         ];
         
         $json = json_encode($data);
-        Bot::logComment($json);
         
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
