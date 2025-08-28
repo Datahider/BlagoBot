@@ -409,7 +409,7 @@ class DBUpdater {
                             $contract_data->value = $value;
                             $contract_data->write();
                         } else {
-                            throw new Exception(__("Лимит $data[type] $year для $object->uin уже был задан."));
+                            throw new \Exception(__("Лимит $data[type] $year для $object->uin уже был задан."));
                         }
                     }
                 }

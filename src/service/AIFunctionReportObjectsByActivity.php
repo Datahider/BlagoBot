@@ -64,14 +64,14 @@ class AIFunctionReportObjectsByActivity extends AIFunctionReport {
 
         $params['activity'] = array_map(function($value) {
             if (!isset(static::ACTIVITY_IDS[$value])) {
-                throw new Exception("Не найдено соответствие для значения: $value");
+                throw new \Exception("Не найдено соответствие для значения: $value");
             }
             return static::ACTIVITY_IDS[$value];
         }, $params['activity']);
         
         $params['data'] = array_map(function($value) {
             if (!isset(static::DATA_IDS[$value])) {
-                throw new Exception("Не найдено соответствие для значения: $value");
+                throw new \Exception("Не найдено соответствие для значения: $value");
             }
             return static::DATA_IDS[$value];
         }, $params['data']);

@@ -85,14 +85,14 @@ class AIFunctionReportObjectsByOmsu extends AIFunctionReport {
 
         $params['omsu'] = array_map(function($value) {
             if (!isset(static::OMSU_IDS[$value])) {
-                throw new Exception("Не найдено соответствие для значения: $value");
+                throw new \Exception("Не найдено соответствие для значения: $value");
             }
             return static::OMSU_IDS[$value];
         }, $params['omsu']);
         
         $params['data'] = array_map(function($value) {
             if (!isset(static::DATA_IDS[$value])) {
-                throw new Exception("Не найдено соответствие для значения: $value");
+                throw new \Exception("Не найдено соответствие для значения: $value");
             }
             return static::DATA_IDS[$value];
         }, $params['data']);
