@@ -61,14 +61,14 @@ class ReportWinners extends AbstractReport {
               omsu.name AS omsu,
               object.name AS object,
               object.category2_name AS category,
-              ROUND((IFNULL(bprevyear.payment_total, 0) + IFNULL(prevyear.payment_total, 0) + IFNULL(current_year_data.contract_value, 0) + IFNULL(next_year_data.contract_value, 0)) / 1000) AS total,
-              ROUND((IFNULL(bprevyear.payment_total, 0)) / 1000) AS payment_bprev,
-              ROUND((IFNULL(prevyear.payment_total, 0)) / 1000) AS payment_prev,
-              ROUND(current_year_data.contract_value / 1000) AS contract_current,
-              ROUND(next_year_data.contract_value / 1000) AS contract_next,
-              ROUND(current_year_data.payment_value / 1000) AS payment_current,
-              ROUND(current_year_data.payment_value / current_year_data.contract_value * 100, 2) AS dp_current,
-              ROUND((current_year_data.contract_value - current_year_data.payment_value) / 1000) AS payment_rest
+              ROUND(SUM((IFNULL(bprevyear.payment_total, 0) + IFNULL(prevyear.payment_total, 0) + IFNULL(current_year_data.contract_value, 0) + IFNULL(next_year_data.contract_value, 0)) / 1000)) AS total,
+              ROUND(SUM(IFNULL(bprevyear.payment_total, 0) / 1000)) AS payment_bprev,
+              ROUND(SUM(IFNULL(prevyear.payment_total, 0) / 1000)) AS payment_prev,
+              ROUND(SUM(current_year_data.contract_value / 1000)) AS contract_current,
+              ROUND(SUM(next_year_data.contract_value / 1000)) AS contract_next,
+              ROUND(SUM(current_year_data.payment_value / 1000)) AS payment_current,
+              ROUND(SUM(current_year_data.payment_value) / SUM(current_year_data.contract_value) * 100, 2) AS dp_current,
+              ROUND(SUM((current_year_data.contract_value - current_year_data.payment_value) / 1000)) AS payment_rest
             FROM 
               [x_contract] AS contract
               LEFT JOIN [x_contragent] AS contragent ON contragent.id = contract.x_contragent_id
