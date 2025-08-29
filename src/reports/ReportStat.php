@@ -70,7 +70,7 @@ class ReportStat extends AbstractReport {
                     ) AS this_week
             FROM 
                     blago_log_report AS logrep
-                    LEFT JOIN blago_user AS user ON user.id = logrep.user_id
+                    INNER JOIN blago_user AS user ON user.id = logrep.user_id
                     LEFT JOIN blago_telle_users AS tguser ON tguser.id = user.tg_user
             GROUP BY
                     logrep.user_id  
