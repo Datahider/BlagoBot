@@ -43,4 +43,21 @@ abstract class AIFunctionReport extends AIFunction {
         Bot::$session = $this->stored_session;
         Bot::$session->write(); // Возвращаем в базу что было 
     }
+    
+    protected function mapParam(array|string &$param, array $map) {
+
+        if (is_array($param)) {
+            foreach ($param as &$value) {
+                if (array_key_exists($value, $map)) {
+                    $value = $map[$value];
+                }
+            }
+            unset($value); // Сбрасываем ссылку
+        } else {
+            if (array_key_exists($param, $map)) {
+                $param = $map[$param];
+            }
+        }
+        
+    }
 }

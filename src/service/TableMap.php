@@ -57,6 +57,14 @@ class TableMap {
         return array_values($this->reverse_map);
     }
     
+    public function getMap() {
+        return $this->map;
+    }
+    
+    public function getReverseMap() {
+        return $this->reverse_map;
+    }
+    
     protected function getSQL($table_name, $key_field_name, $value_field_name) {
         return <<<FIN
             SELECT

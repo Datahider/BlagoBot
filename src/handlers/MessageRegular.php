@@ -19,7 +19,10 @@ class MessageRegular extends AbstractHandlerMessage {
     
     #[\Override]
     protected function check(\TelegramBot\Api\Types\Message &$message): bool {
-        return $message->getText();
+        if ($message->getText()) {
+            return true;
+        }
+        return false;
     }
 
     #[\Override]
