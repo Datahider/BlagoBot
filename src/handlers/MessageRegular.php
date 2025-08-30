@@ -77,11 +77,13 @@ class MessageRegular extends AbstractHandlerMessage {
         $omsu_map = new TableMap('x_omsu', 'id', 'name');
         $category_map = new TableMap('x_category', 'id', 'name');
         $winners_map = new TableMap('x_contragent', 'id', 'name');
+        $responsibles_map = new TableMap('x_responsible_view', 'id', 'fio');
         
         $vars = [
             'omsus' => $omsu_map->values(),
             'categories' => $category_map->values(),
-            'winners' => $winners_map->values()
+            'winners' => $winners_map->values(),
+            'responsibles' => $responsibles_map->values()
         ];
         
         foreach ($vars as $key => $value) {
