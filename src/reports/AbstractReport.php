@@ -74,9 +74,14 @@ abstract class AbstractReport {
         Bot::$session->set('data', $data);
     }
     
-    public function build() : stdClass {
+    public function build(?array $params=null) : stdClass {
         
-        $report_params = Bot::$session->get('data');
+        if (is_null($params)) {
+            $report_params = Bot::$session->get('data');
+        } else {
+            $report_params = $params;
+        }
+        
         $errors = $this->checkParamErrors($report_params);
         if ($errors !== false) {
             return (object)[

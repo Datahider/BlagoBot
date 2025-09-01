@@ -59,6 +59,7 @@ Bot::addHandler(losthost\BlagoBot\handlers\CommandStart::class);
 
 Bot::addHandler(losthost\BlagoBot\handlers\MessageFiles::class);
 
+Bot::addHandler(\losthost\BlagoBot\handlers\CommandAILog::class);
 Bot::addHandler(losthost\BlagoBot\handlers\CommandUsers::class);
 Bot::addHandler(\losthost\BlagoBot\handlers\CommandXUsers::class);
 Bot::addHandler(\losthost\BlagoBot\handlers\CommandDigits::class);
