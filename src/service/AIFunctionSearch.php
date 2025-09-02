@@ -3,6 +3,8 @@
 namespace losthost\BlagoBot\service;
 
 use losthost\telle\Bot;
+use losthost\BlagoBot\data\log_report;
+
 use function \losthost\BlagoBot\sendMessageWithRetry;
 
 class AIFunctionSearch extends AIFunction {
@@ -24,9 +26,16 @@ class AIFunctionSearch extends AIFunction {
     #[\Override]
     public function getResult(array $params): mixed {
 
+        global $b_user;
+        
         sendMessageWithRetry(Bot::$chat->id, "Ищу в интернете по запросу: «$params[prompt]»...", null);
         
+        $log = log_report::log_start($b_user->id, static::class);
+        
         $result = $this->search($params['prompt']);
+        
+        $log->log_stop();
+        
         return $result;
     }
     

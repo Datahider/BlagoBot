@@ -3,6 +3,7 @@
 namespace losthost\BlagoBot\service;
 
 use losthost\telle\Bot;
+use losthost\BlagoBot\data\log_report;
 
 use function \losthost\BlagoBot\sendMessageWithRetry;
 
@@ -23,6 +24,11 @@ class AIGateway {
     }
     
     public function completion(array $context, ?array $functions=null) {
+        
+        global $b_user;
+        
+        $log = log_report::log_start($b_user->id, static::class);
+        
         $data = [
             'modelUri' => $this->model,
             'completionOptions' => [
@@ -37,7 +43,10 @@ class AIGateway {
             $data['tools'] = $functions;
         }
         
-        return $this->call('/completion', $data);
+        $result = $this->call('/completion', $data);
+        $log->log_stop();
+        
+        return $result;
     }
     
     protected function call(string $function, array $params) {
