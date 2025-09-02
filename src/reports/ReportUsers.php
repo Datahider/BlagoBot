@@ -7,6 +7,7 @@ use losthost\DB\DB;
 use losthost\BlagoBot\service\xls\Column;
 use losthost\BlagoBot\service\xls\CellFormat;
 use losthost\BlagoBot\service\ReportSummary;
+use losthost\BlagoBot\data\user;
 
 class ReportUsers extends AbstractReport {
     
