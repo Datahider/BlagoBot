@@ -14,6 +14,16 @@ class ReportUsers extends AbstractReport {
         $this->params = null;
     }
 
+    #[\Override]
+    protected function checkAccessRights(): bool {
+        global $b_user;
+        
+        if ($b_user->access_level <> user::AL_ADMIN) {
+            return false;
+        }
+        return true;
+    }
+
     protected function checkParamErrors($params): false|array {
         return false;
     }
