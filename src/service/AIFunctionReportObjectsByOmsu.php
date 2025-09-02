@@ -62,7 +62,7 @@ class AIFunctionReportObjectsByOmsu extends AIFunctionReport {
         "Чехов" => 56, 
         "Шатура" => 57, 
         "Шаховская" => 58, 
-        "Щелково" => 59, 
+        "Щёлково" => 59, 
         "Электросталь" => 60     
     ];
 
@@ -98,10 +98,7 @@ class AIFunctionReportObjectsByOmsu extends AIFunctionReport {
         }, $params['data']);
         
         
-        $this->sendReport(3, $params);
+        return $this->sendReport(3, $params);
         
-        $result = "Запрошенный отчет отправлен.";
-
-        return $result;
     }
 }

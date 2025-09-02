@@ -34,34 +34,35 @@ class ReportResultView {
         
         if ($this->result->ok) {
             $view->show('tpl_report_view', null, ['result' => $this->result], $message_id);
+
+            if ($this->result->result_type == AbstractReport::RESULT_TYPE_XLSX) {
+                $exporter = $this->getExporter();
+                $spreadsheet = $exporter->export($this->result);
+
+                $writer = $this->getWriter($spreadsheet);
+
+                $tmp_file = tempnam('/tmp', 'Rpt');
+                $writer->save($tmp_file);
+
+                $file_to_send = new \CURLFile($tmp_file, $this->getReportMimeType(), $this->getReportFileName());
+                Bot::$api->sendDocument(Bot::$chat->id, $file_to_send, 'Результат отчета');
+                $file_to_send = null;
+                unlink($tmp_file);
+            } elseif (is_string($this->result->result_type)) {
+                if (is_a($this->result->result_type, AbstractCustomView::class, true)) {
+                    $view = new $this->result->result_type($this->result);
+                    $view->show();
+                } else {
+                    sendSplitMessage(Bot::$chat->id, "Не удалось отобразить результат отчета. Обратитесь к разработчику.");
+                }
+            }
         } else {
             $view->show('tpl_report_view', null, ['result' => $this->result], $message_id);
         }
         
-        if ($this->result->result_type == AbstractReport::RESULT_TYPE_XLSX) {
-            $exporter = $this->getExporter();
-            $spreadsheet = $exporter->export($this->result);
-            
-            $writer = $this->getWriter($spreadsheet);
-            
-            $tmp_file = tempnam('/tmp', 'Rpt');
-            $writer->save($tmp_file);
-            
-            $file_to_send = new \CURLFile($tmp_file, $this->getReportMimeType(), $this->getReportFileName());
-            Bot::$api->sendDocument(Bot::$chat->id, $file_to_send, 'Результат отчета');
-            $file_to_send = null;
-            unlink($tmp_file);
-        } elseif (is_string($this->result->result_type)) {
-            if (is_a($this->result->result_type, AbstractCustomView::class, true)) {
-                $view = new $this->result->result_type($this->result);
-                $view->show();
-            } else {
-                sendSplitMessage(Bot::$chat->id, "Не удалось отобразить результат отчета. Обратитесь к разработчику.");
-            }
-        }
-        
         $this->log->log_stop();
         Bot::$session->set('command', null);
+        
     }
     
     protected function getExporter() {
@@ -80,5 +81,9 @@ class ReportResultView {
     
     protected function getReportFileName() {
         return 'report.pdf';
+    }
+    
+    public function getResult() {
+        return $this->result;
     }
 }

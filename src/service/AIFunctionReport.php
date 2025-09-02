@@ -18,7 +18,7 @@ abstract class AIFunctionReport extends AIFunction {
         Bot::$session->set('data', $params);
     }
     
-    protected function sendReport($report_id, $params) {
+    protected function sendReport($report_id, $params) : string {
         
         $this->setSession($params);
         
@@ -37,6 +37,19 @@ abstract class AIFunctionReport extends AIFunction {
         $view->show();
         
         $this->resetSession();
+        
+        $report_result = $view->getResult();
+        
+        if ($report_result->ok) {
+            $result = "Запрошенный отчет отправлен.";
+        } else {
+            $result = "При формировании отчета возникли ошибки:\n- ".
+            implode("\n- ", $report_result->errors);
+            $result = "При формировании отчета возникли ошибки. Список ошибок был отправлен отдельным сообщением.";
+        }
+
+        return $result;
+        
     }
     
     protected function resetSession() {

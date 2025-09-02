@@ -19,10 +19,7 @@ class AIFunctionReportWinners extends AIFunctionReport {
             return $key;
         }, $params['winners']);
         
-        $this->sendReport(21, $params);
+        return $this->sendReport(21, $params);
         
-        $result = "Запрошенный отчет отправлен.";
-
-        return $result;
     }
 }

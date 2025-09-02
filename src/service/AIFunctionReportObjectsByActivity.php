@@ -77,10 +77,7 @@ class AIFunctionReportObjectsByActivity extends AIFunctionReport {
         }, $params['data']);
         
         
-        $this->sendReport(2, $params);
+        return $this->sendReport(2, $params);
         
-        $result = "Запрошенный отчет отправлен.";
-
-        return $result;
     }
 }

@@ -24,12 +24,10 @@ class AIFunctionReportStatusSenderForResponsible extends AIFunctionReport {
         $params['selfcopy'] = [$params['selfcopy']];
         
         if (!$params['period']) {
-            $this->sendReport(16, $params);
+            return $this->sendReport(16, $params);
         } else {
-            $this->sendReport(20, $params);
+            return $this->sendReport(20, $params);
         }
-        
-        return "Сообщения отправлены.";
         
     }
 }

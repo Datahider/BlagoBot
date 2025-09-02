@@ -23,15 +23,8 @@ class AIFunctionReportGP extends AIFunctionReport {
             $params['year'] = [$params['year']];
         }
 
-        $this->sendReport(1, $params);
+        return $this->sendReport(1, $params);
         
-        $result = "Отправлен отчет за период {$params['year'][0]}";
-        
-        if (!empty($params['sources'])) {
-            $result .= "\nВ отчет включена информация по бюджетам: ". implode(', ', $params['sources']);
-        }
-        
-        return $result;
     }
         
 }

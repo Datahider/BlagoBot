@@ -16,8 +16,7 @@ class AIFunctionReportOPZStatus extends AIFunctionReport {
             $params['filter'] = [$params['filter']];
         }
         
-        $this->sendReport(24, $params);
-        
-        return self::SUCCESS[$params['filter'][0]];
+        return $this->sendReport(24, $params);
+
     }
 }

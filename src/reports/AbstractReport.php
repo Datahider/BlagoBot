@@ -5,6 +5,7 @@ namespace losthost\BlagoBot\reports;
 use losthost\telle\Bot;
 use losthost\BlagoBot\service\ReportSummary;
 use losthost\BlagoBot\data\report_param;
+use losthost\BlagoBot\data\report;
 use Exception;
 use stdClass;
 
@@ -82,6 +83,17 @@ abstract class AbstractReport {
             $report_params = $params;
         }
         
+        $can_access = $this->checkAccessRights();
+        if ($can_access === false) {
+            return (object) [
+                'params' => $report_params,
+                'ok' => false,
+                'errors' => [
+                    'У вас не достаточно прав для просмотра этого отчета.'
+                ]
+            ];
+        }
+        
         $errors = $this->checkParamErrors($report_params);
         if ($errors !== false) {
             return (object)[
@@ -112,6 +124,20 @@ abstract class AbstractReport {
     
     public function getCustomResultViewClass() : ?string {
         return null;
+    }
+    
+    protected function checkAccessRights() : bool {
+        global $b_user;
+        
+        $access_level_code = substr($b_user->access_level, 0, 1);
+        $db_report = new report(['handler_class' => static::class], true);
+        
+        if (strpos($db_report->accessed_by, $access_level_code) === false) {
+            return false;
+        }
+        
+        return true;
+        
     }
    
 }
