@@ -45,7 +45,8 @@ class ReportResultView {
                 $writer->save($tmp_file);
 
                 $file_to_send = new \CURLFile($tmp_file, $this->getReportMimeType(), $this->getReportFileName());
-                Bot::$api->sendDocument(Bot::$chat->id, $file_to_send, 'Результат отчета');
+                $send_file_result = Bot::$api->sendDocument(Bot::$chat->id, $file_to_send, 'Результат отчета');
+                $this->result->file_id = $send_file_result->getDocument()->getFileId();
                 $file_to_send = null;
                 unlink($tmp_file);
             } elseif (is_string($this->result->result_type)) {

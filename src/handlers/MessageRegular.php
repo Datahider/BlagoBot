@@ -34,10 +34,18 @@ class MessageRegular extends AbstractHandlerMessage {
             'role' => 'user',
             'text' => $message->getText()
         ];
+        
+        if ($message->getReplyToMessage() && $message->getReplyToMessage()->getDocument()) {
+            $file_id = $message->getReplyToMessage()->getDocument()->getFileId();
+            $user_message['text'] .= "\n\nИдентификатор файла «{$file_id}»";
+        }
+        
         $this->addToContext($b_user->id, $user_message['role'], $user_message['text'], $user_message);
         $functions = $this->getFunctions();
         
         $ai = new AIGateway();
+        
+        $add_file_id = false;
         
         while (true) {
     
@@ -52,11 +60,26 @@ class MessageRegular extends AbstractHandlerMessage {
             $model_message = $result['message'];
             if (isset($model_message['text'])) {
                 $this->addToContext($b_user->id, $model_message['role'], $model_message['text'], $model_message);
+                if ($add_file_id) {
+                    $fake_message_1 = ['role' => 'user', 'text' => "Хорошо. Идентификатор этого файла «{$add_file_id}»"];
+                    $fake_message_2 = ['role' => 'assistant', 'text' => "Понял, идентификатор файла сохранён."];
+                    $this->addToContext($b_user->id, $fake_message_1['role'], $fake_message_1['text'], $fake_message_1);
+                    $this->addToContext($b_user->id, $fake_message_2['role'], $fake_message_2['text'], $fake_message_2);
+                    $add_file_id = false;
+                }
                 break;
             } elseif (isset($model_message['toolCallList'])) {
                 $this->addToContext($b_user->id, $model_message['role'], '[Вызов функции]', $model_message);
                 $call_result = $this->toolCalls($model_message['toolCallList']['toolCalls']);
                 $this->addToContext($b_user->id, $call_result['role'], '[Результат функции]', $call_result);
+                
+                foreach ($call_result['toolResultList']['toolResults'] as $tool_result) {
+                    $m = [];
+                    if ($tool_result['functionResult'] && preg_match("/file_id=(\S+)/", $tool_result['functionResult']['content'], $m)) {
+                        $add_file_id = $m[1];
+                        break;
+                    }
+                }
             } else {
                 sendMessageWithRetry(Bot::$chat->id, "Получен непредусмотренный ответ модели:\n\n". json_encode($model_message), null);
                 return true;
@@ -78,12 +101,14 @@ class MessageRegular extends AbstractHandlerMessage {
         $category_map = new TableMap('x_category', 'id', 'name');
         $winners_map = new TableMap('x_contragent', 'id', 'name');
         $responsibles_map = new TableMap('x_responsible_view', 'id', 'fio');
+        $user_map = new TableMap('user_view', 'id', 'full_name');
         
         $vars = [
             'omsus' => $omsu_map->values(),
             'categories' => $category_map->values(),
             'winners' => $winners_map->values(),
-            'responsibles' => $responsibles_map->values()
+            'responsibles' => $responsibles_map->values(),
+            'users' => $user_map->values()
         ];
         
         foreach ($vars as $key => $value) {

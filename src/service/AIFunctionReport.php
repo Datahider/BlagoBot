@@ -18,7 +18,7 @@ abstract class AIFunctionReport extends AIFunction {
         Bot::$session->set('data', $params);
     }
     
-    protected function sendReport($report_id, $params) : string {
+    protected function sendReport($report_id, $params) : string|array {
         
         $this->setSession($params);
         
@@ -41,7 +41,7 @@ abstract class AIFunctionReport extends AIFunction {
         $report_result = $view->getResult();
         
         if ($report_result->ok) {
-            $result = "Запрошенный отчет отправлен.";
+            $result = "Запрошенный отчет отправлен.\nИдентификатор отправленого файла file_id=$report_result->file_id\nИспользуй этот идентификатор, если пользователь попросит переслать этот отчет другому пользователю.";
         } else {
             $result = "При формировании отчета возникли ошибки:\n- ".
             implode("\n- ", $report_result->errors);
