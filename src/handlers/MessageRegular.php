@@ -40,6 +40,10 @@ class MessageRegular extends AbstractHandlerMessage {
             $user_message['text'] .= "\n\nИдентификатор файла «{$file_id}»";
         }
         
+        if ($message->getReplyToMessage() && $reply_to_text = $message->getReplyToMessage()->getText()) {
+            $user_message['text'] .= "\n\n". $this->ClassifyText($reply_to_text);
+        }
+        
         $this->addToContext($b_user->id, $user_message['role'], $user_message['text'], $user_message);
         $functions = $this->getFunctions();
         
@@ -285,4 +289,40 @@ class MessageRegular extends AbstractHandlerMessage {
         return $call_result;
     }
     
+    protected function ClassifyText($text) {
+        $prompt = $this->getClassificatorPrompt();
+        
+        $messages = [
+            ['role' => 'system', 'text' => $prompt],
+            ['role' => 'user', 'text' => $text]
+        ];
+        
+        $ai = new AIGateway();
+        $result = $ai->completion($messages);
+
+        if ($result['error']) {
+            return '';
+        }
+
+        $model_message = $result['message'];
+        if (isset($model_message['text'])) {
+            if (trim($model_message['text']) == '???') {
+                return '';
+            } else {
+                return $model_message['text'];
+            }
+        }
+        
+        return '';
+    }
+    
+    protected function getClassificatorPrompt() {
+        
+        global $b_user;
+        
+        $prompt_template = new Template('classificator_prompt.php', Bot::$language_code);
+        $prompt_template->setTemplateDir('src/templates');
+        
+        return $prompt_template->process();
+    }
 }

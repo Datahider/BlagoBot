@@ -16,4 +16,6 @@ class ai_context extends DBObject {
         'PRIMARY KEY' => 'id',
         'INDEX idx_1' => ['user_id', 'date_added']
     ];
+    
 }
+

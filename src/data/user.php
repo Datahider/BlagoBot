@@ -5,6 +5,7 @@ namespace losthost\BlagoBot\data;
 use losthost\DB\DBObject;
 use losthost\DB\DB;
 use losthost\DB\DBView;
+use losthost\templateHelper\Template;
 
 class user extends DBObject {
     
@@ -100,4 +101,93 @@ class user extends DBObject {
         
         return $result;
     }
+    
+    public function aiContextAddMessage($message_data) {
+        if (empty($message_data['role'])) {
+            throw new \Exception('Не задано свойство "role"');
+        }
+
+        $this->aiCheckAddPrompt();
+        
+        $role = $message_data['role'];
+        $text = $message_data['text'] ?? null;
+        
+        $ai_context = new static();
+        $ai_context->date_added = date_create();
+        $ai_context->user_id = $this->id;
+        $ai_context->role = $role;
+        $ai_context->text = $text;
+        $ai_context->data = serialize($message_data);
+        $ai_context->write();
+        
+        return $ai_context;
+    }
+    
+    public function aiContextCountMessages() : int {
+
+        $sql = $this->sqlContextCountMessages();
+        
+        $sth = DB::prepare($sql);
+        $sth->execute([$this->id, $this->ai_context_starts->format(DB::DATE_FORMAT)]);
+        
+        $row = $sth->fetch(\PDO::FETCH_NUM);
+        return $row[0];
+        
+    }
+    
+    protected function aiCheckAddPrompt() {
+        if ($this->aiContextCountMessages() != 0) {
+            return;
+        }
+        
+        $this->aiAddPrompt();
+    }
+
+    protected function aiAddPrompt() {
+        
+        $prompt = [
+            'role' => 'system',
+            'text' => $this->getPromptText()
+        ];
+        
+        $ai_context = new ai_context();
+        $ai_context->date_added = date_create();
+        $ai_context->user_id = $this->id;
+        $ai_context->role = $prompt['role'];
+        $ai_context->text = $prompt['text'];
+        $ai_context->data = serialize($prompt);
+        $ai_context->write();
+
+    }
+
+    protected function aiGetPromptText() {
+        
+        $prompt_template = new Template('prompt.php', Bot::$language_code);
+        $prompt_template->setTemplateDir('src/templates');
+        
+        $vars = [
+            'name' => $this->name,
+            'fathers_name' => $this->fathers_name,
+        ];
+        
+        foreach ($vars as $key => $value) {
+            $prompt_template->assign($key, $value);
+        }
+        
+        return $prompt_template->process();
+    }
+    
+    protected function sqlAiContextCountMessages() {
+        return <<<FIN
+            SELECT
+                COUNT(id)
+            FROM
+                [ai_context]
+            WHERE
+                user_id = ?
+                AND date_added >= ?
+            FIN;
+    }
+    
+    
 }
