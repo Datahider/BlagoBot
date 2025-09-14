@@ -1,3 +1,4 @@
 /etc/bot_config.php
 /vendor/
 /nbproject/
+/etc/authorized_key.json

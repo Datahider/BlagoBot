@@ -57,6 +57,7 @@ Bot::addHandler(\losthost\BlagoBot\handlers\PreMessage::class);
 Bot::addHandler(\losthost\BlagoBot\handlers\MessageAuth::class);
 Bot::addHandler(losthost\BlagoBot\handlers\CommandStart::class);
 
+Bot::addHandler(losthost\BlagoBot\handlers\MessagePDFFile::class);
 Bot::addHandler(losthost\BlagoBot\handlers\MessageFiles::class);
 
 Bot::addHandler(\losthost\BlagoBot\handlers\CommandAILog::class);

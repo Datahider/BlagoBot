@@ -6,6 +6,8 @@ use losthost\DB\DBObject;
 use losthost\DB\DB;
 use losthost\DB\DBView;
 use losthost\templateHelper\Template;
+use losthost\telle\Bot;
+use losthost\BlagoBot\data\ai_context;
 
 class user extends DBObject {
     
@@ -112,7 +114,7 @@ class user extends DBObject {
         $role = $message_data['role'];
         $text = $message_data['text'] ?? null;
         
-        $ai_context = new static();
+        $ai_context = new ai_context();
         $ai_context->date_added = date_create();
         $ai_context->user_id = $this->id;
         $ai_context->role = $role;
@@ -125,7 +127,7 @@ class user extends DBObject {
     
     public function aiContextCountMessages() : int {
 
-        $sql = $this->sqlContextCountMessages();
+        $sql = $this->sqlAiContextCountMessages();
         
         $sth = DB::prepare($sql);
         $sth->execute([$this->id, $this->ai_context_starts->format(DB::DATE_FORMAT)]);
@@ -147,7 +149,7 @@ class user extends DBObject {
         
         $prompt = [
             'role' => 'system',
-            'text' => $this->getPromptText()
+            'text' => $this->aiGetPromptText()
         ];
         
         $ai_context = new ai_context();

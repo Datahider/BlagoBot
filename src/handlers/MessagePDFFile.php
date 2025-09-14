@@ -6,6 +6,7 @@ use losthost\telle\abst\AbstractHandlerMessage;
 use TelegramBot\Api\Types\Document;
 use losthost\telle\Bot;
 use losthost\BlagoBot\data\ai_context;
+use losthost\BlagoBot\service\YandexOCRGateway;
 
 use function \losthost\BlagoBot\__;
 use function \losthost\BlagoBot\sendMessageWithRetry;
@@ -91,8 +92,14 @@ class MessagePDFFile extends AbstractHandlerMessage {
     
     protected function recognizeData($data) {
         
-        $encoded_data = base64_encode($data);
+        require 'etc/bot_config.php';
         
+        $recognizer = new YandexOCRGateway($search_folder_id, $iam_token);
+        
+        $operation = $recognizer->recognizeTextAsync($data, 'page', YandexOCRGateway::MIME_TYPE_PDF);
+        $result = $recognizer->getRecognition($operation->id, true);
+        
+        return $result;
         
     }
 }
