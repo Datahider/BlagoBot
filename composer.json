@@ -14,7 +14,8 @@
         "losthost/passg": "v1.1.0",
         "losthost/bot-view": "^v2",
         "phpoffice/phpspreadsheet": "^2",
-        "mpdf/mpdf": "v8.2.3"
+        "mpdf/mpdf": "v8.2.3",
+        "web-token/jwt-framework": "4.0.6"
     },
     "autoload": {
         "psr-4": {
