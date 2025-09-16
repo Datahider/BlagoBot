@@ -36,6 +36,22 @@ $functions = [
     ],
     [   
         "function" => [
+            'name' => 'search_by_inn',
+            'description' => 'Ищет информацию о компании в интернете по заданному ИНН',
+            'parameters' => [
+                'type' => 'object',
+                'properties' => [
+                    'inn' => [
+                        'type' => 'string',
+                        'description' => 'Значение ИНН для поиска информации и данных о компании',
+                    ],
+                ],
+                'required' => ['inn']
+            ],
+        ]
+    ],
+    [   
+        "function" => [
             'name' => 'ImageSearch',
             'description' => 'Ищет изображения в русскоязычном сегменте Интернета',
             'parameters' => [
