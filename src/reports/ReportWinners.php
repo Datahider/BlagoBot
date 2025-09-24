@@ -83,7 +83,8 @@ class ReportWinners extends AbstractReport {
               LEFT JOIN vt_prev AS prevyear ON prevyear.year = :prev_year AND contragent.inn = prevyear.contract_inn AND prevyear.object_name = object.name
               LEFT JOIN vt_prev AS bprevyear ON bprevyear.year = :bprev_year AND contragent.inn = bprevyear.contract_inn AND bprevyear.object_name = object.name
             WHERE
-              contract.x_contragent_id IN (%WINNERS_LIST%)
+                contragent.id <> 77
+                AND contract.x_contragent_id IN (%WINNERS_LIST%)
                 AND omsu.id IN (%OMSU_LIST%)
                 AND object.category2_name IN (%CATEGORY_LIST%)
             GROUP BY
