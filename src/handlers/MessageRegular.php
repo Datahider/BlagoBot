@@ -10,6 +10,7 @@ use losthost\templateHelper\Template;
 use losthost\BlagoBot\service\TableMap;
 use losthost\BlagoBot\reports\ReportObjectsByOmsu;
 use losthost\telle\model\DBSession;
+use losthost\BlagoBot\params\ParamDescriptionCategory2All;
 
 use losthost\BlagoBot\service\AIToolCaller;
 
@@ -107,12 +108,19 @@ class MessageRegular extends AbstractHandlerMessage {
         $responsibles_map = new TableMap('x_responsible_view', 'id', 'fio');
         $user_map = new TableMap('user_view', 'id', 'full_name');
         
+        $cat2_param = new ParamDescriptionCategory2All($this);
+        $cat2 = [];
+        foreach ($cat2_param->getValueSet() as $value) {
+            $cat2[] = $value->getTitle();
+        }
+        
         $vars = [
             'omsus' => $omsu_map->values(),
             'categories' => $category_map->values(),
             'winners' => $winners_map->values(),
             'responsibles' => $responsibles_map->values(),
-            'users' => $user_map->values()
+            'users' => $user_map->values(),
+            'cat2' => $cat2,
         ];
         
         foreach ($vars as $key => $value) {

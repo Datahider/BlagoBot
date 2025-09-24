@@ -9,6 +9,7 @@ use losthost\BlagoBot\service\xls\CellFormat;
 use losthost\BlagoBot\service\ReportSummary;
 use losthost\BlagoBot\data\x_category;
 use losthost\BlagoBot\data\x_contragent;
+use losthost\BlagoBot\data\x_omsu;
 use losthost\DB\DBList;
 use losthost\BlagoBot\service\TotalPercentage;
 use losthost\BlagoBot\service\TotalTrickyPercentage;
@@ -67,7 +68,10 @@ class ReportWinners extends AbstractReport {
               ROUND(SUM(current_year_data.contract_value / 1000)) AS contract_current,
               ROUND(SUM(next_year_data.contract_value / 1000)) AS contract_next,
               ROUND(SUM(current_year_data.payment_value / 1000)) AS payment_current,
-              ROUND(SUM(current_year_data.payment_value) / SUM(current_year_data.contract_value) * 100, 2) AS dp_current,
+              CASE 
+                WHEN SUM(current_year_data.contract_value) = 0 THEN "-"
+                ELSE ROUND(SUM(current_year_data.payment_value) / SUM(current_year_data.contract_value) * 100, 2)
+              END AS dp_current,
               ROUND(SUM((current_year_data.contract_value - current_year_data.payment_value) / 1000)) AS payment_rest
             FROM 
               [x_contract] AS contract
@@ -80,6 +84,8 @@ class ReportWinners extends AbstractReport {
               LEFT JOIN vt_prev AS bprevyear ON bprevyear.year = :bprev_year AND contragent.inn = bprevyear.contract_inn AND bprevyear.object_name = object.name
             WHERE
               contract.x_contragent_id IN (%WINNERS_LIST%)
+                AND omsu.id IN (%OMSU_LIST%)
+                AND object.category2_name IN (%CATEGORY_LIST%)
             GROUP BY
               contragent.name,
               omsu.name,
@@ -111,6 +117,8 @@ class ReportWinners extends AbstractReport {
     protected function initParams() { 
         $this->params = [
             new \losthost\BlagoBot\params\ParamDescriptionWinners($this),
+            new \losthost\BlagoBot\params\ParamDescriptionOmsuAll($this),
+            new \losthost\BlagoBot\params\ParamDescriptionCategory2All($this),
         ];
     }
 
@@ -165,6 +173,15 @@ class ReportWinners extends AbstractReport {
         ];
         
         $sql = str_replace('%WINNERS_LIST%', implode(', ', $params['winners']), static::SQL);
+        $sql = str_replace('%OMSU_LIST%', implode(', ', $params['omsu']), $sql);
+        
+        $cats = [];
+        $param_cat = new \losthost\BlagoBot\params\ParamDescriptionCategory2All($this);
+        foreach ($params['cat2'] as $id) {
+            $param_value = $param_cat->valueByValue($id);
+            $cats[] = str_replace('"', '\\"', $param_value->getTitle());
+        }
+        $sql = str_replace('%CATEGORY_LIST%', '"'. implode('", "', $cats). '"', $sql);
         
         $sth = DB::prepare($sql);
         $sth->execute($query_params);
@@ -189,11 +206,27 @@ class ReportWinners extends AbstractReport {
             $winner = new x_contragent(['id' => $id]);
             $winners[] = $winner->name;
         }
+        
+        $omsus = [];
+        foreach($params['omsu'] as $id) {
+            $omsu = new x_omsu(['id' => $id]);
+            $omsus[] = $omsu->name;
+        }
+        
+        $cats = [];
+        $param_cat = new \losthost\BlagoBot\params\ParamDescriptionCategory2All($this);
+        foreach ($params['cat2'] as $id) {
+            $param_value = $param_cat->valueByValue($id);
+            $cats[] = $param_value->getTitle();
+        }
+        
         return new ReportSummary(
                 'Победители', 
                 date_create_immutable(), 
                 [
-                    ['title' => 'Победители', 'value' => implode(', ', $winners)]
+                    ['title' => 'Победители', 'value' => implode(', ', $winners)],
+                    ['title' => 'ОМСУ', 'value' => implode(', ', $omsus)],
+                    ['title' => 'Мероприятия', 'value' => implode(', ', $cats)],
                 ]
                 );
     }

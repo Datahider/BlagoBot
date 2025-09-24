@@ -48,6 +48,23 @@ abstract class AbstractParamDescription {
         return $result;
     }
     
+    public function getMap() {
+        $result = [];
+        foreach ($this->value_set as $value) {
+            $result[$value->getValue()] = $value->getTitle();
+        }
+        return $result;
+    }
+
+    public function getReverseMap() {
+        $result = [];
+        foreach ($this->value_set as $value) {
+            $result[$value->getTitle()] = $value->getValue();
+        }
+        return $result;
+    }
+
+
     public function valueByValue(string|int $value) : ?ParamValue {
         foreach ($this->value_set as $value_from_set) {
             if ($value_from_set->getValue() == $value) {

@@ -9,6 +9,10 @@ class TotalPercentage extends AbstractTotalsCollector {
         $column2 = $this->args[1];
         $column1 = $this->args[0];
         
-        return $column2->getTotals($index) / $column1->getTotals($index);
+        if ($column1->getTotals($index) == 0) {
+            return "-";
+        } else {
+            return $column2->getTotals($index) / $column1->getTotals($index);
+        }
     }
 }
