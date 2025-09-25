@@ -20,7 +20,7 @@ class AIFunctionReportWinners extends AIFunctionReport {
         }
         
         if ($params['omsu'][0] == 'Все') {
-            $params['omsu'][0] = array_values($omsu_map->getReverseMap());
+            $params['omsu'] = array_values($omsu_map->getReverseMap());
         } else {
             $this->mapParam($params['omsu'], $omsu_map->getReverseMap());
         }
