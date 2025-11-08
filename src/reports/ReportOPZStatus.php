@@ -47,7 +47,7 @@ class ReportOPZStatus extends AbstractReport {
                         WHEN data2.value IS NULL THEN CONCAT(:current_year, "-", :current_year+1)
                         ELSE CONCAT(:current_year, "-", :current_year+2)
                   END AS period,
-                  CONCAT(REPLACE(FORMAT((data0.value + IFNULL(data1.value, 0) + IFNULL(data2.value, 0)) / 1000, 0), ',', ' '), " тыс. руб.")  AS nmck,
+                  CONCAT(REPLACE(FORMAT((IFNULL(data0.value, 0) + IFNULL(data1.value, 0) + IFNULL(data2.value, 0)) / 1000, 0), ',', ' '), " тыс. руб.")  AS nmck,
                   DATE_FORMAT(data0.nmck_opz_date, '%d.%m.%Y'),
                   CASE
                         WHEN data0.nmck_opz_date < CURDATE() THEN 1
