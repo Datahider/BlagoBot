@@ -2,48 +2,9 @@
 
 namespace losthost\BlagoBot\service;
 
-class AIFunctionReportObjectsByActivity extends AIFunctionReport {
+use losthost\BlagoBot\service\TableMap;
 
-    const ACTIVITY_IDS = [
-        "Зоны для досуга и отдыха в парках" => 1,
-        "Детские скверы Нацпроект" => 2,
-        "ОТ Нацпроект 2026" => 3,
-        "ОТ Нацпроект 2024" => 4,
-        "ОТ Нацпроект 2025" => 5,
-        "Скверы Нацпроект 2025" => 6,
-        "Скверы Нацпроект 2024" => 7,
-        "Скверы Нацпроект 2026" => 8,
-        "Конкурс 2023" => 9,
-        "Конкурс 2024" => 10,
-        "Стелы" => 11,
-        "Лесопарки 2027" => 12,
-        "Лесопарки 2025" => 13,
-        "Лесопарки 2026" => 14,
-        "Лесопарки 2024" => 15,
-        "Велодорожки" => 16,
-        "ИМБТ развитие парков 2024" => 17,
-        "ИМБТ Парк Малевича" => 18,
-        "ИМБТ развитие парков 2025" => 19,
-        "ИМБТ Серпухов" => 20,
-        "оз. Черное" => 21,
-        "Аренда катков" => 22,
-        "Катки" => 23,
-        "Стелы 2024" => 24,
-        "Аренда катков 2025" => 25,
-        "Зоны отдыха в парках Нацпроект" => 26,
-        "Велодорожки 2025" => 27,
-        "Скверы Нацпроект 2027" => 28,
-        "ОТ Нацпроект 2028" => 29,
-        "Скверы Нацпроект 2028" => 30,
-        "Лесопарки 2028" => 31,
-        "ОТ Нацпроект 2027" => 32,
-        "Конкурс 2025" => 33,
-        "ОТ Нацпроект 2029" => 34,
-        "Велодорожки 2026" => 35,
-        "ИМБТ развитие парков 2026" => 36,
-        "ОТ за дотацию" => 37,
-        "Аренда катков 2026" => 38    
-    ];
+class AIFunctionReportObjectsByActivity extends AIFunctionReport {
 
     const DATA_IDS = [
         "Разбивка по бюджетам" => 15, 
@@ -62,11 +23,14 @@ class AIFunctionReportObjectsByActivity extends AIFunctionReport {
             $params['year'] = [$params['year']];
         }
 
-        $params['activity'] = array_map(function($value) {
-            if (!isset(static::ACTIVITY_IDS[$value])) {
+        $category_map = new TableMap('x_category', 'id', 'name');
+        $activity_ids = $category_map->getReverseMap();
+        
+        $params['activity'] = array_map(function($value) use ($activity_ids) {
+            if (!isset($activity_ids[$value])) {
                 throw new \Exception("Не найдено соответствие для значения: $value");
             }
-            return static::ACTIVITY_IDS[$value];
+            return $activity_ids[$value];
         }, $params['activity']);
         
         $params['data'] = array_map(function($value) {
