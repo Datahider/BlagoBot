@@ -40,8 +40,6 @@ class MessageFile2 extends MessageFile {
         }
         
         if (!$has_error) {
-            $status_date = new DBBotParam('status_date');
-            $status_date->value = date_create()->format('d.m.Y');
             
             $view->show('tpl_info', null, ['type' => 'info', 'text' => __('Загрузка данных завершена.')]);
         }

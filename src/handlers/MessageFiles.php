@@ -47,8 +47,6 @@ class MessageFiles extends AbstractHandlerMessage {
         }
         
         if (!$has_error) {
-            $db_date = new DBBotParam('db_date');
-            $db_date->value = date_create()->format('d.m.Y');
             $view->show('tpl_info', null, ['type' => 'info', 'text' => __('Загрузка данных завершена.')]);
         }
         

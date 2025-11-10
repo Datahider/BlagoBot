@@ -21,6 +21,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use losthost\DB\DB;
 use losthost\telle\model\DBBotParam;
 use Exception;
+use losthost\telle\model\DBBotParam;
 
 use function \losthost\BlagoBot\__;
 
@@ -417,6 +418,9 @@ class DBUpdater {
                 throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num");
             }
         }
+        
+        $db_date = new DBBotParam('db_date');
+        $db_date->value = date_create()->format('d.m.Y');
 
     }
     

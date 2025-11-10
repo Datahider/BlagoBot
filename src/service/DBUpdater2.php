@@ -9,6 +9,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\IReader;
 use losthost\BlagoBot\data\x_responsible;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use losthost\telle\model\DBBotParam;
 
 class DBUpdater2 extends DBUpdater {
     
@@ -67,5 +68,9 @@ class DBUpdater2 extends DBUpdater {
                 throw new \Exception($e->getMessage(). "\n\nСтрока: $row_num");
             }
         }
+        
+        $status_date = new DBBotParam('status_date');
+        $status_date->value = date_create()->format('d.m.Y');
+        
     }
 }
