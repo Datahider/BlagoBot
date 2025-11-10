@@ -21,7 +21,6 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use losthost\DB\DB;
 use losthost\telle\model\DBBotParam;
 use Exception;
-use losthost\telle\model\DBBotParam;
 
 use function \losthost\BlagoBot\__;
 
