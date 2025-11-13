@@ -62,7 +62,7 @@ class ReportWinners extends AbstractReport {
               omsu.name AS omsu,
               object.name AS object,
               object.category2_name AS category,
-              ROUND(((IFNULL(bprevyear.payment_total, 0) + IFNULL(prevyear.payment_total, 0) + IFNULL(current_year_data.contract_value, 0) + IFNULL(next_year_data.contract_value, 0)) / 1000)) AS total,
+              ROUND(((IFNULL(bprevyear.payment_total, 0) + IFNULL(prevyear.payment_total, 0) + IFNULL(SUM(current_year_data.contract_value), 0) + IFNULL(SUM(next_year_data.contract_value), 0)) / 1000)) AS total,
               ROUND((IFNULL(bprevyear.payment_total, 0) / 1000)) AS payment_bprev,
               ROUND((IFNULL(prevyear.payment_total, 0) / 1000)) AS payment_prev,
               ROUND(SUM(current_year_data.contract_value / 1000)) AS contract_current,
