@@ -15,7 +15,7 @@ class menu extends DBObject {
         'is_active' => 'TINYINT(1) NOT NULL DEFAULT 1',
         'title' => 'VARCHAR(64)',
         'description' => 'VARCHAR(1024)',
-        'type' => 'ENUM("submenu", "report") NOT NULL DEFAULT "submenu"',
+        'type' => 'ENUM("submenu", "report", "link") NOT NULL DEFAULT "submenu"',
         'subtype_id' => 'BIGINT',
         'handler_class' => 'VARCHAR(256)',
         'handler_param' => 'VARCHAR(256)',

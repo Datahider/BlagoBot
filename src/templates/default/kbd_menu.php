@@ -23,6 +23,9 @@ foreach ($submenu as $sub_menu) {
         case 'report':
             $button = new InlineButton(new report(['id' => $sub_menu->subtype_id]));
             break;
+        case 'link':
+            $button = new InlineButton($sub_menu);
+            break;
         default:
             throw new Exception('Unknown menu type.');
     }

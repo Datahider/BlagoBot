@@ -24,6 +24,7 @@ class InlineButton {
     const MB_VALUE = 3;
     const MB_NEW_PARAM = 4;
     const MB_NEW_VALUE = 5;
+    const MB_LINK = 6;
     
     protected $type;
     protected $object;
@@ -38,7 +39,11 @@ class InlineButton {
     // Interface
 public function __construct(ParamValue|AbstractParamDescription|menu|report|report_param|report_param_value|x_omsu|x_category|x_responsible|string $object, null|report_param|AbstractParamDescription $param=null) {
         if (is_a($object, menu::class)) {
-            $this->type = self::MB_SUBMENU;
+            if ($object->type == 'submenu') {
+                $this->type = self::MB_SUBMENU;
+            } elseif ($object->type == 'link') {
+                $this->type = self::MB_LINK;
+            }
         } elseif (is_a($object, report::class)) {
             $this->type = self::MB_REPORT;
         } elseif (is_a($object, report_param::class)) {
@@ -71,6 +76,10 @@ public function __construct(ParamValue|AbstractParamDescription|menu|report|repo
             case self::MB_SUBMENU:
                 $data = "submenu_{$this->object->id}";
                 break;
+            case self::MB_LINK:
+                $data = null;
+                $url = $this->object->handler_param;
+                break;
             case self::MB_REPORT:
                 $data = "report_{$this->object->id}";
                 break;
@@ -98,7 +107,11 @@ public function __construct(ParamValue|AbstractParamDescription|menu|report|repo
                 throw new Exception('Unknown button type.');
         }
         
-        return [ 'text' => $text, 'callback_data' => $data ];
+        if ($data) {
+            return [ 'text' => $text, 'callback_data' => $data ];
+        } else {
+            return [ 'text' => $text, 'url' => $url ];
+        }
     }
     
     // Setters
