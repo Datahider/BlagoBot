@@ -574,7 +574,7 @@ class ReportObjectsByActivity extends AbstractReport {
             $omsus[] = $omsu->name;
         }
         return new ReportSummary(
-                'Статус реализации мероприятий по ГП "Формирование современной комфортной городской среды" в 2025 году', 
+                'Статус реализации мероприятий по ГП "Формирование современной комфортной городской среды" в 2026 году', 
                 date_create_immutable(), 
                 [
                     ['title' => 'Мероприятия', 'value' => implode(', ', $omsus)]

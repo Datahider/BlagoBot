@@ -7,7 +7,7 @@ class ReportSenderGP extends AbstractReportSender {
     #[\Override]
     protected function reportParamSetup(): array {
         return [
-            'year' => ["2025"],
+            'year' => ["2026"],
             'sources' => [],
         ];
     }

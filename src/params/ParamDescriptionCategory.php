@@ -29,10 +29,10 @@ class ParamDescriptionCategory extends AbstractParamDescription {
                 FIN;
         $params = Bot::$session->get('data');
         if (empty($params['gpyears'])) {
-            $params['gpyears'] = [2024, 2025, 2026, 2027, 2028, 2029];
+            $params['gpyears'] = [2025, 2026, 2027, 2028, 2029, 2030];
         }
         if (empty($params['year'])) {
-            $params['year'] = [2024, 2025, 2026, 2027, 2028, 2029];
+            $params['year'] = [2025, 2026, 2027, 2028, 2029, 2030];
         }
         
         $sql = str_replace(":selected_years", implode(',', $params['gpyears']), $sql);

@@ -29,11 +29,12 @@ class ReportCertificate extends AbstractReport {
         2022 => 'Оплата 2022',
         2023 => 'Оплата 2023',
         2024 => 'Оплата 2024',
-        2025 => 'Лимит 2025',
+        2025 => 'Оплата 2025',
         2026 => 'Лимит 2026',
         2027 => 'Лимит 2027',
         2028 => 'Лимит 2028',
         2029 => 'Лимит 2029',
+        2030 => 'Лимит 2030',
     ];
     
     protected array $years;
@@ -186,15 +187,15 @@ class ReportCertificate extends AbstractReport {
             DROP TEMPORARY TABLE IF EXISTS vt_result;
 
             CREATE TEMPORARY TABLE vt_current_years 
-            SELECT 2025 AS year
-            UNION ALL
-            SELECT 2026
+            SELECT 2026 AS year
             UNION ALL
             SELECT 2027
             UNION ALL
             SELECT 2028
             UNION ALL
-            SELECT 2029;
+            SELECT 2029
+            UNION ALL
+            SELECT 2030;
 
             CREATE TEMPORARY TABLE vt_old_base SELECT
                     omsu_name,
@@ -257,11 +258,12 @@ class ReportCertificate extends AbstractReport {
                     IFNULL(SUM(base2022.payment_total), 0) AS payment_2022, 
                     IFNULL(SUM(base2023.payment_total), 0) AS payment_2023,
                     IFNULL(SUM(base2024.payment_total), 0) AS payment_2024,
-                    0 AS payment_2025,
+                    IFNULL(SUM(base2025.payment_total), 0) AS payment_2025,
                     0 AS payment_2026,
                     0 AS payment_2027,
                     0 AS payment_2028,
-                    0 AS payment_2029 
+                    0 AS payment_2029, 
+                    0 AS payment_2030 
             FROM vt_old_base AS base
                     LEFT JOIN vt_old_base AS base2019 ON base.omsu_name = base2019.omsu_name AND base.object_name = base2019.object_name AND base.category2_name = base2019.category2_name AND base.year = base2019.year AND base2019.year = 2019
                     LEFT JOIN vt_old_base AS base2020 ON base.omsu_name = base2020.omsu_name AND base.object_name = base2020.object_name AND base.category2_name = base2020.category2_name AND base.year = base2020.year AND base2020.year = 2020
@@ -269,6 +271,7 @@ class ReportCertificate extends AbstractReport {
                     LEFT JOIN vt_old_base AS base2022 ON base.omsu_name = base2022.omsu_name AND base.object_name = base2022.object_name AND base.category2_name = base2022.category2_name AND base.year = base2022.year AND base2022.year = 2022
                     LEFT JOIN vt_old_base AS base2023 ON base.omsu_name = base2023.omsu_name AND base.object_name = base2023.object_name AND base.category2_name = base2023.category2_name AND base.year = base2023.year AND base2023.year = 2023
                     LEFT JOIN vt_old_base AS base2024 ON base.omsu_name = base2024.omsu_name AND base.object_name = base2024.object_name AND base.category2_name = base2024.category2_name AND base.year = base2024.year AND base2024.year = 2024
+                    LEFT JOIN vt_old_base AS base2025 ON base.omsu_name = base2025.omsu_name AND base.object_name = base2025.object_name AND base.category2_name = base2025.category2_name AND base.year = base2025.year AND base2025.year = 2025
             WHERE 
                     base.omsu_name IN ({:omsu_names}) 
             GROUP BY
@@ -292,17 +295,18 @@ class ReportCertificate extends AbstractReport {
                     0 AS payment_2022,
                     0 AS payment_2023,
                     0 AS payment_2024,
-                    SUM(base2025.limit_total), 
+                    0 AS payment_2025,
                     SUM(base2026.limit_total), 
                     SUM(base2027.limit_total), 
                     SUM(base2028.limit_total), 
-                    SUM(base2029.limit_total)
+                    SUM(base2029.limit_total),
+                    SUM(base2030.limit_total)
             FROM vt_current_base AS base
-                    LEFT JOIN vt_current_base AS base2025 ON base.omsu_name = base2025.omsu_name AND base.object_name = base2025.object_name AND base.category2_name = base2025.category2_name AND base.year = base2025.year AND base2025.year = 2025
                     LEFT JOIN vt_current_base AS base2026 ON base.omsu_name = base2026.omsu_name AND base.object_name = base2026.object_name AND base.category2_name = base2026.category2_name AND base.year = base2026.year AND base2026.year = 2026
                     LEFT JOIN vt_current_base AS base2027 ON base.omsu_name = base2027.omsu_name AND base.object_name = base2027.object_name AND base.category2_name = base2027.category2_name AND base.year = base2027.year AND base2027.year = 2027
                     LEFT JOIN vt_current_base AS base2028 ON base.omsu_name = base2028.omsu_name AND base.object_name = base2028.object_name AND base.category2_name = base2028.category2_name AND base.year = base2028.year AND base2028.year = 2028
                     LEFT JOIN vt_current_base AS base2029 ON base.omsu_name = base2029.omsu_name AND base.object_name = base2029.object_name AND base.category2_name = base2029.category2_name AND base.year = base2029.year AND base2029.year = 2029
+                    LEFT JOIN vt_current_base AS base2030 ON base.omsu_name = base2030.omsu_name AND base.object_name = base2030.object_name AND base.category2_name = base2030.category2_name AND base.year = base2030.year AND base2030.year = 2030
             WHERE 
                     base.omsu_name IN ({:omsu_names}) 
             GROUP BY
@@ -326,7 +330,8 @@ class ReportCertificate extends AbstractReport {
                     SUM(payment_2026)/1000 AS payment_2026,
                     SUM(payment_2027)/1000 AS payment_2027,
                     SUM(payment_2028)/1000 AS payment_2028,
-                    SUM(payment_2029)/1000 AS payment_2029
+                    SUM(payment_2029)/1000 AS payment_2029,
+                    SUM(payment_2030)/1000 AS payment_2030
             FROM 
                     vt_full_base
             GROUP BY
@@ -335,6 +340,7 @@ class ReportCertificate extends AbstractReport {
                     category2_name	
             ORDER BY
                     omsu_name, 
+                    CASE WHEN SUM(payment_2030) > 0 THEN 2030 ELSE
                     CASE WHEN SUM(payment_2029) > 0 THEN 2029 ELSE
                     CASE WHEN SUM(payment_2028) > 0 THEN 2028 ELSE
                     CASE WHEN SUM(payment_2027) > 0 THEN 2027 ELSE

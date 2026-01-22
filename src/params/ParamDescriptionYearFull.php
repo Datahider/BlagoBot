@@ -17,6 +17,7 @@ class ParamDescriptionYearFull extends AbstractParamDescription {
             new ParamValue(2027),
             new ParamValue(2028),
             new ParamValue(2029),
+            new ParamValue(2030),
         ];
         $this->defaults = [];
     }
