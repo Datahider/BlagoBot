@@ -352,7 +352,7 @@ class ReportCertificate extends AbstractReport {
                     CASE WHEN SUM(payment_2021) > 0 THEN 2021 ELSE
                     CASE WHEN SUM(payment_2020) > 0 THEN 2020 ELSE
                     CASE WHEN SUM(payment_2019) > 0 THEN 2019 ELSE 0
-                    END END END END END END END END END END END,
+                    END END END END END END END END END END END END,
                     category2_name, object_name;
 
             SET @row_number = 0;

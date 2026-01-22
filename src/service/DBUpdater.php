@@ -385,7 +385,7 @@ class DBUpdater {
                         throw new \Exception($e->getMessage(). "\n\nСтрока $row_num, \nЗначение: Дата контракта");
                 }
 
-                $contract->has_pir = strpos($this->checkCell("Вид работ по контракту", $cells[5]), 'ПИР') === false ? false : true;
+                $contract->has_pir = strpos($this->checkCell("Вид работ по контракту", $cells[3]), 'ПИР') === false ? false : true;
                 $contract->has_smr = strpos($cells[3], 'СМР') === false ? false : true;
                 
                 $contract->nmck_purchase_number = $this->checkCell("№ Закупки", $cells[77]);
